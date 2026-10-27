@@ -62,8 +62,8 @@ export function creds(provider: ProviderKey, userId?: string | null): Record<str
     : {};
   const out: Record<string, string> = {};
   for (const f of PROVIDERS[provider].fields) {
-    // AGENCY_<NAME> is accepted too, for hosts that reserve some names (e.g. ANTHROPIC_*).
-    const v = clean(f, saved[f] || process.env[f] || process.env[`AGENCY_${f}`] || "");
+    // AGENCY_<NAME> and lowercase names are accepted too (some hosts reserve ANTHROPIC_*; keys get pasted in lowercase).
+    const v = clean(f, saved[f] || process.env[f] || process.env[`AGENCY_${f}`] || process.env[f.toLowerCase()] || "");
     if (v) out[f] = v;
   }
   return out;
