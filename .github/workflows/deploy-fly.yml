@@ -76,7 +76,13 @@ jobs:
           if ! flyctl deploy --remote-only -a "$APP" --primary-region "$REGION" --ha=false 2>&1 | tee deploy.log; then
             # Surface the end of the log as annotations so it is readable without log access.
             # GitHub keeps only 10 annotations per step, so send the tail as one annotation.
-            msg=$(tail -n 30 deploy.log | sed 's/\x1b\[[0-9;]*m//g' | grep -v '^\s*$' | grep -v 'pushing layer' | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+            {
+              echo "== deploy (tail)"; tail -n 12 deploy.log
+              echo "== status"; flyctl status -a "$APP" 2>&1 | tail -n 15
+              echo "== app logs"; timeout 40 flyctl logs -a "$APP" --no-tail 2>&1 | tail -n 40
+              echo "== http check"; curl -s -o /dev/null -m 20 -w "GET / -> %{http_code}\n" "https://$APP.fly.dev/" || true
+            } > diag.log 2>&1
+            msg=$(sed 's/\x1b\[[0-9;]*m//g' diag.log | grep -v '^\s*$' | grep -v 'pushing layer' | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
             echo "::error title=deploy::${msg}"
             exit 1
           fi
