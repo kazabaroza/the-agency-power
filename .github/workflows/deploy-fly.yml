@@ -77,10 +77,10 @@ jobs:
             # Surface the end of the log as annotations so it is readable without log access.
             # GitHub keeps only 10 annotations per step, so send the tail as one annotation.
             {
-              echo "== deploy (tail)"; tail -n 12 deploy.log
-              echo "== status"; flyctl status -a "$APP" 2>&1 | tail -n 15
-              echo "== app logs"; timeout 40 flyctl logs -a "$APP" --no-tail 2>&1 | tail -n 40
-              echo "== http check"; curl -s -o /dev/null -m 20 -w "GET / -> %{http_code}\n" "https://$APP.fly.dev/" || true
+              echo "== http check from runner"; curl -s -o /dev/null -m 20 -w "GET / -> %{http_code} in %{time_total}s\n" "https://$APP.fly.dev/" || echo "curl failed"
+              echo "== health checks"; flyctl checks list -a "$APP" 2>&1 | tail -n 12
+              echo "== deploy (tail)"; tail -n 4 deploy.log
+              echo "== app logs (last)"; timeout 40 flyctl logs -a "$APP" --no-tail 2>&1 | grep -v 'ExperimentalWarning\|trace-warnings' | tail -n 12
             } > diag.log 2>&1
             msg=$(sed 's/\x1b\[[0-9;]*m//g' diag.log | grep -v '^\s*$' | grep -v 'pushing layer' | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
             echo "::error title=deploy::${msg}"
