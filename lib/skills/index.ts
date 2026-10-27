@@ -316,7 +316,8 @@ Return JSON: {"hook":"first line","voiceover":"exact spoken words","caption":"po
     try {
       jobId = await startVideo(s.sora_prompt, { seconds, vertical: input.vertical !== false }, ctx.userId);
     } catch (e) {
-      return `Video failed to start: ${e instanceof Error ? e.message : e}`;
+      // Thrown so the approval card shows "failed" instead of "executed".
+      throw new Error(`Video failed to start: ${e instanceof Error ? e.message : e}`);
     }
     const aid = asset(ctx, "video", s.hook, { ...s, style, seconds, jobId, demo: !jobId }, undefined, jobId ? "processing" : "demo");
     showAsset(ctx, aid, jobId ? "הסרטון ברינדור ב-Sora 2 Pro (כ-10–15 דקות). אשלח אותו כאן כשיהיה מוכן." : "תסריט הסרטון מוכן. חברו OpenAI כדי לרנדר אותו ב-Sora 2 Pro.");

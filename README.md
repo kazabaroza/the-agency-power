@@ -16,6 +16,8 @@ npm run build && npm start   # http://localhost:3000
 
 בסביבות שבהן שמות שמתחילים ב-`ANTHROPIC_` שמורים למערכת (למשל סביבות הענן של Claude Code), שמים את המפתח במשתנה `AGENCY_ANTHROPIC_API_KEY`. כל משתנה אחר מהרשימה עובד גם עם הקידומת `AGENCY_`.
 
+מאחורי פרוקסי (למשל בסביבות הענן של Claude Code) מפעילים את השרת עם `NODE_USE_ENV_PROXY=1`. בלי זה, הפניות של Node ל-OpenAI, ל-Meta ולשירותים אחרים לא עוברות דרך הפרוקסי ונכשלות עם "Connection error". השתמשו ב-Node 22.21 ומעלה.
+
 דרוש Node 22.5 ומעלה (המערכת משתמשת ב-SQLite המובנה של Node). הנתונים נשמרים ב-`data/agency.db`, והקבצים שנוצרים ב-`data/uploads`.
 
 ## ארכיטקטורה
