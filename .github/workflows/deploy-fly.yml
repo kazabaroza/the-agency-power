@@ -25,7 +25,7 @@ jobs:
             echo "FLY_API_TOKEN secret is not set - skipping deploy."; echo "skip=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         if: steps.token.outputs.skip != 'true'
 
       - uses: superfly/flyctl-actions/setup-flyctl@v1
@@ -71,7 +71,13 @@ jobs:
 
       - name: Deploy
         if: steps.token.outputs.skip != 'true'
-        run: flyctl deploy --remote-only -a "$APP" --primary-region "$REGION" --ha=false
+        run: |
+          set -o pipefail
+          if ! flyctl deploy --remote-only -a "$APP" --primary-region "$REGION" --ha=false 2>&1 | tee deploy.log; then
+            # Surface the end of the log as annotations so it is readable without log access.
+            tail -n 40 deploy.log | sed 's/\x1b\[[0-9;]*m//g' | grep -v '^\s*$' | while IFS= read -r line; do echo "::error title=deploy::${line}"; done
+            exit 1
+          fi
 
       - name: Show address
         if: steps.token.outputs.skip != 'true'
