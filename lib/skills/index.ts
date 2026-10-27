@@ -392,6 +392,7 @@ const createCampaign: Skill = {
       location_label: { type: "string" },
       lat: { type: "number" }, lng: { type: "number" }, radius_km: { type: "number" },
       age_min: { type: "integer" }, age_max: { type: "integer" },
+      genders: { type: "array", items: { type: "string", enum: ["female", "male"] }, description: "Meta only. One value to target a single gender; omit for everyone." },
       interests: { type: "array", items: { type: "string" } },
       keywords: { type: "array", items: { type: "string" } },
       structure: { type: "string", enum: ["CBO", "ABO"] },
@@ -404,7 +405,7 @@ const createCampaign: Skill = {
     required: ["platforms", "name", "objective", "daily_budget", "landing_url", "creatives"],
   },
   summarize: (i) => ({
-    summary: `קמפיין "${S(i.name)}" ב-${(i.platforms as string[]).map((p) => (p === "meta" ? "Meta" : "Google Ads")).join(" + ")} · ${S(i.location_label, "ישראל")}${i.radius_km ? ` (${i.radius_km} ק"מ)` : ""} · ${(i.creatives as unknown[]).length} מודעות`,
+    summary: `קמפיין "${S(i.name)}" ב-${(i.platforms as string[]).map((p) => (p === "meta" ? "Meta" : "Google Ads")).join(" + ")} · ${S(i.location_label, "ישראל")}${i.radius_km ? ` (${i.radius_km} ק"מ)` : ""}${Array.isArray(i.genders) && i.genders.length === 1 ? (i.genders[0] === "female" ? " · נשים" : " · גברים") : ""}${i.age_min || i.age_max ? ` · גילאי ${i.age_min ?? 18}-${i.age_max ?? 65}` : ""} · ${(i.creatives as unknown[]).length} מודעות`,
     cost: `₪${Number(i.daily_budget)} ליום${(i.platforms as string[]).length > 1 ? " לכל פלטפורמה" : ""}`,
   }),
   async run(input, ctx) {
@@ -412,6 +413,7 @@ const createCampaign: Skill = {
       name: S(input.name), objective: S(input.objective, "leads") as CampaignSpec["objective"], dailyBudget: Number(input.daily_budget),
       location: { label: S(input.location_label, "Israel"), lat: input.lat as number | undefined, lng: input.lng as number | undefined, radiusKm: input.radius_km as number | undefined },
       ageMin: input.age_min as number | undefined, ageMax: input.age_max as number | undefined,
+      genders: input.genders as CampaignSpec["genders"],
       interests: input.interests as string[] | undefined, keywords: input.keywords as string[] | undefined,
       structure: S(input.structure, "CBO") as "CBO" | "ABO",
       landingUrl: S(input.landing_url).startsWith("/") ? ctx.appUrl + S(input.landing_url) : S(input.landing_url),
@@ -423,7 +425,7 @@ const createCampaign: Skill = {
       const cid = id("cp_");
       insert("campaigns", {
         id: cid, user_id: ctx.userId, brand_id: ctx.brand?.id ?? null, platform: p, name: spec.name, objective: spec.objective,
-        daily_budget: spec.dailyBudget, location: spec.location, audiences: { interests: spec.interests, ageMin: spec.ageMin, ageMax: spec.ageMax },
+        daily_budget: spec.dailyBudget, location: spec.location, audiences: { interests: spec.interests, ageMin: spec.ageMin, ageMax: spec.ageMax, genders: spec.genders },
         creatives: spec.creatives, keywords: spec.keywords ?? [], structure: spec.structure, landing_url: spec.landingUrl,
         status: res.ok ? (res.demo ? "demo" : "active") : "failed", external_ids: res.externalIds ?? {}, metrics: res.error ? { error: res.error } : {},
       });

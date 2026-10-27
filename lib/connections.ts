@@ -43,6 +43,19 @@ const REQUIRED: Partial<Record<ProviderKey, string[]>> = {
   linkedin: ["LINKEDIN_ACCESS_TOKEN", "LINKEDIN_AUTHOR_URN"],
 };
 
+/**
+ * Pasted values often carry stray whitespace, line breaks or a trailing "=".
+ * API keys of the sk-… form are cut down to the key itself.
+ */
+function clean(field: string, raw: string): string {
+  const v = raw.trim();
+  if (field.endsWith("_API_KEY")) {
+    const m = v.match(/sk-[A-Za-z0-9_-]{20,}/);
+    if (m) return m[0];
+  }
+  return v.split(/\r?\n/)[0].trim();
+}
+
 export function creds(provider: ProviderKey, userId?: string | null): Record<string, string> {
   const saved = userId
     ? parse<Record<string, string>>(get<{ data: string }>("SELECT data FROM connections WHERE user_id = ? AND provider = ?", userId, provider)?.data, {})
@@ -50,7 +63,7 @@ export function creds(provider: ProviderKey, userId?: string | null): Record<str
   const out: Record<string, string> = {};
   for (const f of PROVIDERS[provider].fields) {
     // AGENCY_<NAME> is accepted too, for hosts that reserve some names (e.g. ANTHROPIC_*).
-    const v = saved[f] || process.env[f] || process.env[`AGENCY_${f}`] || "";
+    const v = clean(f, saved[f] || process.env[f] || process.env[`AGENCY_${f}`] || "");
     if (v) out[f] = v;
   }
   return out;

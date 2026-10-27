@@ -11,6 +11,7 @@ export type CampaignSpec = {
   location: { label: string; lat?: number; lng?: number; radiusKm?: number; countries?: string[] };
   ageMin?: number;
   ageMax?: number;
+  genders?: ("female" | "male")[]; // empty = everyone
   interests?: string[];
   structure?: "CBO" | "ABO";
   landingUrl: string;
@@ -74,6 +75,7 @@ export async function launchMeta(spec: CampaignSpec, userId: string): Promise<La
       destination_type: "WEBSITE",
       targeting: {
         geo_locations: geo, age_min: spec.ageMin ?? 21, age_max: spec.ageMax ?? 65,
+        ...(spec.genders?.length === 1 ? { genders: [spec.genders[0] === "male" ? 1 : 2] } : {}),
         ...(interests.length ? { flexible_spec: [{ interests }] } : {}),
         targeting_automation: { advantage_audience: interests.length ? 0 : 1 },
       },

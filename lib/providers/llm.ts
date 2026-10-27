@@ -27,7 +27,9 @@ type CreateParams = {
  * recommended fallback model instead of failing.
  */
 export async function createMessage(client: Anthropic, p: CreateParams): Promise<Anthropic.Message> {
-  const res = await client.beta.messages.create({
+  // Streamed so long specialist outputs never hit the SDK's non-streaming time limit;
+  // finalMessage() collects the full response.
+  const res = await client.beta.messages.stream({
     model: MODEL,
     max_tokens: p.max_tokens ?? 16000,
     system: p.system as Anthropic.Beta.BetaTextBlockParam[] | string,
@@ -36,7 +38,7 @@ export async function createMessage(client: Anthropic, p: CreateParams): Promise
     output_config: { effort: p.effort ?? EFFORT },
     betas: ["server-side-fallback-2026-07-01"],
     fallbacks: "default",
-  });
+  }).finalMessage();
   // The beta and stable message shapes match for everything this app reads
   // (text, tool_use, stop_reason); fallback blocks are ignored.
   return res as unknown as Anthropic.Message;
