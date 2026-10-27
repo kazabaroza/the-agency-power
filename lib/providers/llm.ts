@@ -7,7 +7,9 @@ const EFFORT = (process.env.AGENT_EFFORT || "medium") as "low" | "medium" | "hig
 export function anthropicFor(userId?: string | null): Anthropic | null {
   const key = creds("anthropic", userId).ANTHROPIC_API_KEY;
   if (!key) return null;
-  return new Anthropic({ apiKey: key });
+  // Set the base URL explicitly so a host-level ANTHROPIC_BASE_URL (used by the
+  // hosting platform for its own traffic) never redirects this app's calls.
+  return new Anthropic({ apiKey: key, baseURL: process.env.AGENCY_ANTHROPIC_BASE_URL || "https://api.anthropic.com" });
 }
 
 type CreateParams = {

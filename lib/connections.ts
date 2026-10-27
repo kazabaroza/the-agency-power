@@ -49,7 +49,8 @@ export function creds(provider: ProviderKey, userId?: string | null): Record<str
     : {};
   const out: Record<string, string> = {};
   for (const f of PROVIDERS[provider].fields) {
-    const v = saved[f] || process.env[f] || "";
+    // AGENCY_<NAME> is accepted too, for hosts that reserve some names (e.g. ANTHROPIC_*).
+    const v = saved[f] || process.env[f] || process.env[`AGENCY_${f}`] || "";
     if (v) out[f] = v;
   }
   return out;
