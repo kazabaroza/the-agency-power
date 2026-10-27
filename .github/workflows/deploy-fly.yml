@@ -38,6 +38,10 @@ jobs:
           if ! flyctl volumes list -a "$APP" --json | grep -q '"agency_data"'; then
             flyctl volumes create agency_data --size 1 --region "$REGION" -a "$APP" --yes
           fi
+          # Public addresses (a failed first deploy can leave the app without any).
+          if ! flyctl ips list -a "$APP" --json | grep -q '"v6"\|"Type": *"v6"'; then flyctl ips allocate-v6 -a "$APP"; fi
+          if ! flyctl ips list -a "$APP" --json | grep -qi 'shared_v4\|"v4"'; then flyctl ips allocate-v4 --shared -a "$APP"; fi
+          flyctl ips list -a "$APP"
 
       - name: Sync secrets
         if: steps.token.outputs.skip != 'true'
@@ -73,7 +77,7 @@ jobs:
         if: steps.token.outputs.skip != 'true'
         run: |
           set -o pipefail
-          if ! flyctl deploy --remote-only -a "$APP" --primary-region "$REGION" --ha=false 2>&1 | tee deploy.log; then
+          if ! flyctl deploy --remote-only -a "$APP" --primary-region "$REGION" --ha=false --wait-timeout 10m 2>&1 | tee deploy.log; then
             # Surface the end of the log as annotations so it is readable without log access.
             # GitHub keeps only 10 annotations per step, so send the tail as one annotation.
             {

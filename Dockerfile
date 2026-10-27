@@ -24,5 +24,6 @@ COPY --from=build /app/next.config.mjs ./
 RUN mkdir -p /app/data
 VOLUME ["/app/data"]
 EXPOSE 3000
-# Bind to all interfaces explicitly: hosts like Fly set HOSTNAME to the machine id.
-CMD ["sh", "-c", "npx next start -H 0.0.0.0 -p ${PORT:-3000}"]
+# Bind to all interfaces (IPv4 + IPv6) explicitly: hosts like Fly set HOSTNAME to the machine id
+# and reach the app over IPv6 too.
+CMD ["sh", "-c", "npx next start -H :: -p ${PORT:-3000}"]
