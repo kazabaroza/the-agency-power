@@ -75,7 +75,9 @@ jobs:
           set -o pipefail
           if ! flyctl deploy --remote-only -a "$APP" --primary-region "$REGION" --ha=false 2>&1 | tee deploy.log; then
             # Surface the end of the log as annotations so it is readable without log access.
-            tail -n 40 deploy.log | sed 's/\x1b\[[0-9;]*m//g' | grep -v '^\s*$' | while IFS= read -r line; do echo "::error title=deploy::${line}"; done
+            # GitHub keeps only 10 annotations per step, so send the tail as one annotation.
+            msg=$(tail -n 30 deploy.log | sed 's/\x1b\[[0-9;]*m//g' | grep -v '^\s*$' | grep -v 'pushing layer' | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+            echo "::error title=deploy::${msg}"
             exit 1
           fi
 
