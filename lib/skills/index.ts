@@ -3,7 +3,7 @@ import { all, get, id, insert, parse, update } from "../db";
 import { addMessage } from "../conversation";
 import { runSpecialist, parseJson } from "../agents/specialist";
 import { coreTeam, getAgent } from "../agents/registry";
-import { svgBanner, generateImage, stockPhotos, startVideo, FORMATS, VIDEO_SECONDS, VIDEO_MODEL, type Brand, type Format, type VideoSeconds } from "../providers/media";
+import { svgBanner, generateImage, stockPhotos, startVideo, startPresenterVideo, FORMATS, VIDEO_SECONDS, VIDEO_MODEL, AVATAR_MODEL, type Brand, type Format, type VideoSeconds } from "../providers/media";
 import { saveFile } from "../storage";
 import { renderLanding, demoLanding, type LandingContent } from "../landing";
 import { PLATFORMS, type Platform } from "../providers/social";
@@ -280,7 +280,7 @@ Do not include testimonials.`,
 const createVideo: Skill = {
   name: "create_video",
   label: "סרטון עם מציג AI / UGC",
-  description: "Write a short-video script and render it with an AI video model (Seedance 2.0 on fal.ai by default, with native audio): presenter (AI presenter talking to camera), ugc (creator-style testimonial-look reel), product (product showcase) or animation. 4-15 seconds, vertical by default. Costs money - needs approval.",
+  description: "Write a short-video script and render it: presenter (AI presenter talking to camera) and ugc (creator-style reel) get a natural voice-over in the brand language with a lip-synced presenter; product (product showcase) and animation are rendered by a text-to-video model with music/ambient sound. 4-15 seconds, vertical by default. Costs money - needs approval.",
   gated: true,
   input_schema: {
     type: "object",
@@ -295,12 +295,15 @@ const createVideo: Skill = {
   },
   summarize: (i) => ({
     summary: `סרטון ${({ presenter: "עם מציג AI", ugc: "בסגנון UGC", product: "מוצר", animation: "אנימציה" } as Record<string, string>)[S(i.style, "presenter")] ?? ""} על "${S(i.topic)}" – ${S(i.seconds, "8")} שניות`,
-    cost: `${VIDEO_MODEL.split("/").slice(0, 2).join(" ")} · ${S(i.seconds, "8")} שניות`,
+    cost: ["presenter", "ugc"].includes(S(i.style, "presenter"))
+      ? `קריינות בעברית + מציג/ה מסונכרן/ת · ${S(i.seconds, "8")} שניות`
+      : `${VIDEO_MODEL.split("/").slice(0, 2).join(" ")} · ${S(i.seconds, "8")} שניות`,
   }),
   async run(input, ctx) {
     const style = S(input.style, "presenter");
     const seconds = ((VIDEO_SECONDS as readonly string[]).includes(S(input.seconds)) ? S(input.seconds) : "8") as VideoSeconds;
-    type Script = { hook: string; voiceover: string; caption: string; video_prompt: string };
+    type Script = { hook: string; voiceover: string; caption: string; video_prompt: string; presenter_image_prompt?: string; voice_style?: string };
+    const speaking = style === "presenter" || style === "ugc";
     let s: Script | null = null;
     showAgent(ctx, "marketing-short-video-editing-coach", S(input.topic));
     if (ctx.client) {
@@ -308,20 +311,34 @@ const createVideo: Skill = {
         client: ctx.client, slug: "marketing-short-video-editing-coach", brand: ctx.brand, conversationId: ctx.conversationId, json: true,
         task: `Write a ${seconds}-second ${style} vertical video about: ${S(input.topic)}. Presenter look: ${S(input.presenter) || "pick one that fits the audience"}.
 The spoken line must fit ${seconds} seconds (about ${Number(seconds) * 2.3 | 0} words) in ${lang(ctx) === "he" ? "Hebrew" : "English"}.
-Return JSON: {"hook":"first line","voiceover":"exact spoken words","caption":"post caption","video_prompt":"Detailed English prompt for the video model: subject, setting, camera, lighting, action, and the exact line spoken in quotes in the target language. No on-screen text or logos."}`,
+Return JSON: {"hook":"first line","voiceover":"exact spoken words, written for the ear (numbers and brand names as they are said)","caption":"post caption",
+"presenter_image_prompt":"English prompt for ONE photorealistic vertical portrait of the presenter looking straight at the camera, mouth closed, upper body, in the setting. No text or logos.",
+"voice_style":"English instructions for the voice: accent, energy, pace",
+"video_prompt":"English prompt for a text-to-video model: subject, setting, camera, lighting, action. ${speaking ? "The presenter speaks the line." : "No speech."} No on-screen text or logos."}`,
       }));
     }
     if (!s) s = { hook: S(input.topic), voiceover: S(input.topic), caption: S(input.topic), video_prompt: `A friendly ${S(input.presenter) || "presenter"} speaks to camera in a bright studio about: ${S(input.topic)}. Vertical, handheld, natural light.` };
     let jobId: string | null = null;
+    let extra: Record<string, unknown> = {};
     try {
-      jobId = await startVideo(s.video_prompt, { seconds, vertical: input.vertical !== false }, ctx.userId);
+      if (speaking) {
+        const r = await startPresenterVideo({
+          imagePrompt: s.presenter_image_prompt || `Photorealistic vertical portrait of ${S(input.presenter) || "a friendly presenter"}, looking at the camera, mouth closed, ${s.video_prompt}`,
+          speech: s.voiceover,
+          voiceStyle: s.voice_style,
+        }, ctx.userId);
+        if (r) { jobId = r.job; extra = { presenterImage: r.image, voiceAudio: r.audio, pipeline: AVATAR_MODEL }; }
+      } else {
+        jobId = await startVideo(s.video_prompt, { seconds, vertical: input.vertical !== false, audio: true }, ctx.userId);
+        if (jobId) extra = { pipeline: VIDEO_MODEL };
+      }
     } catch (e) {
       // Thrown so the approval card shows "failed" instead of "executed".
       throw new Error(`Video failed to start: ${e instanceof Error ? e.message : e}`);
     }
-    const aid = asset(ctx, "video", s.hook, { ...s, style, seconds, jobId, demo: !jobId }, undefined, jobId ? "processing" : "demo");
+    const aid = asset(ctx, "video", s.hook, { ...s, ...extra, style, seconds, jobId, demo: !jobId }, undefined, jobId ? "processing" : "demo");
     showAsset(ctx, aid, jobId ? "הסרטון ברינדור (בדרך כלל כמה דקות). אשלח אותו כאן כשיהיה מוכן." : "תסריט הסרטון מוכן. חברו את fal.ai במסך החיבורים כדי לרנדר אותו.");
-    return jobId ? `Video job started on ${VIDEO_MODEL} for asset ${aid}. The user will get the video automatically when it is ready.` : `Demo mode: script saved as asset ${aid}; no video rendered because fal.ai is not connected.`;
+    return jobId ? `Video job started on ${String(extra.pipeline)} for asset ${aid}. The user will get the video automatically when it is ready.` : `Demo mode: script saved as asset ${aid}; no video rendered because fal.ai is not connected.`;
   },
 };
 

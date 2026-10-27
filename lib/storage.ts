@@ -6,7 +6,7 @@ export const UPLOAD_DIR = path.join(process.cwd(), "data", "uploads");
 
 const EXT: Record<string, string> = {
   "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp", "image/svg+xml": "svg",
-  "video/mp4": "mp4", "text/html": "html",
+  "video/mp4": "mp4", "audio/mpeg": "mp3", "text/html": "html",
 };
 
 /** Saves bytes and returns the public URL path (served by /files/[name]). */

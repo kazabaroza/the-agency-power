@@ -1,6 +1,8 @@
 import OpenAI from "openai";
 import { creds } from "../connections";
-import { saveFile } from "../storage";
+import fs from "node:fs";
+import path from "node:path";
+import { saveFile, UPLOAD_DIR } from "../storage";
 
 export type Brand = {
   id: string; name: string; website?: string | null; description?: string | null; audience?: string | null;
@@ -135,25 +137,80 @@ export type VideoSeconds = (typeof VIDEO_SECONDS)[number];
 
 type FalJob = { provider: "fal"; model: string; status_url: string; response_url: string };
 
-/** Starts a video job. Returns a job descriptor (JSON string), or null in demo mode. */
-export async function startVideo(prompt: string, opts: { seconds?: VideoSeconds; vertical?: boolean }, userId?: string | null) {
+async function falSubmit(model: string, input: Record<string, unknown>, userId?: string | null): Promise<string | null> {
   const key = creds("fal", userId).FAL_KEY;
   if (!key) return null;
-  const r = await fetch(`https://queue.fal.run/${VIDEO_MODEL}`, {
+  const r = await fetch(`https://queue.fal.run/${model}`, {
     method: "POST",
     headers: { Authorization: `Key ${key}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      prompt,
-      duration: opts.seconds ?? "8",
-      aspect_ratio: opts.vertical === false ? "16:9" : "9:16",
-      resolution: process.env.FAL_VIDEO_RESOLUTION || "720p",
-      generate_audio: true,
-    }),
+    body: JSON.stringify(input),
   });
-  const j = (await r.json().catch(() => ({}))) as { request_id?: string; status_url?: string; response_url?: string; detail?: unknown };
+  const j = (await r.json().catch(() => ({}))) as { status_url?: string; response_url?: string; detail?: unknown };
   if (!r.ok || !j.status_url || !j.response_url) throw new Error(`fal ${r.status}: ${JSON.stringify(j.detail ?? j).slice(0, 300)}`);
-  const job: FalJob = { provider: "fal", model: VIDEO_MODEL, status_url: j.status_url, response_url: j.response_url };
+  const job: FalJob = { provider: "fal", model, status_url: j.status_url, response_url: j.response_url };
   return JSON.stringify(job);
+}
+
+/** Text-to-video (no speaker). Returns a job descriptor (JSON string), or null in demo mode. */
+export async function startVideo(prompt: string, opts: { seconds?: VideoSeconds; vertical?: boolean; audio?: boolean }, userId?: string | null) {
+  return falSubmit(VIDEO_MODEL, {
+    prompt,
+    duration: opts.seconds ?? "8",
+    aspect_ratio: opts.vertical === false ? "16:9" : "9:16",
+    resolution: process.env.FAL_VIDEO_RESOLUTION || "720p",
+    generate_audio: opts.audio ?? true,
+  }, userId);
+}
+
+// ---------------- Talking presenter (image + Hebrew voice + lip-sync) ----------------
+// Video models that invent their own speech garble Hebrew, so the voice is made by a
+// TTS engine and an avatar model animates the presenter to that exact audio.
+export const AVATAR_MODEL = process.env.FAL_AVATAR_MODEL || "fal-ai/kling-video/ai-avatar/v2/standard";
+export const TTS_MODEL = process.env.OPENAI_TTS_MODEL || "gpt-4o-mini-tts";
+
+/** Speech audio (mp3) from OpenAI TTS. */
+export async function speak(text: string, opts: { voice?: string; style?: string }, userId?: string | null): Promise<Buffer> {
+  const key = creds("openai", userId).OPENAI_API_KEY;
+  if (!key) throw new Error("OpenAI is not connected (needed for the voice-over)");
+  const client = new OpenAI({ apiKey: key });
+  const r = await client.audio.speech.create({
+    model: TTS_MODEL,
+    voice: opts.voice || "coral",
+    input: text,
+    instructions: opts.style || "Speak natural native Israeli Hebrew (or the language of the text), warm and energetic, like a social media reel.",
+    response_format: "mp3",
+  });
+  return Buffer.from(await r.arrayBuffer());
+}
+
+function toDataUri(buf: Buffer, mime: string) {
+  return `data:${mime};base64,${buf.toString("base64")}`;
+}
+
+function localOrRemote(url: string, mime: string): string {
+  if (url.startsWith("/files/")) return toDataUri(fs.readFileSync(path.join(UPLOAD_DIR, url.slice(7))), mime);
+  return url;
+}
+
+/**
+ * Presenter video: generates the presenter photo and the voice-over, then submits a
+ * lip-sync job. Returns the job plus the image/audio it used, or null in demo mode.
+ */
+export async function startPresenterVideo(
+  opts: { imagePrompt: string; speech: string; voice?: string; voiceStyle?: string },
+  userId?: string | null,
+): Promise<{ job: string; image: string; audio: string } | null> {
+  if (!creds("fal", userId).FAL_KEY) return null;
+  const img = await generateImage(opts.imagePrompt, "story", userId);
+  if (!img) throw new Error("Could not create the presenter image (connect OpenAI or fal.ai for images)");
+  const audioBuf = await speak(opts.speech, { voice: opts.voice, style: opts.voiceStyle }, userId);
+  const audio = saveFile(audioBuf, "audio/mpeg");
+  const job = await falSubmit(AVATAR_MODEL, {
+    image_url: localOrRemote(img.url, "image/png"),
+    audio_url: toDataUri(audioBuf, "audio/mpeg"),
+    prompt: "Natural, friendly presenter speaking to camera, subtle head and hand movement, steady framing.",
+  }, userId);
+  return job ? { job, image: img.url, audio } : null;
 }
 
 /** Polls a video job. When done, downloads the mp4 and returns its local URL. */
