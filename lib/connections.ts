@@ -7,8 +7,8 @@ import { all, get, parse, run } from "./db";
  */
 export const PROVIDERS = {
   anthropic: { label: "Claude (המוח של הסוכן)", fields: ["ANTHROPIC_API_KEY"], docs: "https://console.anthropic.com" },
-  openai: { label: "OpenAI – Sora 2 וידאו + gpt-image", fields: ["OPENAI_API_KEY"], docs: "https://platform.openai.com" },
-  fal: { label: "fal.ai – מודלי תמונה", fields: ["FAL_KEY"], docs: "https://fal.ai/dashboard/keys" },
+  openai: { label: "OpenAI – תמונות gpt-image", fields: ["OPENAI_API_KEY"], docs: "https://platform.openai.com" },
+  fal: { label: "fal.ai – סרטונים (Seedance) ותמונות", fields: ["FAL_KEY"], docs: "https://fal.ai/dashboard/keys" },
   unsplash: { label: "Unsplash – תמונות סטוק", fields: ["UNSPLASH_ACCESS_KEY"], docs: "https://unsplash.com/developers" },
   whatsapp: {
     label: "WhatsApp Cloud API",

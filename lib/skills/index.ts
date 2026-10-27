@@ -3,7 +3,7 @@ import { all, get, id, insert, parse, update } from "../db";
 import { addMessage } from "../conversation";
 import { runSpecialist, parseJson } from "../agents/specialist";
 import { coreTeam, getAgent } from "../agents/registry";
-import { svgBanner, generateImage, stockPhotos, startVideo, FORMATS, type Brand, type Format } from "../providers/media";
+import { svgBanner, generateImage, stockPhotos, startVideo, FORMATS, VIDEO_SECONDS, VIDEO_MODEL, type Brand, type Format, type VideoSeconds } from "../providers/media";
 import { saveFile } from "../storage";
 import { renderLanding, demoLanding, type LandingContent } from "../landing";
 import { PLATFORMS, type Platform } from "../providers/social";
@@ -280,27 +280,27 @@ Do not include testimonials.`,
 const createVideo: Skill = {
   name: "create_video",
   label: "סרטון עם מציג AI / UGC",
-  description: "Write a short-video script and render it with Sora 2 Pro: presenter (AI presenter talking to camera), ugc (creator-style testimonial-look reel), product (product showcase) or animation. 4, 8 or 12 seconds, vertical by default. Costs money - needs approval.",
+  description: "Write a short-video script and render it with an AI video model (Seedance 2.0 on fal.ai by default, with native audio): presenter (AI presenter talking to camera), ugc (creator-style testimonial-look reel), product (product showcase) or animation. 4-15 seconds, vertical by default. Costs money - needs approval.",
   gated: true,
   input_schema: {
     type: "object",
     properties: {
       topic: { type: "string" },
       style: { type: "string", enum: ["presenter", "ugc", "product", "animation"] },
-      seconds: { type: "string", enum: ["4", "8", "12"] },
+      seconds: { type: "string", enum: [...VIDEO_SECONDS] },
       vertical: { type: "boolean" },
       presenter: { type: "string", description: "Look of the presenter, e.g. 'woman in her 30s, warm smile, studio light'" },
     },
     required: ["topic"],
   },
   summarize: (i) => ({
-    summary: `סרטון ${({ presenter: "עם מציג AI", ugc: "בסגנון UGC", product: "מוצר", animation: "אנימציה" } as Record<string, string>)[S(i.style, "presenter")] ?? ""} על "${S(i.topic)}" – ${S(i.seconds, "12")} שניות`,
-    cost: `Sora 2 Pro · ${S(i.seconds, "12")} שניות`,
+    summary: `סרטון ${({ presenter: "עם מציג AI", ugc: "בסגנון UGC", product: "מוצר", animation: "אנימציה" } as Record<string, string>)[S(i.style, "presenter")] ?? ""} על "${S(i.topic)}" – ${S(i.seconds, "8")} שניות`,
+    cost: `${VIDEO_MODEL.split("/").slice(0, 2).join(" ")} · ${S(i.seconds, "8")} שניות`,
   }),
   async run(input, ctx) {
     const style = S(input.style, "presenter");
-    const seconds = (S(input.seconds) || "12") as "4" | "8" | "12";
-    type Script = { hook: string; voiceover: string; caption: string; sora_prompt: string };
+    const seconds = ((VIDEO_SECONDS as readonly string[]).includes(S(input.seconds)) ? S(input.seconds) : "8") as VideoSeconds;
+    type Script = { hook: string; voiceover: string; caption: string; video_prompt: string };
     let s: Script | null = null;
     showAgent(ctx, "marketing-short-video-editing-coach", S(input.topic));
     if (ctx.client) {
@@ -308,20 +308,20 @@ const createVideo: Skill = {
         client: ctx.client, slug: "marketing-short-video-editing-coach", brand: ctx.brand, conversationId: ctx.conversationId, json: true,
         task: `Write a ${seconds}-second ${style} vertical video about: ${S(input.topic)}. Presenter look: ${S(input.presenter) || "pick one that fits the audience"}.
 The spoken line must fit ${seconds} seconds (about ${Number(seconds) * 2.3 | 0} words) in ${lang(ctx) === "he" ? "Hebrew" : "English"}.
-Return JSON: {"hook":"first line","voiceover":"exact spoken words","caption":"post caption","sora_prompt":"Detailed English prompt for Sora: subject, setting, camera, lighting, action, and the exact line spoken in quotes in the target language. No on-screen text or logos."}`,
+Return JSON: {"hook":"first line","voiceover":"exact spoken words","caption":"post caption","video_prompt":"Detailed English prompt for the video model: subject, setting, camera, lighting, action, and the exact line spoken in quotes in the target language. No on-screen text or logos."}`,
       }));
     }
-    if (!s) s = { hook: S(input.topic), voiceover: S(input.topic), caption: S(input.topic), sora_prompt: `A friendly ${S(input.presenter) || "presenter"} speaks to camera in a bright studio about: ${S(input.topic)}. Vertical, handheld, natural light.` };
+    if (!s) s = { hook: S(input.topic), voiceover: S(input.topic), caption: S(input.topic), video_prompt: `A friendly ${S(input.presenter) || "presenter"} speaks to camera in a bright studio about: ${S(input.topic)}. Vertical, handheld, natural light.` };
     let jobId: string | null = null;
     try {
-      jobId = await startVideo(s.sora_prompt, { seconds, vertical: input.vertical !== false }, ctx.userId);
+      jobId = await startVideo(s.video_prompt, { seconds, vertical: input.vertical !== false }, ctx.userId);
     } catch (e) {
       // Thrown so the approval card shows "failed" instead of "executed".
       throw new Error(`Video failed to start: ${e instanceof Error ? e.message : e}`);
     }
     const aid = asset(ctx, "video", s.hook, { ...s, style, seconds, jobId, demo: !jobId }, undefined, jobId ? "processing" : "demo");
-    showAsset(ctx, aid, jobId ? "הסרטון ברינדור ב-Sora 2 Pro (כ-10–15 דקות). אשלח אותו כאן כשיהיה מוכן." : "תסריט הסרטון מוכן. חברו OpenAI כדי לרנדר אותו ב-Sora 2 Pro.");
-    return jobId ? `Sora job ${jobId} started for asset ${aid}. The user will get the video automatically when it is ready.` : `Demo mode: script saved as asset ${aid}; no video rendered because OpenAI is not connected.`;
+    showAsset(ctx, aid, jobId ? "הסרטון ברינדור (בדרך כלל כמה דקות). אשלח אותו כאן כשיהיה מוכן." : "תסריט הסרטון מוכן. חברו את fal.ai במסך החיבורים כדי לרנדר אותו.");
+    return jobId ? `Video job started on ${VIDEO_MODEL} for asset ${aid}. The user will get the video automatically when it is ready.` : `Demo mode: script saved as asset ${aid}; no video rendered because fal.ai is not connected.`;
   },
 };
 

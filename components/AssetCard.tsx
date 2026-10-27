@@ -43,7 +43,7 @@ export default function AssetCard({ a }: { a: Asset }) {
         {a.type === "video" && (
           <div className="muted space-y-1 text-sm">
             {data.voiceover && <p><b>טקסט:</b> {data.voiceover}</p>}
-            {data.sora_prompt && <details><summary className="cursor-pointer">פרומפט ל-Sora</summary><p dir="ltr" className="text-xs">{data.sora_prompt}</p></details>}
+            {(data.video_prompt || data.sora_prompt) && <details><summary className="cursor-pointer">פרומפט למודל הווידאו</summary><p dir="ltr" className="text-xs">{data.video_prompt || data.sora_prompt}</p></details>}
           </div>
         )}
         {(a.type === "research" || a.type === "report") && (

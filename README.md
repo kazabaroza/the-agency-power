@@ -27,7 +27,7 @@ npm run build && npm start   # http://localhost:3000
 | מנהל החשבון | `lib/agents/director.ts` | לולאת Claude עם כלים, כרטיסי אישור, ומצב הדגמה מבוסס כוונות |
 | המומחים | `lib/agents/registry.ts`, `lib/agents/specialist.ts`, `agents/` | 283 פרסונות מ-The Agency; כל אחת רצה כסוכן-משנה עם הפרסונה כ-system prompt |
 | הכישורים (Skills) | `lib/skills/index.ts` | 12 כלים: ניתוח עסק, מחקר שוק, התייעצות עם מומחה, פוסט/קרוסלה, באנר, דף נחיתה, סרטון, תזמון, קהלים, קמפיין, דוח, רשימת נכסים |
-| ספקים | `lib/providers/*` | Claude, ‏OpenAI (Sora 2 Pro + gpt-image), ‏fal.ai, ‏Unsplash, ‏WhatsApp Cloud API, ‏Facebook/Instagram/LinkedIn/TikTok/YouTube, ‏Meta Marketing API, ‏Google Ads API |
+| ספקים | `lib/providers/*` | Claude, ‏OpenAI (gpt-image), ‏fal.ai (וידאו ב-Seedance 2.0 ותמונות), ‏Unsplash, ‏WhatsApp Cloud API, ‏Facebook/Instagram/LinkedIn/TikTok/YouTube, ‏Meta Marketing API, ‏Google Ads API |
 | מתזמן | `lib/scheduler.ts`, `instrumentation.ts` | כל דקה: מפרסם פוסטים שהגיע זמנם ומושך סרטונים שסיימו רינדור |
 | דפי נחיתה | `lib/landing.ts`, `app/p/[slug]` | 4 סגנונות, טופס לידים, מדידת צפיות, כפתור וואטסאפ |
 
@@ -43,6 +43,7 @@ npm run build && npm start   # http://localhost:3000
 3. מגדירים `WHATSAPP_APP_SECRET` כדי שחתימות ה-webhook ייבדקו.
 
 ## הערות
+- OpenAI סגרה את ממשק הווידאו של Sora ב-24.9.2026, ולכן הסרטונים נוצרים ב-fal.ai. מחליפים מודל עם `FAL_VIDEO_MODEL`.
 - `APP_URL` חייב להיות כתובת ציבורית כדי ש-Instagram, ‏TikTok ו-Meta יוכלו למשוך תמונות וסרטונים.
 - בפרסום ל-LinkedIn התמונה נשלחת כקישור. העלאת תמונה נייטיבית לא מומשה.
 - בדפי הנחיתה מוצגות המלצות רק אם בעל העסק סיפק המלצות אמיתיות.

@@ -21,7 +21,7 @@ const COPY = {
     make: [
       { i: "🖼️", t: "פוסטים, קרוסלות ובאנרים", d: "טיפים, ניפוץ מיתוסים, חגים ומבצעים – בצבעים ובטון של המותג, בכל פורמט: פיד, סטורי, באנר רחב." },
       { i: "🧭", t: "דפי נחיתה ואתרי תדמית", d: "ארבעה סגנונות: לידים, אתר מותג, השוואה למתחרים וסיפור. טופס לידים, מדידת צפיות וכפתור וואטסאפ מובנים." },
-      { i: "🎬", t: "סרטונים עם מציג AI", d: "תסריט של מומחה וידאו קצר ורינדור ב-Sora 2 Pro: מציג, סגנון UGC, מוצר או אנימציה. 4–12 שניות, אנכי." },
+      { i: "🎬", t: "סרטונים עם מציג AI", d: "תסריט של מומחה וידאו קצר ורינדור במודל וידאו מתקדם עם קול: מציג, סגנון UGC, מוצר או אנימציה. 4–15 שניות, אנכי." },
       { i: "📅", t: "תזמון ופרסום", d: "פרסום ישיר ל-Facebook, Instagram, TikTok, LinkedIn ו-YouTube – עכשיו או בשעה שבחרת." },
       { i: "📈", t: "קמפיינים ממומנים", d: "Meta ו-Google Ads מקצה לקצה: מבנה CBO/ABO, קהלים, מילות מפתח, רדיוס גיאוגרפי וקריאייטיב." },
       { i: "🔎", t: "מחקר ודוחות", d: "מחקר שוק ומתחרים חי מהרשת, ודוח שבועי על צפיות, לידים וקמפיינים." },
@@ -64,7 +64,7 @@ const COPY = {
     make: [
       { i: "🖼️", t: "Posts, carousels, banners", d: "Tips, myth-busters, holidays and promos in your brand colors and voice, in every format." },
       { i: "🧭", t: "Landing pages & sites", d: "Four styles: lead-gen, brand site, competitor comparison and story. Lead form, analytics and WhatsApp built in." },
-      { i: "🎬", t: "AI presenter videos", d: "Scripted by a short-video specialist, rendered with Sora 2 Pro: presenter, UGC, product or animation." },
+      { i: "🎬", t: "AI presenter videos", d: "Scripted by a short-video specialist, rendered with a state-of-the-art video model with sound: presenter, UGC, product or animation." },
       { i: "📅", t: "Scheduling & publishing", d: "Direct publishing to Facebook, Instagram, TikTok, LinkedIn and YouTube." },
       { i: "📈", t: "Paid campaigns", d: "Meta and Google Ads end to end: CBO/ABO, audiences, keywords, radius and creative." },
       { i: "🔎", t: "Research & reports", d: "Live market and competitor research, plus a weekly report on views, leads and campaigns." },
@@ -90,7 +90,7 @@ const COPY = {
   },
 };
 
-const INTEGRATIONS = ["Claude", "Sora 2 Pro", "gpt-image", "fal.ai", "WhatsApp", "Facebook", "Instagram", "Meta Ads", "Google Ads", "TikTok", "LinkedIn", "YouTube", "Unsplash"];
+const INTEGRATIONS = ["Claude", "Seedance (fal.ai)", "gpt-image", "WhatsApp", "Facebook", "Instagram", "Meta Ads", "Google Ads", "TikTok", "LinkedIn", "YouTube", "Unsplash"];
 
 export default function Home({ lang }: { lang: "he" | "en" }) {
   const c = COPY[lang];

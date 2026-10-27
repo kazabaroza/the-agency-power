@@ -126,31 +126,55 @@ export async function stockPhotos(query: string, userId?: string | null, count =
   }
 }
 
-/** Starts a Sora 2 video job. Returns the provider job id, or null in demo mode. */
-export async function startVideo(prompt: string, opts: { seconds?: "4" | "8" | "12"; vertical?: boolean; pro?: boolean }, userId?: string | null) {
-  const key = creds("openai", userId).OPENAI_API_KEY;
+// ---------------- Video (fal.ai queue) ----------------
+// OpenAI retired the Sora video API on 2026-09-24, so videos render on fal.ai.
+// The model is configurable; any fal text-to-video model that takes a prompt works.
+export const VIDEO_MODEL = process.env.FAL_VIDEO_MODEL || "bytedance/seedance-2.0/text-to-video";
+export const VIDEO_SECONDS = ["4", "5", "8", "10", "12", "15"] as const;
+export type VideoSeconds = (typeof VIDEO_SECONDS)[number];
+
+type FalJob = { provider: "fal"; model: string; status_url: string; response_url: string };
+
+/** Starts a video job. Returns a job descriptor (JSON string), or null in demo mode. */
+export async function startVideo(prompt: string, opts: { seconds?: VideoSeconds; vertical?: boolean }, userId?: string | null) {
+  const key = creds("fal", userId).FAL_KEY;
   if (!key) return null;
-  const client = new OpenAI({ apiKey: key });
-  const job = await client.videos.create({
-    model: opts.pro === false ? "sora-2" : "sora-2-pro",
-    prompt,
-    seconds: opts.seconds ?? "12",
-    size: opts.vertical === false ? "1280x720" : "720x1280",
+  const r = await fetch(`https://queue.fal.run/${VIDEO_MODEL}`, {
+    method: "POST",
+    headers: { Authorization: `Key ${key}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      prompt,
+      duration: opts.seconds ?? "8",
+      aspect_ratio: opts.vertical === false ? "16:9" : "9:16",
+      resolution: process.env.FAL_VIDEO_RESOLUTION || "720p",
+      generate_audio: true,
+    }),
   });
-  return job.id;
+  const j = (await r.json().catch(() => ({}))) as { request_id?: string; status_url?: string; response_url?: string; detail?: unknown };
+  if (!r.ok || !j.status_url || !j.response_url) throw new Error(`fal ${r.status}: ${JSON.stringify(j.detail ?? j).slice(0, 300)}`);
+  const job: FalJob = { provider: "fal", model: VIDEO_MODEL, status_url: j.status_url, response_url: j.response_url };
+  return JSON.stringify(job);
 }
 
-/** Polls a Sora job. When done, downloads the mp4 and returns its local URL. */
-export async function pollVideo(jobId: string, userId?: string | null): Promise<{ status: string; url?: string; progress?: number; error?: string }> {
-  const key = creds("openai", userId).OPENAI_API_KEY;
-  if (!key) return { status: "failed", error: "OpenAI is not connected" };
-  const client = new OpenAI({ apiKey: key });
-  const v = await client.videos.retrieve(jobId);
-  if (v.status === "completed") {
-    const res = await client.videos.downloadContent(jobId);
-    const buf = Buffer.from(await res.arrayBuffer());
+/** Polls a video job. When done, downloads the mp4 and returns its local URL. */
+export async function pollVideo(jobId: string, userId?: string | null): Promise<{ status: string; url?: string; error?: string }> {
+  let job: FalJob;
+  try {
+    job = JSON.parse(jobId) as FalJob;
+  } catch {
+    return { status: "failed", error: "Old Sora job – OpenAI retired that API" };
+  }
+  const key = creds("fal", userId).FAL_KEY;
+  if (!key) return { status: "failed", error: "fal.ai is not connected" };
+  const headers = { Authorization: `Key ${key}` };
+  const st = (await (await fetch(job.status_url, { headers })).json()) as { status?: string; error?: string };
+  if (st.status === "COMPLETED") {
+    const res = await fetch(job.response_url, { headers });
+    const out = (await res.json()) as { video?: { url?: string }; detail?: unknown };
+    if (!res.ok || !out.video?.url) return { status: "failed", error: `fal result ${res.status}: ${JSON.stringify(out.detail ?? out).slice(0, 300)}` };
+    const buf = Buffer.from(await (await fetch(out.video.url)).arrayBuffer());
     return { status: "completed", url: saveFile(buf, "video/mp4") };
   }
-  if (v.status === "failed") return { status: "failed", error: v.error?.message ?? "video failed" };
-  return { status: v.status, progress: v.progress };
+  if (st.status === "IN_QUEUE" || st.status === "IN_PROGRESS") return { status: "processing" };
+  return { status: "failed", error: st.error || `fal status ${st.status ?? "unknown"}` };
 }
