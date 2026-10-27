@@ -38,6 +38,8 @@ npm run build && npm start   # http://localhost:3000
 ברירת המחדל היא `claude-opus-5-5` עם effort בינוני (`AGENT_MODEL`, `AGENT_EFFORT`), עם fallback בצד השרת למקרה של סירוב (`fallbacks: "default"`). מחקר שוק משתמש בכלי חיפוש הרשת של Claude.
 
 ## חיבור WhatsApp
+מדריך מלא, כולל העלאה ל-Railway: [docs/DEPLOY_RAILWAY_WHATSAPP.md](docs/DEPLOY_RAILWAY_WHATSAPP.md)
+
 1. יוצרים אפליקציה ב-Meta עם מוצר WhatsApp ומקבלים `WHATSAPP_TOKEN` ו-`WHATSAPP_PHONE_NUMBER_ID`.
 2. מגדירים Webhook לכתובת `https://<הדומיין>/api/whatsapp/webhook`, עם אותו `WHATSAPP_VERIFY_TOKEN` שב-env, ונרשמים לאירוע `messages`.
 3. מגדירים `WHATSAPP_APP_SECRET` כדי שחתימות ה-webhook ייבדקו.
