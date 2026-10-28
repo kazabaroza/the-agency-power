@@ -110,14 +110,23 @@ jobs:
       - name: Verify the site answers
         if: steps.token.outputs.skip != 'true'
         run: |
-          for i in $(seq 1 18); do
+          codes=""
+          for i in $(seq 1 12); do
             code=$(curl -s -o /dev/null -m 15 -w '%{http_code}' "https://$APP.fly.dev/" || true)
-            echo "attempt $i: HTTP $code"
+            codes="$codes $code"; echo "attempt $i: HTTP $code"
             if [ "$code" = "200" ]; then exit 0; fi
             sleep 10
           done
           set +e
-          msg=$( { echo "site did not answer 200"; flyctl machines list -a "$APP" 2>&1 | tail -n 3; timeout 40 flyctl logs -a "$APP" --no-tail 2>&1 | grep -v 'ExperimentalWarning\|trace-warnings' | tail -n 15; } | sed 's/\x1b\[[0-9;]*m//g' | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+          msg=$( {
+            echo "site did not answer 200. codes:$codes"
+            echo "== inside the machine: GET http://localhost:3000/"
+            timeout 90 flyctl ssh console -a "$APP" -C "node -e \"fetch('http://127.0.0.1:3000/').then(r=>console.log('ipv4 local',r.status)).catch(e=>console.log('ipv4 local ERR',e.cause&&e.cause.code||e.message)); fetch('http://[::1]:3000/').then(r=>console.log('ipv6 local',r.status)).catch(e=>console.log('ipv6 local ERR',e.cause&&e.cause.code||e.message))\"" 2>&1 | tail -n 4
+            echo "== listening sockets (tcp/tcp6, port 3000 = 0BB8)"
+            timeout 60 flyctl ssh console -a "$APP" -C "sh -c 'grep -i :0BB8 /proc/net/tcp /proc/net/tcp6'" 2>&1 | tail -n 4
+            echo "== recent logs"
+            timeout 40 flyctl logs -a "$APP" --no-tail 2>&1 | grep -v 'ExperimentalWarning\|trace-warnings' | tail -n 8
+          } | sed 's/\x1b\[[0-9;]*m//g' | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
           echo "::error title=deploy::${msg}"
           exit 1
 
