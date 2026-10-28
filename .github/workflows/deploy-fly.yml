@@ -140,6 +140,33 @@ jobs:
           echo "::error title=deploy::${msg}"
           exit 1
 
+      - name: Check WhatsApp setup
+        if: steps.token.outputs.skip != 'true'
+        env:
+          WHATSAPP_TOKEN: ${{ secrets.WHATSAPP_TOKEN }}
+          WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.WHATSAPP_PHONE_NUMBER_ID }}
+          WHATSAPP_VERIFY_TOKEN: ${{ secrets.WHATSAPP_VERIFY_TOKEN }}
+          WHATSAPP_APP_SECRET: ${{ secrets.WHATSAPP_APP_SECRET }}
+        run: |
+          set +e
+          out=""
+          for k in WHATSAPP_TOKEN WHATSAPP_PHONE_NUMBER_ID WHATSAPP_VERIFY_TOKEN WHATSAPP_APP_SECRET; do
+            if [ -n "${!k}" ]; then out="$out $k=set"; else out="$out $k=MISSING"; fi
+          done
+          if [ -n "$WHATSAPP_VERIFY_TOKEN" ]; then
+            r=$(curl -s -m 15 "https://$APP.fly.dev/api/whatsapp/webhook?hub.mode=subscribe&hub.verify_token=$(printf %s "$WHATSAPP_VERIFY_TOKEN" | jq -sRr @uri)&hub.challenge=ok123")
+            if [ "$r" = "ok123" ]; then out="$out | webhook handshake: OK"; else out="$out | webhook handshake: FAILED"; fi
+          fi
+          if [ -n "$WHATSAPP_TOKEN" ] && [ -n "$WHATSAPP_PHONE_NUMBER_ID" ]; then
+            j=$(curl -s -m 15 "https://graph.facebook.com/v23.0/$WHATSAPP_PHONE_NUMBER_ID?fields=display_phone_number,verified_name" -H "Authorization: Bearer $WHATSAPP_TOKEN")
+            if echo "$j" | grep -q display_phone_number; then
+              out="$out | Meta token + phone id: OK ($(echo "$j" | jq -r '.verified_name + " " + .display_phone_number'))"
+            else
+              out="$out | Meta token + phone id: FAILED ($(echo "$j" | jq -r '.error.message // "unknown"' | head -c 160))"
+            fi
+          fi
+          echo "::notice title=whatsapp::$out"
+
       - name: Show address
         if: steps.token.outputs.skip != 'true'
         run: |
