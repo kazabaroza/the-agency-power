@@ -14,3 +14,9 @@ body { font-family: Heebo, system-ui, sans-serif; -webkit-font-smoothing: antial
 .btn-ghost { @apply inline-flex items-center justify-center gap-2 rounded-full border px-5 py-2.5 font-semibold transition; border-color: var(--line); }
 .input { @apply w-full rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-brand/40; background: var(--card); border-color: var(--line); }
 .chip { @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold; background: var(--line); }
+
+/* Deep-green luxury theme (marketing pages) */
+.theme-forest { background: #0a241c; color: #f3eee2; }
+.theme-forest .muted { color: rgba(243, 238, 226, 0.68); }
+.btn-gold { @apply inline-flex items-center justify-center gap-2 rounded-full bg-gold px-5 py-2.5 font-semibold text-forest-900 transition hover:bg-gold-light; }
+.btn-outline-light { @apply inline-flex items-center justify-center gap-2 rounded-full border border-cream/25 px-5 py-2.5 font-semibold text-cream transition hover:border-gold hover:text-gold; }

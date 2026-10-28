@@ -161,7 +161,7 @@ const WORK_ICONS: Record<string, (p: { className?: string }) => React.ReactEleme
 
 function Section({ id, children, tint }: { id?: string; children: React.ReactNode; tint?: boolean }) {
   return (
-    <section id={id} className={`scroll-mt-20 py-20 md:py-28 ${tint ? "bg-slate-50 dark:bg-white/[0.03]" : ""}`}>
+    <section id={id} className={`scroll-mt-20 py-20 md:py-28 ${tint ? "bg-forest-800" : ""}`}>
       <div className="mx-auto max-w-6xl px-4 sm:px-6">{children}</div>
     </section>
   );
@@ -183,69 +183,69 @@ export default function Home({ lang }: { lang: Lang }) {
   const arrowFlip = c.dir === "ltr" ? "rotate-180" : "";
 
   return (
-    <div dir={c.dir} lang={lang} className="min-h-screen">
+    <div dir={c.dir} lang={lang} className="theme-forest min-h-screen">
       {/* Header */}
-      <header className="sticky top-0 z-30 border-b border-black/5 bg-white/80 backdrop-blur-md dark:border-white/10 dark:bg-[#0f1013]/80">
+      <header className="sticky top-0 z-30 border-b border-white/10 bg-forest-900/85 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
           <Link href={lang === "he" ? "/" : "/en"} className="flex items-center gap-2.5 font-extrabold tracking-tight">
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-brand text-white"><IconBolt className="h-4 w-4" /></span>
+            <span className="grid h-8 w-8 place-items-center rounded-lg bg-gold text-forest-900"><IconBolt className="h-4 w-4" /></span>
             The Agency Power
           </Link>
-          <nav className="hidden items-center gap-7 text-sm font-medium text-slate-600 dark:text-slate-300 lg:flex">
-            {c.nav.map(([href, label]) => <a key={href} href={href} className="transition hover:text-brand">{label}</a>)}
+          <nav className="hidden items-center gap-7 text-sm font-medium text-cream/70 lg:flex">
+            {c.nav.map(([href, label]) => <a key={href} href={href} className="transition hover:text-gold">{label}</a>)}
           </nav>
           <div className="flex items-center gap-3">
-            <Link href={lang === "he" ? "/en" : "/"} className="text-xs font-semibold text-slate-500 hover:text-brand">{lang === "he" ? "EN" : "עב"}</Link>
+            <Link href={lang === "he" ? "/en" : "/"} className="text-xs font-semibold text-cream/60 hover:text-gold">{lang === "he" ? "EN" : "עב"}</Link>
             <Link href="/login" className="hidden text-sm font-semibold sm:inline">{c.login}</Link>
-            <Link href="/login" className="btn !px-4 !py-2 text-sm">{c.start}</Link>
+            <Link href="/login" className="btn-gold !px-4 !py-2 text-sm">{c.start}</Link>
           </div>
         </div>
       </header>
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60rem_30rem_at_50%_-10%,rgba(91,61,245,0.10),transparent)]" />
+        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60rem_30rem_at_50%_-10%,rgba(212,176,106,0.14),transparent)]" />
         <div className="mx-auto grid max-w-6xl items-center gap-14 px-4 pb-16 pt-16 sm:px-6 md:pt-24 lg:grid-cols-[1.05fr_.95fr]">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand-soft px-3 py-1 text-xs font-semibold text-brand">
-              <span className="h-1.5 w-1.5 rounded-full bg-brand" /> {c.badge}
+            <span className="inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-3 py-1 text-xs font-semibold text-gold">
+              <span className="h-1.5 w-1.5 rounded-full bg-gold" /> {c.badge}
             </span>
             <h1 className="mt-6 text-[2.6rem] font-extrabold leading-[1.05] tracking-tight md:text-6xl">
               {c.h1a}
               <br />
-              <span className="text-brand">{c.h1b}</span>
+              <span className="text-gold">{c.h1b}</span>
             </h1>
             <p className="muted mt-6 max-w-xl text-lg leading-relaxed">{c.sub}</p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Link href="/login" className="btn px-6 py-3 text-base">{c.cta} <IconArrow className={`h-4 w-4 ${arrowFlip}`} /></Link>
-              <a href="#how" className="btn-ghost px-6 py-3 text-base">{c.cta2}</a>
+              <Link href="/login" className="btn-gold px-6 py-3 text-base">{c.cta} <IconArrow className={`h-4 w-4 ${arrowFlip}`} /></Link>
+              <a href="#how" className="btn-outline-light px-6 py-3 text-base">{c.cta2}</a>
             </div>
             <div className="mt-10">
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">{c.worksWith}</p>
-              <p className="mt-2 text-sm font-semibold text-slate-500 dark:text-slate-400">{INTEGRATIONS.slice(0, 7).join(" · ")}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-cream/45">{c.worksWith}</p>
+              <p className="mt-2 text-sm font-semibold text-cream/75">{INTEGRATIONS.slice(0, 7).join(" · ")}</p>
             </div>
           </div>
 
           {/* Product mock */}
           <div className="relative">
-            <div className="rounded-2xl border border-black/10 bg-white shadow-[0_30px_80px_-30px_rgba(30,20,90,0.35)] dark:border-white/10 dark:bg-[#17191e]">
-              <div className="flex items-center gap-3 border-b border-black/5 px-5 py-4 dark:border-white/10">
-                <span className="grid h-9 w-9 place-items-center rounded-full bg-brand text-white"><IconChat className="h-4 w-4" /></span>
+            <div className="rounded-2xl border border-white/10 bg-white text-slate-900 shadow-[0_40px_90px_-30px_rgba(0,0,0,0.6)]">
+              <div className="flex items-center gap-3 border-b border-black/5 px-5 py-4">
+                <span className="grid h-9 w-9 place-items-center rounded-full bg-forest-700 text-gold"><IconChat className="h-4 w-4" /></span>
                 <div className="leading-tight">
                   <p className="text-sm font-bold">{c.mock.title}</p>
                   <p className="text-xs text-emerald-600">● {c.mock.online}</p>
                 </div>
               </div>
               <div className="space-y-3 p-5 text-sm">
-                <div className="flex justify-start"><div className="max-w-[85%] rounded-2xl rounded-ss-sm bg-brand px-4 py-2.5 text-white">{c.mock.user}</div></div>
-                <div className="flex justify-end"><div className="max-w-[85%] rounded-2xl rounded-se-sm bg-slate-100 px-4 py-2.5 dark:bg-white/10">{c.mock.agent}</div></div>
-                <div className="flex justify-end"><span className="rounded-full bg-brand-soft px-3 py-1 text-xs font-semibold text-brand">{c.mock.working}</span></div>
+                <div className="flex justify-start"><div className="max-w-[85%] rounded-2xl rounded-ss-sm bg-forest-700 px-4 py-2.5 text-cream">{c.mock.user}</div></div>
+                <div className="flex justify-end"><div className="max-w-[85%] rounded-2xl rounded-se-sm bg-slate-100 px-4 py-2.5">{c.mock.agent}</div></div>
+                <div className="flex justify-end"><span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800">{c.mock.working}</span></div>
                 <div className="flex justify-end">
                   <div className="w-full max-w-[85%] rounded-xl border border-amber-300 bg-amber-50 p-3 text-slate-900">
                     <p className="flex items-center gap-1.5 text-xs font-bold text-amber-700"><IconShield className="h-4 w-4" /> {c.mock.card}</p>
                     <p className="mt-1 text-xs text-slate-600">{c.mock.cardMeta}</p>
                     <div className="mt-2.5 flex gap-2">
-                      <span className="rounded-full bg-brand px-3 py-1 text-xs font-semibold text-white">{c.mock.approve}</span>
+                      <span className="rounded-full bg-forest-700 px-3 py-1 text-xs font-semibold text-cream">{c.mock.approve}</span>
                       <span className="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-600">{c.mock.later}</span>
                     </div>
                   </div>
@@ -257,8 +257,8 @@ export default function Home({ lang }: { lang: Lang }) {
               {c.mock.assets.map((a, i) => {
                 const Icon = [IconImage, IconLayout, IconVideo][i];
                 return (
-                  <div key={a} className="rounded-xl border border-black/10 bg-white p-3 text-xs font-semibold shadow-sm dark:border-white/10 dark:bg-[#17191e]">
-                    <div className={`mb-2 grid h-14 place-items-center rounded-lg ${["bg-violet-100 text-violet-600", "bg-sky-100 text-sky-600", "bg-rose-100 text-rose-600"][i]}`}>
+                  <div key={a} className="rounded-xl border border-white/10 bg-white p-3 text-xs font-semibold text-slate-900 shadow-sm">
+                    <div className={`mb-2 grid h-14 place-items-center rounded-lg ${["bg-emerald-50 text-emerald-700", "bg-amber-50 text-amber-700", "bg-stone-100 text-stone-700"][i]}`}>
                       <Icon className="h-5 w-5" />
                     </div>
                     {a}
@@ -270,11 +270,11 @@ export default function Home({ lang }: { lang: Lang }) {
         </div>
 
         {/* Stats */}
-        <div className="border-y border-black/5 bg-white dark:border-white/10 dark:bg-transparent">
+        <div className="border-y border-white/10 bg-forest-950/40">
           <dl className="mx-auto grid max-w-6xl grid-cols-2 px-4 sm:px-6 md:grid-cols-4">
             {c.stats(total, SKILLS.length).map(([v, l]) => (
-              <div key={l} className="border-black/5 py-6 text-center dark:border-white/10 [&:not(:last-child)]:md:border-e">
-                <dt className="text-2xl font-extrabold tracking-tight md:text-3xl">{v}</dt>
+              <div key={l} className="border-white/10 py-6 text-center [&:not(:last-child)]:md:border-e">
+                <dt className="text-2xl font-extrabold tracking-tight text-gold md:text-3xl">{v}</dt>
                 <dd className="muted mt-1 text-sm">{l}</dd>
               </div>
             ))}
@@ -289,8 +289,8 @@ export default function Home({ lang }: { lang: Lang }) {
           {c.how.map(([t, d], i) => (
             <li key={t} className="relative">
               <div className="flex items-center gap-3">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border-2 border-brand text-sm font-bold text-brand">{i + 1}</span>
-                {i < c.how.length - 1 && <span aria-hidden className="hidden h-px flex-1 bg-gradient-to-l from-transparent to-brand/30 md:block" />}
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border-2 border-gold text-sm font-bold text-gold">{i + 1}</span>
+                {i < c.how.length - 1 && <span aria-hidden className="hidden h-px flex-1 bg-gradient-to-l from-transparent to-gold/40 md:block" />}
               </div>
               <h3 className="mt-4 text-lg font-bold">{t}</h3>
               <p className="muted mt-1.5 text-sm leading-relaxed">{d}</p>
@@ -306,8 +306,8 @@ export default function Home({ lang }: { lang: Lang }) {
           {c.work.map(([icon, t, d]) => {
             const Icon = WORK_ICONS[icon];
             return (
-              <div key={t} className="group rounded-2xl border border-black/5 bg-white p-6 transition hover:-translate-y-0.5 hover:shadow-lg dark:border-white/10 dark:bg-[#17191e]">
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-brand-soft text-brand"><Icon className="h-5 w-5" /></span>
+              <div key={t} className="group rounded-2xl border border-white/10 bg-white/[0.04] p-6 transition hover:-translate-y-0.5 hover:border-gold/40">
+                <span className="grid h-11 w-11 place-items-center rounded-xl bg-gold/10 text-gold"><Icon className="h-5 w-5" /></span>
                 <h3 className="mt-5 text-lg font-bold">{t}</h3>
                 <p className="muted mt-1.5 text-sm leading-relaxed">{d}</p>
               </div>
@@ -320,12 +320,12 @@ export default function Home({ lang }: { lang: Lang }) {
       <Section id="team">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <Heading title={c.teamTitle} sub={c.teamSub(total)} />
-          <Link href="/login" className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand">{c.teamMore} <IconArrow className={`h-4 w-4 ${arrowFlip}`} /></Link>
+          <Link href="/login" className="inline-flex items-center gap-1.5 text-sm font-semibold text-gold">{c.teamMore} <IconArrow className={`h-4 w-4 ${arrowFlip}`} /></Link>
         </div>
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {team.map(({ slug, role, agent }) => (
-            <div key={slug} className="flex items-start gap-3 rounded-2xl border border-black/5 p-4 dark:border-white/10">
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-slate-100 text-lg dark:bg-white/10">{agent!.emoji}</span>
+            <div key={slug} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-lg">{agent!.emoji}</span>
               <div className="min-w-0">
                 <p className="font-bold leading-snug" dir="ltr" style={{ textAlign: "start" }}>{agent!.name}</p>
                 <p className="muted mt-0.5 text-sm">{lang === "he" ? role : agent!.divisionLabel}</p>
@@ -339,14 +339,14 @@ export default function Home({ lang }: { lang: Lang }) {
       <Section id="control" tint>
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <div>
-            <span className="grid h-12 w-12 place-items-center rounded-xl bg-brand text-white"><IconShield className="h-6 w-6" /></span>
+            <span className="grid h-12 w-12 place-items-center rounded-xl bg-gold text-forest-900"><IconShield className="h-6 w-6" /></span>
             <h2 className="mt-6 text-3xl font-extrabold tracking-tight md:text-4xl">{c.controlTitle}</h2>
             <p className="muted mt-3 text-lg">{c.controlSub}</p>
           </div>
           <ul className="space-y-3">
             {c.control.map((t) => (
-              <li key={t} className="flex items-start gap-3 rounded-xl border border-black/5 bg-white p-4 dark:border-white/10 dark:bg-[#17191e]">
-                <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-emerald-100 text-emerald-700"><IconCheck className="h-3.5 w-3.5" /></span>
+              <li key={t} className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gold/15 text-gold"><IconCheck className="h-3.5 w-3.5" /></span>
                 <span className="font-medium">{t}</span>
               </li>
             ))}
@@ -359,8 +359,8 @@ export default function Home({ lang }: { lang: Lang }) {
         <Heading title={c.intTitle} center />
         <div className="mx-auto mt-10 flex max-w-4xl flex-wrap justify-center gap-3">
           {INTEGRATIONS.map((x) => (
-            <span key={x} className="inline-flex items-center gap-2 rounded-full border border-black/10 px-4 py-2 text-sm font-semibold dark:border-white/10">
-              <IconPlug className="h-4 w-4 text-slate-400" /> {x}
+            <span key={x} className="inline-flex items-center gap-2 rounded-full border border-white/15 px-4 py-2 text-sm font-semibold">
+              <IconPlug className="h-4 w-4 text-gold/80" /> {x}
             </span>
           ))}
         </div>
@@ -370,12 +370,12 @@ export default function Home({ lang }: { lang: Lang }) {
       <Section id="faq" tint>
         <div className="mx-auto max-w-3xl">
           <Heading title={c.faqTitle} center />
-          <div className="mt-10 divide-y divide-black/5 rounded-2xl border border-black/5 bg-white dark:divide-white/10 dark:border-white/10 dark:bg-[#17191e]">
+          <div className="mt-10 divide-y divide-white/10 rounded-2xl border border-white/10 bg-white/[0.04]">
             {c.faq.map(([q, a]) => (
               <details key={q} className="group p-5">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-bold">
                   {q}
-                  <span className="text-xl text-slate-400 transition group-open:rotate-45">+</span>
+                  <span className="text-xl text-gold transition group-open:rotate-45">+</span>
                 </summary>
                 <p className="muted mt-3 leading-relaxed">{a}</p>
               </details>
@@ -386,15 +386,15 @@ export default function Home({ lang }: { lang: Lang }) {
 
       {/* Final CTA */}
       <section className="px-4 py-20 sm:px-6">
-        <div className="mx-auto max-w-6xl overflow-hidden rounded-3xl bg-slate-900 px-6 py-16 text-center text-white md:py-20">
-          <span className="mx-auto grid h-12 w-12 place-items-center rounded-xl bg-white/10"><IconUsers className="h-6 w-6" /></span>
+        <div className="mx-auto max-w-6xl overflow-hidden rounded-3xl border border-gold/25 bg-gradient-to-b from-forest-700 to-forest-800 px-6 py-16 text-center text-cream md:py-20">
+          <span className="mx-auto grid h-12 w-12 place-items-center rounded-xl bg-gold/15 text-gold"><IconUsers className="h-6 w-6" /></span>
           <h2 className="mt-6 text-3xl font-extrabold tracking-tight md:text-4xl">{c.finalTitle}</h2>
-          <p className="mx-auto mt-3 max-w-xl text-lg text-slate-300">{c.finalSub}</p>
-          <Link href="/login" className="btn mt-8 px-7 py-3 text-base">{c.cta}</Link>
+          <p className="mx-auto mt-3 max-w-xl text-lg text-cream/75">{c.finalSub}</p>
+          <Link href="/login" className="btn-gold mt-8 px-7 py-3 text-base">{c.cta}</Link>
         </div>
       </section>
 
-      <footer className="border-t border-black/5 py-8 text-center text-sm text-slate-500 dark:border-white/10">{c.foot}</footer>
+      <footer className="border-t border-white/10 py-8 text-center text-sm text-cream/50">{c.foot}</footer>
     </div>
   );
 }
