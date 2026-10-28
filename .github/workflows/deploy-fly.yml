@@ -124,8 +124,10 @@ jobs:
             curl -s -D - -o /dev/null -m 15 "https://$APP.fly.dev/" | tr -d '\r' | grep -v -iE "^(date|content-length|strict-transport|alt-svc|via):" | head -n 12
             echo "-- /login"
             curl -s -D - -o /dev/null -m 15 "https://$APP.fly.dev/login" | tr -d '\r' | grep -iE "^HTTP|^location" | head -n 3
-            echo "-- inside machine: files and routes"
-            timeout 90 flyctl ssh console -a "$APP" -C "sh -c 'ls -a /app; ls /app/.next/server; cat /app/.next/server/middleware-manifest.json | head -c 300; echo; node -v; env | grep -E \"^(NODE_ENV|PORT|DATA_DIR|HOSTNAME|APP_URL)=\" | sed s/=.*/=set/'" 2>&1 | tail -n 14
+            echo "-- inside machine: build output"
+            for c in "cat /app/.next/BUILD_ID" "ls /app/.next/server/app" "head -c 400 /app/.next/prerender-manifest.json" "head -c 200 /app/.next/server/app/en.html" "ls -la /app/data"; do
+              echo "\$ $c"; timeout 60 flyctl ssh console -a "$APP" -C "$c" 2>&1 | grep -v "^Connecting to" | tr '\n' ' ' | head -c 500; echo
+            done
             timeout 90 flyctl ssh console -a "$APP" -C "node -e \"(async()=>{for (const p of ['/robots.txt','/en','/api/track','/files/x.png']){try{const r=await fetch('http://127.0.0.1:3000'+p,{redirect:'manual'});console.log(p,r.status,r.headers.get('location'))}catch(e){console.log(p,'ERR')}}})()\"" 2>&1 | tail -n 4
             echo "-- inside machine, plain http, no redirects"
             timeout 90 flyctl ssh console -a "$APP" -C "node -e \"fetch('http://127.0.0.1:3000/',{redirect:'manual'}).then(r=>console.log('local',r.status,r.headers.get('location'))).catch(e=>console.log('local ERR',e.cause&&e.cause.code||e.message))\"" 2>&1 | tail -n 2
