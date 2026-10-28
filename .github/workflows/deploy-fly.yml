@@ -92,6 +92,8 @@ jobs:
           if ! flyctl deploy --remote-only -a "$APP" --primary-region "$REGION" --ha=false --wait-timeout 10m 2>&1 | tee deploy.log; then
             # Surface the end of the log as annotations so it is readable without log access.
             # GitHub keeps only 10 annotations per step, so send the tail as one annotation.
+            # Diagnostics must never stop the step themselves.
+            set +e +o pipefail
             {
               echo "== public IPs"; flyctl ips list -a "$APP" 2>&1 | tail -n 5
               echo "== http check from runner"; curl -sv -o /dev/null -m 20 "https://$APP.fly.dev/" 2>&1 | grep -E "Trying|Connected|HTTP/|error|timed out|resolve" | head -n 6
