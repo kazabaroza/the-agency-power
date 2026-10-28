@@ -120,6 +120,8 @@ jobs:
           set +e
           msg=$( {
             echo "site did not answer 200. codes:$codes"
+            echo "== next build output on Fly"
+            grep -E "Route \(app\)|Generating static|Collecting page|Compiled|○ /|ƒ /|warn|rror|Static|Dynamic" deploy.log | sed 's/^#[0-9]* [0-9.]* //' | head -n 25
             echo "== response headers for / and /login"
             curl -s -D - -o /dev/null -m 15 "https://$APP.fly.dev/" | tr -d '\r' | grep -v -iE "^(date|content-length|strict-transport|alt-svc|via):" | head -n 12
             echo "-- /login"
@@ -131,10 +133,6 @@ jobs:
             timeout 90 flyctl ssh console -a "$APP" -C "node -e \"(async()=>{for (const p of ['/robots.txt','/en','/api/track','/files/x.png']){try{const r=await fetch('http://127.0.0.1:3000'+p,{redirect:'manual'});console.log(p,r.status,r.headers.get('location'))}catch(e){console.log(p,'ERR')}}})()\"" 2>&1 | tail -n 4
             echo "-- inside machine, plain http, no redirects"
             timeout 90 flyctl ssh console -a "$APP" -C "node -e \"fetch('http://127.0.0.1:3000/',{redirect:'manual'}).then(r=>console.log('local',r.status,r.headers.get('location'))).catch(e=>console.log('local ERR',e.cause&&e.cause.code||e.message))\"" 2>&1 | tail -n 2
-            echo "== inside the machine: GET http://localhost:3000/"
-            timeout 90 flyctl ssh console -a "$APP" -C "node -e \"fetch('http://127.0.0.1:3000/').then(r=>console.log('ipv4 local',r.status)).catch(e=>console.log('ipv4 local ERR',e.cause&&e.cause.code||e.message)); fetch('http://[::1]:3000/').then(r=>console.log('ipv6 local',r.status)).catch(e=>console.log('ipv6 local ERR',e.cause&&e.cause.code||e.message))\"" 2>&1 | tail -n 4
-            echo "== listening sockets (tcp/tcp6, port 3000 = 0BB8)"
-            timeout 60 flyctl ssh console -a "$APP" -C "sh -c 'grep -i :0BB8 /proc/net/tcp /proc/net/tcp6'" 2>&1 | tail -n 4
             echo "== recent logs"
             timeout 40 flyctl logs -a "$APP" --no-tail 2>&1 | grep -v 'ExperimentalWarning\|trace-warnings' | tail -n 8
           } | tr -d '\r' | sed 's/\x1b\[[0-9;]*m//g' | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
