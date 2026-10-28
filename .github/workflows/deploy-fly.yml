@@ -66,6 +66,7 @@ jobs:
           META_AD_ACCOUNT_ID: ${{ secrets.META_AD_ACCOUNT_ID }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          LOGIN_ALLOWLIST: ${{ secrets.LOGIN_ALLOWLIST }}
         run: |
           args=("APP_URL=https://$APP.fly.dev")
           if [ -z "$SESSION_SECRET" ] && ! flyctl secrets list -a "$APP" | grep -q SESSION_SECRET; then
@@ -73,7 +74,7 @@ jobs:
           fi
           for k in ANTHROPIC_API_KEY OPENAI_API_KEY FAL_KEY SESSION_SECRET UNSPLASH_ACCESS_KEY \
                    WHATSAPP_TOKEN WHATSAPP_PHONE_NUMBER_ID WHATSAPP_VERIFY_TOKEN WHATSAPP_APP_SECRET \
-                   META_ACCESS_TOKEN META_PAGE_ID META_IG_USER_ID META_AD_ACCOUNT_ID RESEND_API_KEY EMAIL_FROM; do
+                   META_ACCESS_TOKEN META_PAGE_ID META_IG_USER_ID META_AD_ACCOUNT_ID RESEND_API_KEY EMAIL_FROM LOGIN_ALLOWLIST; do
             if [ -n "${!k}" ]; then args+=("$k=${!k}"); fi
           done
           flyctl secrets set --stage -a "$APP" "${args[@]}"
