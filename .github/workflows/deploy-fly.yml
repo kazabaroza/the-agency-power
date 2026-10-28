@@ -68,6 +68,31 @@ jobs:
           EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
           LOGIN_ALLOWLIST: ${{ secrets.LOGIN_ALLOWLIST }}
         run: |
+          # WhatsApp token: a short-lived token is exchanged for a 60-day one; an expired
+          # token is not copied, so the last good token on Fly stays in place.
+          if [ -n "$WHATSAPP_TOKEN" ] && [ -n "$WHATSAPP_APP_SECRET" ]; then
+            G=https://graph.facebook.com/v23.0
+            dbg=$(curl -s "$G/debug_token?input_token=$WHATSAPP_TOKEN&access_token=$WHATSAPP_TOKEN")
+            valid=$(echo "$dbg" | jq -r '.data.is_valid // false')
+            app_id=$(echo "$dbg" | jq -r '.data.app_id // empty')
+            exp=$(echo "$dbg" | jq -r '.data.expires_at // 0')
+            now=$(date +%s)
+            if [ "$valid" != "true" ]; then
+              echo "::warning title=whatsapp-token::The WHATSAPP_TOKEN in GitHub is expired or invalid - keeping the token already on Fly."
+              WHATSAPP_TOKEN=""
+            elif [ "$exp" != "0" ] && [ $((exp - now)) -lt 1209600 ]; then
+              new=$(curl -s "$G/oauth/access_token?grant_type=fb_exchange_token&client_id=$app_id&client_secret=$WHATSAPP_APP_SECRET&fb_exchange_token=$WHATSAPP_TOKEN" | jq -r '.access_token // empty')
+              if [ -n "$new" ]; then
+                WHATSAPP_TOKEN="$new"
+                nexp=$(curl -s "$G/debug_token?input_token=$new&access_token=$new" | jq -r '.data.expires_at // 0')
+                echo "::notice title=whatsapp-token::Token extended. Valid until $( [ "$nexp" = "0" ] && echo never || date -u -d @"$nexp" +%Y-%m-%d )."
+              else
+                echo "::warning title=whatsapp-token::Could not extend the token (it may be a system-user token or the app secret is wrong)."
+              fi
+            else
+              echo "::notice title=whatsapp-token::Token is long-lived (expires: $( [ "$exp" = "0" ] && echo never || date -u -d @"$exp" +%Y-%m-%d ))."
+            fi
+          fi
           args=("APP_URL=https://$APP.fly.dev")
           if [ -z "$SESSION_SECRET" ] && ! flyctl secrets list -a "$APP" | grep -q SESSION_SECRET; then
             args+=("SESSION_SECRET=$(openssl rand -hex 32)")
