@@ -5,6 +5,11 @@ name: Deploy to Fly.io
 # from repository secrets to the Fly app on every run, when they are set.
 on:
   workflow_dispatch:
+    inputs:
+      fresh_machine:
+        description: "Destroy existing machines first (data on the volume is kept)"
+        type: boolean
+        default: false
   push:
     branches: [main]
 
@@ -73,6 +78,13 @@ jobs:
           done
           flyctl secrets set --stage -a "$APP" "${args[@]}"
 
+      - name: Replace stuck machines
+        if: steps.token.outputs.skip != 'true' && inputs.fresh_machine
+        run: |
+          for id in $(flyctl machines list -a "$APP" --json | grep -o '"id": *"[a-z0-9]*"' | grep -o '[a-z0-9]\{10,\}'); do
+            echo "destroying $id"; flyctl machines destroy "$id" -a "$APP" --force
+          done
+
       - name: Deploy
         if: steps.token.outputs.skip != 'true'
         run: |
@@ -81,7 +93,9 @@ jobs:
             # Surface the end of the log as annotations so it is readable without log access.
             # GitHub keeps only 10 annotations per step, so send the tail as one annotation.
             {
-              echo "== http check from runner"; curl -s -o /dev/null -m 20 -w "GET / -> %{http_code} in %{time_total}s\n" "https://$APP.fly.dev/" || echo "curl failed"
+              echo "== public IPs"; flyctl ips list -a "$APP" 2>&1 | tail -n 5
+              echo "== http check from runner"; curl -sv -o /dev/null -m 20 "https://$APP.fly.dev/" 2>&1 | grep -E "Trying|Connected|HTTP/|error|timed out|resolve" | head -n 6
+              echo "== machines"; flyctl machines list -a "$APP" 2>&1 | tail -n 4
               echo "== health checks"; flyctl checks list -a "$APP" 2>&1 | tail -n 12
               echo "== deploy (tail)"; tail -n 4 deploy.log
               echo "== app logs (last)"; timeout 40 flyctl logs -a "$APP" --no-tail 2>&1 | grep -v 'ExperimentalWarning\|trace-warnings' | tail -n 12
