@@ -167,6 +167,37 @@ jobs:
           fi
           echo "::notice title=whatsapp::$out"
 
+      - name: Connect WhatsApp webhook at Meta
+        if: steps.token.outputs.skip != 'true'
+        env:
+          WHATSAPP_TOKEN: ${{ secrets.WHATSAPP_TOKEN }}
+          WHATSAPP_VERIFY_TOKEN: ${{ secrets.WHATSAPP_VERIFY_TOKEN }}
+          WHATSAPP_APP_SECRET: ${{ secrets.WHATSAPP_APP_SECRET }}
+        run: |
+          set +e
+          if [ -z "$WHATSAPP_TOKEN" ] || [ -z "$WHATSAPP_VERIFY_TOKEN" ] || [ -z "$WHATSAPP_APP_SECRET" ]; then echo "WhatsApp secrets not set - skipping"; exit 0; fi
+          G=https://graph.facebook.com/v23.0
+          dbg=$(curl -s "$G/debug_token?input_token=$WHATSAPP_TOKEN&access_token=$WHATSAPP_TOKEN")
+          APP_ID=$(echo "$dbg" | jq -r '.data.app_id // empty')
+          WABA_ID=$(echo "$dbg" | jq -r '[.data.granular_scopes[]? | select(.scope=="whatsapp_business_management") | .target_ids[]?][0] // empty')
+          out="app_id=${APP_ID:-?} waba_id=${WABA_ID:-?}"
+          if [ -n "$APP_ID" ]; then
+            r=$(curl -s -X POST "$G/$APP_ID/subscriptions" \
+              --data-urlencode "object=whatsapp_business_account" \
+              --data-urlencode "callback_url=https://$APP.fly.dev/api/whatsapp/webhook" \
+              --data-urlencode "fields=messages" \
+              --data-urlencode "verify_token=$WHATSAPP_VERIFY_TOKEN" \
+              --data-urlencode "access_token=$APP_ID|$WHATSAPP_APP_SECRET")
+            if echo "$r" | grep -q '"success":true'; then out="$out | webhook registered: OK"; else out="$out | webhook registered: FAILED ($(echo "$r" | jq -r '.error.message // .' | head -c 200))"; fi
+          else
+            out="$out | could not read app id from token ($(echo "$dbg" | jq -r '.error.message // .data.error.message // "?"' | head -c 150))"
+          fi
+          if [ -n "$WABA_ID" ]; then
+            r=$(curl -s -X POST "$G/$WABA_ID/subscribed_apps" -H "Authorization: Bearer $WHATSAPP_TOKEN")
+            if echo "$r" | grep -q '"success":true'; then out="$out | WABA subscribed: OK"; else out="$out | WABA subscribed: FAILED ($(echo "$r" | jq -r '.error.message // .' | head -c 200))"; fi
+          fi
+          echo "::notice title=whatsapp-webhook::$out"
+
       - name: Show address
         if: steps.token.outputs.skip != 'true'
         run: |
