@@ -6,7 +6,7 @@
 
 1. נכנסים ל-https://railway.com ונרשמים עם חשבון GitHub.
 2. לוחצים על **New Project**, בוחרים **Deploy from GitHub repo** ואז את `kazabaroza/the-agency-power`. Railway מזהה את קובץ ה-`Dockerfile` ובונה את המערכת לבד.
-3. **דיסק קבוע (חובה):** בשירות שנוצר בוחרים **Settings ← Volumes ← Add Volume** ומגדירים Mount path: `/app/data`. בלי הדיסק, המשתמשים, הלידים והקבצים נמחקים בכל עדכון.
+3. **דיסק קבוע (חובה):** בשירות שנוצר בוחרים **Settings ← Volumes ← Add Volume** ומגדירים Mount path: `/data`. בלי הדיסק, המשתמשים, הלידים והקבצים נמחקים בכל עדכון.
 4. **כתובת:** ב-**Settings ← Networking ← Generate Domain** מקבלים כתובת בסגנון `https://the-agency-power-production.up.railway.app`.
 5. **משתנים:** בלשונית **Variables** מוסיפים:
    ```

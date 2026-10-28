@@ -1,28 +1,30 @@
 # The Agency Power – production image (Railway, any Docker host)
 FROM node:22.22.0-bookworm-slim AS deps
-WORKDIR /app
+WORKDIR /srv/agency
 COPY package.json package-lock.json ./
 RUN npm ci
 
 FROM node:22.22.0-bookworm-slim AS build
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+WORKDIR /srv/agency
+COPY --from=deps /srv/agency/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build && npm prune --omit=dev
 
 FROM node:22.22.0-bookworm-slim
-WORKDIR /app
-ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3000 DATA_DIR=/app/data
-COPY --from=build /app/package.json ./
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/.next ./.next
-COPY --from=build /app/public ./public
-COPY --from=build /app/agents ./agents
-COPY --from=build /app/next.config.mjs ./
-# Database and generated files live here; mount a persistent volume at /app/data.
-RUN mkdir -p /app/data
-VOLUME ["/app/data"]
+WORKDIR /srv/agency
+ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3000 DATA_DIR=/data
+COPY --from=build /srv/agency/package.json ./
+COPY --from=build /srv/agency/node_modules ./node_modules
+COPY --from=build /srv/agency/.next ./.next
+COPY --from=build /srv/agency/public ./public
+COPY --from=build /srv/agency/agents ./agents
+COPY --from=build /srv/agency/next.config.mjs ./
+# Database and generated files live here; mount a persistent volume at /data.
+# (The project is not at /app: a root-level /app plus the app/ router dir and the
+#  app/app/ route segment made Next.js resolve the wrong root layout.)
+RUN mkdir -p /data
+VOLUME ["/data"]
 EXPOSE 3000
 # Bind to all interfaces (IPv4 + IPv6) explicitly: hosts like Fly set HOSTNAME to the machine id
 # and reach the app over IPv6 too.
