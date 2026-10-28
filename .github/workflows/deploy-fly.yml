@@ -120,6 +120,9 @@ jobs:
           set +e
           msg=$( {
             echo "site did not answer 200. codes:$codes"
+            echo "== response headers for / and /login"
+            curl -s -D - -o /dev/null -m 15 "https://$APP.fly.dev/" | grep -iE "^HTTP|^location|^server|^x-powered|^fly-request" | head -n 6
+            curl -s -D - -o /dev/null -m 15 "https://$APP.fly.dev/login" | grep -iE "^HTTP|^location" | head -n 3
             echo "== inside the machine: GET http://localhost:3000/"
             timeout 90 flyctl ssh console -a "$APP" -C "node -e \"fetch('http://127.0.0.1:3000/').then(r=>console.log('ipv4 local',r.status)).catch(e=>console.log('ipv4 local ERR',e.cause&&e.cause.code||e.message)); fetch('http://[::1]:3000/').then(r=>console.log('ipv6 local',r.status)).catch(e=>console.log('ipv6 local ERR',e.cause&&e.cause.code||e.message))\"" 2>&1 | tail -n 4
             echo "== listening sockets (tcp/tcp6, port 3000 = 0BB8)"
