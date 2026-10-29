@@ -78,7 +78,7 @@ export default function Chat() {
             </div>
           )}
           {msgs.map((m) => <Bubble key={m.id + m.created_at} m={m} asset={assets[String(m.meta?.assetId)]} approvalStatus={approvals[String(m.meta?.approvalId)]} onDecide={decide} />)}
-          {busy && <div className="flex justify-end"><div className="rounded-2xl bg-black/5 px-4 py-3 text-sm dark:bg-white/10"><span className="animate-pulse">הצוות עובד…</span></div></div>}
+          {busy && <div className="flex justify-end"><div className="rounded-2xl bg-white/[0.06] px-4 py-3 text-sm"><span className="animate-pulse">הצוות עובד…</span></div></div>}
           <div ref={endRef} />
         </div>
       </div>
@@ -106,7 +106,7 @@ export default function Chat() {
 
 function Bubble({ m, asset, approvalStatus, onDecide }: { m: Msg; asset?: Asset; approvalStatus?: string; onDecide: (id: string, a: boolean) => void }) {
   if (m.role === "user")
-    return <div className="flex justify-start"><div className="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-ss-sm bg-brand px-4 py-2.5 text-white">{m.text}</div></div>;
+    return <div className="flex justify-start"><div className="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-ss-sm bg-forest-600 px-4 py-2.5 text-cream">{m.text}</div></div>;
   if (m.kind === "agent")
     return <div className="flex justify-end"><span className="chip !bg-brand-soft !text-brand" title={String(m.meta.task ?? "")}>{m.text}</span></div>;
   if (m.kind === "status")
@@ -116,8 +116,8 @@ function Bubble({ m, asset, approvalStatus, onDecide }: { m: Msg; asset?: Asset;
     const st = approvalStatus ?? "pending";
     return (
       <div className="flex justify-end">
-        <div className="w-full max-w-md rounded-2xl border-2 border-accent bg-orange-50 p-4 text-ink">
-          <p className="text-xs font-bold uppercase tracking-wide text-accent">🧾 נדרש אישור · {String(m.meta.label ?? "")}</p>
+        <div className="w-full max-w-md rounded-2xl border border-brand/50 bg-brand/10 p-4">
+          <p className="text-xs font-bold uppercase tracking-wide text-brand">🧾 נדרש אישור · {String(m.meta.label ?? "")}</p>
           <p className="mt-1 font-bold">{m.text}</p>
           {!!m.meta.cost && <p className="mt-1 text-sm">עלות: <b>{String(m.meta.cost)}</b></p>}
           <details className="mt-2 text-xs"><summary className="cursor-pointer">כל הפרטים</summary><pre dir="ltr" className="mt-1 max-h-60 overflow-auto whitespace-pre-wrap rounded bg-white/70 p-2">{JSON.stringify(m.meta.input, null, 2)}</pre></details>
@@ -142,5 +142,5 @@ function Bubble({ m, asset, approvalStatus, onDecide }: { m: Msg; asset?: Asset;
         </div>
       </div>
     );
-  return <div className="flex justify-end"><div className="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-se-sm bg-black/5 px-4 py-2.5 dark:bg-white/10">{m.text}</div></div>;
+  return <div className="flex justify-end"><div className="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-se-sm bg-white/[0.06] px-4 py-2.5">{m.text}</div></div>;
 }

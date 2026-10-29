@@ -16,7 +16,7 @@ export default async function Assets({ searchParams }: { searchParams: Promise<{
     <div className="p-4 md:p-8">
       <PageHead title="ספריית נכסים" sub="כל מה שהצוות ייצר – במקום אחד." />
       <div className="mb-6 flex flex-wrap gap-2">
-        {TYPES.map(([k, l]) => <Link key={k} href={k ? `?type=${k}` : "?"} className={`chip ${type === k || (!type && !k) ? "!bg-brand !text-white" : ""}`}>{l}</Link>)}
+        {TYPES.map(([k, l]) => <Link key={k} href={k ? `?type=${k}` : "?"} className={`chip ${type === k || (!type && !k) ? "!bg-brand !text-forest-900" : ""}`}>{l}</Link>)}
       </div>
       {rows.length === 0 ? <p className="muted">עוד אין נכסים. בקשו משהו בשיחה.</p> : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{rows.map((a) => <AssetCard key={a.id} a={a} />)}</div>

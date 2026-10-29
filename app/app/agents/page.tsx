@@ -29,9 +29,9 @@ export default async function Agents({ searchParams }: { searchParams: Promise<{
       <h2 className="mb-3 text-lg font-bold">סוכנים מומחים</h2>
       <form className="mb-3"><input name="q" defaultValue={q} className="input max-w-sm" placeholder="חיפוש סוכן…" />{d && <input type="hidden" name="d" value={d} />}</form>
       <div className="mb-6 flex flex-wrap gap-2">
-        <Link href="?d=core" className={`chip ${d === "core" ? "!bg-brand !text-white" : ""}`}>★ צוות השיווק</Link>
-        <Link href="?" className={`chip ${!d ? "!bg-brand !text-white" : ""}`}>כולם</Link>
-        {divisions.map(([k, l]) => <Link key={k} href={`?d=${k}`} className={`chip ${d === k ? "!bg-brand !text-white" : ""}`}>{l}</Link>)}
+        <Link href="?d=core" className={`chip ${d === "core" ? "!bg-brand !text-forest-900" : ""}`}>★ צוות השיווק</Link>
+        <Link href="?" className={`chip ${!d ? "!bg-brand !text-forest-900" : ""}`}>כולם</Link>
+        {divisions.map(([k, l]) => <Link key={k} href={`?d=${k}`} className={`chip ${d === k ? "!bg-brand !text-forest-900" : ""}`}>{l}</Link>)}
       </div>
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {list.map((a) => (

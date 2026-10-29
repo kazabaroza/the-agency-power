@@ -16,7 +16,7 @@ export default function AssetCard({ a }: { a: Asset }) {
   return (
     <div className="card overflow-hidden">
       {(a.type === "post" || a.type === "carousel" || a.type === "banner") && images.length > 0 && (
-        <div className="relative bg-black/5">
+        <div className="relative bg-black/25">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={images[i]} alt={a.title} className="mx-auto max-h-[420px] w-auto" />
           {images.length > 1 && (

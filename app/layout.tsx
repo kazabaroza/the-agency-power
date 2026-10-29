@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "The Agency Power – סוכנות שיווק של סוכני AI",
   description: "צוות שלם של סוכני AI שמייצר פוסטים, דפי נחיתה, סרטונים וקמפיינים ממומנים לעסק שלך – מתוך שיחה אחת.",
 };
-export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#5b3df5" };
+export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#0a241c" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

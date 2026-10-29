@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { IconBolt } from "@/components/Icons";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -32,7 +33,7 @@ export default function Login() {
   return (
     <main className="grid min-h-screen place-items-center px-4">
       <div className="card w-full max-w-md p-8">
-        <a href="/" className="flex items-center gap-2 text-lg font-extrabold"><span className="grid h-9 w-9 place-items-center rounded-xl bg-brand text-white">⚡</span> The Agency Power</a>
+        <a href="/" className="flex items-center gap-2 text-lg font-extrabold"><span className="grid h-9 w-9 place-items-center rounded-xl bg-brand text-forest-900"><IconBolt className="h-4 w-4" /></span> The Agency Power</a>
         <h1 className="mt-6 text-2xl font-extrabold">{step === "email" ? "כניסה / הרשמה" : "הזינו את הקוד"}</h1>
         <p className="muted mt-1 text-sm">{step === "email" ? "נשלח קוד חד-פעמי לאימייל. בלי סיסמאות." : `שלחנו קוד בן 6 ספרות ל-${email}`}</p>
         {step === "email" ? (

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { currentUser } from "@/lib/auth";
 import { isConnected } from "@/lib/connections";
 import Nav from "@/components/Nav";
+import { IconBolt } from "@/components/Icons";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     <div className="flex min-h-screen flex-col md:flex-row">
       <aside className="border-b md:sticky md:top-0 md:h-screen md:w-64 md:shrink-0 md:border-b-0 md:border-e" style={{ borderColor: "var(--line)" }}>
         <div className="flex items-center justify-between p-4">
-          <Link href="/app" className="flex items-center gap-2 font-extrabold"><span className="grid h-8 w-8 place-items-center rounded-lg bg-brand text-white">⚡</span> The Agency Power</Link>
+          <Link href="/app" className="flex items-center gap-2 font-extrabold"><span className="grid h-8 w-8 place-items-center rounded-lg bg-brand text-forest-900"><IconBolt className="h-4 w-4" /></span> The Agency Power</Link>
         </div>
         <Nav />
         <div className="hidden p-4 text-xs md:block">

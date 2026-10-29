@@ -19,3 +19,6 @@ export const IconCheck = ({ className }: P) => base(<path d="m5 12.5 4.5 4.5L19 
 export const IconArrow = ({ className }: P) => base(<path d="M19 12H5m6-6-6 6 6 6" />, className);
 export const IconBolt = ({ className }: P) => base(<path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" />, className);
 export const IconPlug = ({ className }: P) => base(<><path d="M9 2v5M15 2v5M6 7h12v4a6 6 0 0 1-12 0V7Z" /><path d="M12 17v5" /></>, className);
+export const IconFolder = ({ className }: P) => base(<path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H10l2 2.5h6.5A2.5 2.5 0 0 1 21 10v7.5a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5v-10Z" />, className);
+export const IconTarget = ({ className }: P) => base(<><circle cx="12" cy="12" r="8.5" /><circle cx="12" cy="12" r="4.5" /><circle cx="12" cy="12" r="0.8" /></>, className);
+export const IconPalette = ({ className }: P) => base(<><path d="M12 3a9 9 0 1 0 0 18c1.4 0 2-1 2-2 0-1.5-1.2-1.8-1.2-3 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4C21 6.4 17 3 12 3Z" /><circle cx="7.5" cy="11" r="1" /><circle cx="10" cy="7" r="1" /><circle cx="14.5" cy="7" r="1" /></>, className);

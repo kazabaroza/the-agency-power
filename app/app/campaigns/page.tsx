@@ -30,7 +30,7 @@ export default function Campaigns() {
                 {m.error && <p className="mt-2 text-sm text-red-600">{m.error}</p>}
                 {m.impressions && (
                   <div className="mt-3 grid grid-cols-4 gap-2 text-center text-sm">
-                    {[["חשיפות", m.impressions], ["קליקים", m.clicks], ["CTR", m.ctr ? `${Number(m.ctr).toFixed(2)}%` : "-"], ["הוצאה", m.spend ? `₪${m.spend}` : "-"]].map(([k, v]) => <div key={k} className="rounded-xl bg-black/5 p-2 dark:bg-white/10"><p className="muted text-xs">{k}</p><p className="font-bold">{v}</p></div>)}
+                    {[["חשיפות", m.impressions], ["קליקים", m.clicks], ["CTR", m.ctr ? `${Number(m.ctr).toFixed(2)}%` : "-"], ["הוצאה", m.spend ? `₪${m.spend}` : "-"]].map(([k, v]) => <div key={k} className="rounded-xl bg-white/[0.06] p-2"><p className="muted text-xs">{k}</p><p className="font-bold">{v}</p></div>)}
                   </div>
                 )}
                 <div className="mt-4 flex gap-2">

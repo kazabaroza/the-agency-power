@@ -2,17 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { --bg: #fbfaf7; --fg: #14161a; --card: #ffffff; --line: #e8e5de; --muted: #5f6470; }
-@media (prefers-color-scheme: dark) {
-  :root { --bg: #0f1013; --fg: #f1efe9; --card: #17191e; --line: #2a2d34; --muted: #a2a6b0; }
-}
+:root { --bg: #0a241c; --fg: #f3eee2; --card: #0e2f25; --line: rgba(243,238,226,0.12); --muted: rgba(243,238,226,0.65); color-scheme: dark; }
 html, body { background: var(--bg); color: var(--fg); }
 body { font-family: Heebo, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: 1.25rem; }
 .muted { color: var(--muted); }
-.btn { @apply inline-flex items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 font-semibold text-white transition hover:bg-brand-dark disabled:opacity-50; }
-.btn-ghost { @apply inline-flex items-center justify-center gap-2 rounded-full border px-5 py-2.5 font-semibold transition; border-color: var(--line); }
-.input { @apply w-full rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-brand/40; background: var(--card); border-color: var(--line); }
+.btn { @apply inline-flex items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 font-semibold text-forest-900 transition hover:bg-gold-light disabled:opacity-50; }
+.btn-ghost { @apply inline-flex items-center justify-center gap-2 rounded-full border px-5 py-2.5 font-semibold transition hover:border-brand hover:text-brand; border-color: rgba(243,238,226,0.25); }
+.input { @apply w-full rounded-xl border px-4 py-3 outline-none focus:ring-2 focus:ring-brand/40; background: var(--card); border-color: var(--line); color: var(--fg); }
+.input::placeholder { color: rgba(243,238,226,0.4); }
+select.input option { background: #0e2f25; }
 .chip { @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold; background: var(--line); }
 
 /* Deep-green luxury theme (marketing pages) */
