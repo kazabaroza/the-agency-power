@@ -119,6 +119,606 @@
   "engineering-database-reliability-engineer": {
    "name": "מהנדס/ת אמינות מסדי נתונים",
    "description": "מומחה/ית DBRE לזמינות גבוהה ורפליקציה, failover אוטומטי, גיבוי ושחזור לנקודת זמן, מיגרציות ללא השבתה ותרגולי התאוששות מאסון. מתמקד/ת בשמירה על בטיחות הנתונים וזמינותם."
+  },
+  "engineering-desktop-app-engineer": {
+   "name": "מהנדס/ת אפליקציות דסקטופ",
+   "description": "מומחה/ית לפיתוח אפליקציות דסקטופ ב-Electron וב-Tauri: IPC מאובטח ובידוד תהליכים, חתימת קוד ו-notarization, מנגנוני עדכון אוטומטי, אינטגרציה עם מערכת ההפעלה וצריכת משאבים חסכונית."
+  },
+  "engineering-developer-tooling-engineer": {
+   "name": "מהנדס/ת כלי פיתוח",
+   "description": "בונה כלי CLI ופלטפורמות פיתוח פנימיות עם חוויית מפתח מעולה: פקודות אינטואיטיביות, הודעות שגיאה מועילות, השלמה אוטומטית, זמן עלייה מהיר, הפצה חוצת פלטפורמות וממשקים גמישים לסקריפטים."
+  },
+  "engineering-devops-automator": {
+   "name": "מומחה/ית אוטומציית DevOps",
+   "description": "מהנדס/ת DevOps המתמחה באוטומציה של תשתיות, בבניית צינורות CI/CD ובתפעול סביבות ענן."
+  },
+  "engineering-drupal-performance": {
+   "name": "מהנדס/ת ביצועי Drupal",
+   "description": "מומחה/ית לביצועי Drupal 10/11: שיפור Core Web Vitals, מטמון, BigPipe, אופטימיזציה של שאילתות ו-Views, טעינה עצלה של תמונות, שילוב CDN וכוונון PHP-FPM לאתרים מהירים."
+  },
+  "engineering-drupal-shopping-cart": {
+   "name": "מהנדס/ת חנויות Drupal",
+   "description": "מומחה/ית למסחר אלקטרוני ב-Drupal Commerce: ניהול קטלוג מוצרים, חיבור שערי תשלום, תהליכי checkout, ניהול הזמנות, מיסים ומבצעים, וחנויות אמינות על Drupal 10/11."
+  },
+  "engineering-electrical-engineer": {
+   "name": "מהנדס/ת חשמל",
+   "description": "מהנדס/ת מערכות הספק לאתרי תקשורת, מבנים ותשתיות: חישוב עומסים, כבלים, סוללות, גנרטורים וסולארי, תכנון הארקה והגנת ברקים, בדיקת תוכניות וכתבי כמויות, והמרת דרישות לכללי חישוב בתוכנה."
+  },
+  "engineering-email-intelligence-engineer": {
+   "name": "מהנדס/ת מודיעין אימייל",
+   "description": "מומחה/ית בחילוץ נתונים מובנים ומוכנים לניתוח משרשורי אימייל גולמיים, עבור סוכני AI ומערכות אוטומציה."
+  },
+  "engineering-embedded-firmware-engineer": {
+   "name": "מהנדס/ת קושחה משובצת",
+   "description": "מומחה/ית לקושחת bare-metal ו-RTOS: ESP32/ESP-IDF, PlatformIO, Arduino, ARM Cortex-M, STM32, Nordic nRF, FreeRTOS ו-Zephyr."
+  },
+  "engineering-feishu-integration-developer": {
+   "name": "מפתח/ת אינטגרציות Feishu",
+   "description": "מומחה/ית Full-stack לפלטפורמת Feishu (Lark): בוטים, מיני-אפליקציות, תהליכי אישור, Bitable, כרטיסי הודעות אינטראקטיביים, Webhooks ו-SSO, לבניית פתרונות שיתוף ואוטומציה ארגוניים."
+  },
+  "engineering-filament-optimization-specialist": {
+   "name": "מומחה/ית אופטימיזציית Filament",
+   "description": "מומחה/ית בארגון מחדש ובאופטימיזציה של ממשקי ניהול ב-Filament PHP לשימושיות ויעילות מרביות, עם דגש על שינויים מבניים משמעותיים ולא רק קוסמטיים."
+  },
+  "engineering-finops-engineer": {
+   "name": "מהנדס/ת FinOps",
+   "description": "מומחה/ית לעלויות ענן ב-AWS, GCP ו-Azure: הקצאת עלויות ותיוג, התאמת משאבים, תכנון התחייבויות, אופטימיזציה של אחסון ותעבורה, ודשבורדים שמקשרים הוצאות לערך עסקי."
+  },
+  "engineering-frontend-developer": {
+   "name": "מפתח/ת Frontend",
+   "description": "מומחה/ית לטכנולוגיות ווב מודרניות ולפריימוורקים React, Vue ו-Angular, למימוש ממשקי משתמש ולשיפור ביצועים."
+  },
+  "engineering-gaussdb-expert": {
+   "name": "מומחה/ית GaussDB",
+   "description": "מומחה/ית למסד הנתונים הרלציוני GaussDB OLTP של Huawei: תכנון סכמות וטבלאות מבוזרות, אופטימיזציה של שאילתות, אינדקסים, מנוע Ustore וכוונון ביצועים בפריסות מבוזרות ומרכזיות."
+  },
+  "engineering-git-workflow-master": {
+   "name": "מומחה/ית תהליכי Git",
+   "description": "מומחה/ית לתהליכי עבודה ב-Git, אסטרטגיות branching ושיטות עבודה מומלצות לניהול גרסאות, כולל conventional commits, rebase, worktrees וניהול ענפים ידידותי ל-CI."
+  },
+  "engineering-i18n-engineer": {
+   "name": "מהנדס/ת בינאום (i18n)",
+   "description": "מומחה/ית ל-ICU MessageFormat, כללי ריבוי של CLDR, פריסות RTL ודו-כיווניות, עיצוב תאריכים, מספרים ומטבעות לפי שפה, חילוץ מחרוזות ובדיקות pseudo-localization."
+  },
+  "engineering-identity-access-engineer": {
+   "name": "מהנדס/ת זהויות והרשאות",
+   "description": "מומחה/ית ל-OAuth 2.0/OIDC, SSO ארגוני (SAML/OIDC), הקצאה ב-SCIM, passkeys/WebAuthn, ארכיטקטורת סשנים והרשאות מרובות-דיירים עם RBAC/ABAC."
+  },
+  "engineering-incident-response-commander": {
+   "name": "מנהל/ת אירועי תקלות",
+   "description": "מומחה/ית לניהול תקלות בסביבת ייצור: תיאום תגובה מובנה, הנחיית תחקירים, מעקב SLO/SLI ותכנון תורנויות לארגוני הנדסה אמינים."
+  },
+  "engineering-iot-fleet-engineer": {
+   "name": "מהנדס/ת צי IoT",
+   "description": "מומחה/ית לניהול ציי מכשירי IoT ו-edge: הקצאה וזהות מכשירים, צינורות MQTT וטלמטריה, עדכוני OTA מדורגים עם אפשרות חזרה, ניטור ועבודה עם מכשירים בחיבור לא יציב."
+  },
+  "engineering-it-service-manager": {
+   "name": "מנהל/ת שירותי IT",
+   "description": "מומחה/ית לניהול שירותי IT לפי ITIL 4: קטלוג שירותים, ניהול תקלות ובעיות, בקרת שינויים, ממשל SLA, תחזוקת CMDB ושיפור מתמיד, להבטחת ערך עסקי מדיד."
+  },
+  "engineering-knowledge-graph-engineer": {
+   "name": "מהנדס/ת גרפי ידע",
+   "description": "מארגן/ת מידע ויכולות כרשת של ישויות וקשרים, כדי לאפשר ניווט דינמי בהקשר, שרשור יכולות מודולרי, הוזלת עלויות טוקנים וצמצום הזיות."
+  },
+  "engineering-llm-post-training-engineer": {
+   "name": "מהנדס/ת Post-Training ל-LLM",
+   "description": "אחראי/ת מבוסס/ת נתונים על SFT, אופטימיזציית העדפות, RLHF/RLVR ו-post-training ל-MoE, ועל שערי השחרור שהופכים checkpoint לשינוי מודל מבוסס."
+  },
+  "engineering-minimal-change-engineer": {
+   "name": "מהנדס/ת שינויים מינימליים",
+   "description": "מתמקד/ת בשינויי קוד מינימליים: מתקן/ת רק את מה שהתבקש, נמנע/ת מהרחבת היקף ומעדיף/ה קוד פשוט על פני הפשטה מוקדמת, כדי שתיקוני באגים לא יהפכו לריפקטורינג ענק."
+  },
+  "engineering-mobile-app-builder": {
+   "name": "מפתח/ת אפליקציות מובייל",
+   "description": "מפתח/ת אפליקציות מובייל עם מומחיות בפיתוח נייטיב ל-iOS ו-Android ובפריימוורקים חוצי פלטפורמות."
+  },
+  "engineering-mobile-release-engineer": {
+   "name": "מהנדס/ת שחרורי מובייל",
+   "description": "מומחה/ית לשחרור והפצה של אפליקציות iOS ו-Android: חתימת קוד, provisioning, צינורות fastlane, הגשה ל-App Store Connect ול-Play Console, השקות מדורגות ומעקב קריסות."
+  },
+  "engineering-multi-agent-systems-architect": {
+   "name": "ארכיטקט/ית מערכות מרובות סוכנים",
+   "description": "מתכנן/ת, מתאם/ת ומנהל/ת צינורות AI מרובי סוכנים: בחירת טופולוגיה, ניהול הקשר, אמון בין סוכנים, התאוששות מכשלים, פיקוח אנושי וניטור למערכות ברמת ייצור."
+  },
+  "engineering-network-engineer": {
+   "name": "מהנדס/ת רשתות",
+   "description": "מומחה/ית לניתוב, מיתוג, חומות אש ופתרון תקלות ב-Cisco IOS/IOS-XE, Cisco ASA/FTD, Juniper Junos ו-Palo Alto PAN-OS."
+  },
+  "engineering-orgscript-engineer": {
+   "name": "מהנדס/ת OrgScript",
+   "description": "מומחה/ית בתכנון, ניתוח ומימוש של דקדוק OrgScript, אימות AST והגדרות לוגיקה עסקית."
+  },
+  "engineering-payments-billing-engineer": {
+   "name": "מהנדס/ת תשלומים וחיובים",
+   "description": "מומחה/ית לחיבור ספקי תשלום (Stripe, Adyen, Braintree, PayPal), תהליכי תשלום אידמפוטנטיים, עיבוד webhooks, חיובי מנויים, SCA/3DS, צמצום היקף PCI והתאמות פיננסיות."
+  },
+  "engineering-pdf-engine-architect": {
+   "name": "ארכיטקט/ית מנועי PDF",
+   "description": "מומחה/ית להמרה דטרמיניסטית של HTML ל-PDF: מאגרי דפדפנים ב-Playwright, גודל עמוד דינמי, דיוק פריסה תת-פיקסלי, PDF נגיש (PDF/UA-1, PDF/A-2b) ועורכי דפים בקנה מידה 1:1."
+  },
+  "engineering-platform-engineer": {
+   "name": "מהנדס/ת פלטפורמה",
+   "description": "מומחה/ית לפלטפורמות פיתוח פנימיות (IDP), המתמחה בנתיבי עבודה מוכנים ובתשתיות בשירות עצמי שמאיצות משמעותית את קצב צוותי הפיתוח."
+  },
+  "engineering-privacy-engineer": {
+   "name": "מהנדס/ת פרטיות",
+   "description": "מיישם/ת פרטיות ישירות בקוד: זיהוי וסיווג מידע אישי, צמצום נתונים, אכיפת הסכמות ב-API, מחיקה ובקשות DSAR אוטומטיות, פסאודונימיזציה ומדיניות שמירה. בונה את הבקרות הטכניות שמדיניות פרטיות רק מבטיחה."
+  },
+  "engineering-prompt-engineer": {
+   "name": "מהנדס/ת פרומפטים",
+   "description": "מומחה/ית בכתיבה, בדיקה ואופטימיזציה שיטתית של פרומפטים למודלי LLM. הופך/ת הנחיות מעורפלות להתנהגויות AI אמינות ומוכנות לפרודקשן."
+  },
+  "engineering-rag-pipeline-engineer": {
+   "name": "מהנדס/ת RAG",
+   "description": "מומחה/ית RAG בפרודקשן: אסטרטגיית chunking, איכות שליפה, חיפוש היברידי, re-ranking ושיפור מבוסס הערכות. בונה pipelines ששולפים באמת את ההקשר הנכון, ולא רק רצים."
+  },
+  "engineering-rapid-prototyper": {
+   "name": "מפתח/ת אבות טיפוס",
+   "description": "מתמחה בפיתוח מהיר במיוחד של הוכחות היתכנות ו-MVP, באמצעות כלים ו-frameworks יעילים."
+  },
+  "engineering-realtime-collaboration-engineer": {
+   "name": "מהנדס/ת שיתוף בזמן אמת",
+   "description": "מומחה/ית למערכות זמן אמת: תשתיות WebSocket/SSE, נוכחות משתמשים, עריכה שיתופית מבוססת CRDT ו-OT, סנכרון offline-first והרחבת fan-out עם פרוטוקולים עמידים לניתוקים."
+  },
+  "engineering-rust-refactoring-specialist": {
+   "name": "מומחה/ית Refactoring ב-Rust",
+   "description": "מהנדס/ת Rust מומחה/ית ל-refactoring בהיקף מאגר שלם: שינויי שמות בטוחים, ארגון מחדש של מודולים, הסרת כפילויות, הקשחה מפני panic, שיפור ownership ותיקון אזהרות קומפיילר ו-Clippy."
+  },
+  "engineering-search-relevance-engineer": {
+   "name": "מהנדס/ת רלוונטיות חיפוש",
+   "description": "מומחה/ית חיפוש ב-Elasticsearch ו-OpenSearch: תכנון אינדקסים ו-analyzers, כוונון שאילתות BM25, שליפה היברידית טקסטואלית ווקטורית, והערכת רלוונטיות עם nDCG וניסויים אונליין."
+  },
+  "engineering-section-508-specialist": {
+   "name": "מומחה/ית נגישות Section 508",
+   "description": "מומחה/ית לנגישות לפי Section 508 ו-WCAG לאתרי ממשל וארגונים: ARIA, בדיקות קוראי מסך, ניווט מקלדת, ניגודיות, טפסים ו-PDF נגישים, כתיבת VPAT/ACR, ביקורות axe/WAVE/Lighthouse ותיקון ליקויים."
+  },
+  "engineering-senior-developer": {
+   "name": "מפתח/ת בכיר/ה",
+   "description": "מומחה/ית למימוש ברמה גבוהה, שולט/ת ב-Laravel/Livewire/FluxUI, ב-CSS מתקדם ובשילוב Three.js."
+  },
+  "engineering-servicenow-developer-mentor": {
+   "name": "מפתח/ת ומנטור/ית ServiceNow",
+   "description": "מפתח/ת בפלטפורמת ServiceNow ופותר/ת תקלות צעד אחר צעד: Business Rules, Script Includes, GlideRecord/GlideAggregate, Flow Designer, ACLs, ובירור אם הבעיה מובנית או נגרמה מהתאמה אישית."
+  },
+  "engineering-software-architect": {
+   "name": "ארכיטקט/ית תוכנה",
+   "description": "מומחה/ית בתכנון מערכות, Domain-Driven Design, דפוסים ארכיטקטוניים וקבלת החלטות טכניות למערכות סקיילביליות וקלות לתחזוקה."
+  },
+  "engineering-solidity-smart-contract-engineer": {
+   "name": "מהנדס/ת חוזים חכמים ב-Solidity",
+   "description": "מפתח/ת Solidity מומחה/ית בארכיטקטורת חוזים חכמים ל-EVM, אופטימיזציית gas, proxy שניתן לשדרג, פיתוח פרוטוקולי DeFi ותכנון חוזים עם אבטחה בראש סדר העדיפויות ב-Ethereum וב-L2."
+  },
+  "engineering-sre": {
+   "name": "SRE (מהנדס/ת אמינות אתרים)",
+   "description": "מומחה/ית לאמינות מערכות פרודקשן בקנה מידה גדול: SLOs, תקציבי שגיאות, observability, הנדסת כאוס וצמצום עבודה ידנית שחוזרת על עצמה."
+  },
+  "engineering-technical-writer": {
+   "name": "כותב/ת טכני/ת",
+   "description": "מומחה/ית לתיעוד למפתחים, רפרנס API, קובצי README ומדריכים. הופך/ת מושגים הנדסיים מורכבים לתיעוד ברור, מדויק ומעניין שמפתחים באמת קוראים."
+  },
+  "engineering-universal-document-compiler": {
+   "name": "מהנדס/ת מהדר מסמכים אוניברסלי",
+   "description": "מתכנן/ת AST למסמכים שאינו תלוי סכמה, הסקת פריסה אלגוריתמית לפי מבנה הנתונים, סנכרון דו-כיווני בין CST לקנבס ופרסום אוניברסלי של מסמכים מעומדים."
+  },
+  "engineering-uswds-developer": {
+   "name": "מפתח/ת USWDS",
+   "description": "מפתח/ת פרונטאנד מומחה/ית ב-U.S. Web Design System: רכיבים ו-design tokens, ממשקי ממשל נגישים ורספונסיביים, עיצוב ב-Sass, שילוב ב-Drupal/WordPress ועמידה בתקני אתרים פדרליים."
+  },
+  "engineering-video-streaming-engineer": {
+   "name": "מהנדס/ת הזרמת וידאו",
+   "description": "מומחה/ית להזרמת וידאו בקצב משתנה: אריזת HLS/DASH, סולמות קידוד ב-ffmpeg, CMAF בהשהיה נמוכה, DRM, הפצה ב-CDN וכוונון נגן לפי איכות חוויית הצפייה."
+  },
+  "engineering-voice-ai-integration-engineer": {
+   "name": "מהנדס/ת שילוב Voice AI",
+   "description": "בונה pipelines מלאים לתמלול דיבור עם מודלים בסגנון Whisper ושירותי ASR בענן: מעיבוד אודיו גולמי, דרך ניקוי תמלילים, כתוביות וזיהוי דוברים, ועד שילוב באפליקציות, API ו-CMS."
+  },
+  "engineering-webassembly-engineer": {
+   "name": "מהנדס/ת WebAssembly",
+   "description": "מומחה/ית WebAssembly: קימפול Rust/C++/Go ל-Wasm, ממשק עם JS ועלויות המעבר ביניהם, WASI וסביבות ריצה בצד השרת (Wasmtime/Wasmer), component model וכוונון לביצועים קרובים לנייטיב."
+  },
+  "engineering-wechat-mini-program-developer": {
+   "name": "מפתח/ת WeChat Mini Programs",
+   "description": "מומחה/ית בפיתוח מיני-תוכניות ב-WeChat עם WXML/WXSS/WXS, שילוב WeChat API, מערכות תשלום, הודעות מנוי וכל האקוסיסטם של WeChat."
+  },
+  "engineering-wordpress-performance": {
+   "name": "מהנדס/ת ביצועי WordPress",
+   "description": "מומחה/ית לביצועי WordPress: Core Web Vitals, מטמון (Redis/Memcached ו-page caching), אופטימיזציית מסד נתונים ו-WP_Query, מזעור נכסים ו-critical CSS, אופטימיזציית תמונות, CDN, ביקורת תוספים וכוונון PHP-FPM."
+  },
+  "engineering-wordpress-shopping-cart": {
+   "name": "מהנדס/ת חנויות WordPress",
+   "description": "מומחה/ית למסחר אלקטרוני ב-WordPress עם WooCommerce: ניהול קטלוג, שילוב סליקה, התאמת קופה, ניהול הזמנות, מיסים וקופונים, והקמת חנויות שממקסמות המרות."
+  },
+  "finance-bookkeeper-controller": {
+   "name": "מנהל/ת חשבונות וקונטרולר/ית",
+   "description": "מנהל/ת את הנהלת החשבונות השוטפת, התאמות, סגירות חודשיות ובקרות פנימיות. מבטיח/ה רשומות פיננסיות מדויקות, מלאות ועדכניות, בהתאם ל-GAAP ובמוכנות מתמדת לביקורת."
+  },
+  "finance-financial-analyst": {
+   "name": "אנליסט/ית פיננסי/ת",
+   "description": "מומחה/ית במודלים פיננסיים, תחזיות, ניתוח תרחישים ותמיכה בקבלת החלטות. הופך/ת נתונים פיננסיים גולמיים לתובנות עסקיות שמניעות תכנון אסטרטגי והחלטות השקעה."
+  },
+  "finance-fpa-analyst": {
+   "name": "אנליסט/ית FP&A",
+   "description": "מומחה/ית לתכנון וניתוח פיננסי: תקציבים, ניתוח סטיות, תחזיות מתגלגלות ותמיכה בהחלטות אסטרטגיות. מחבר/ת בין המספרים לסיפור העסקי לשיפור הביצועים והקצאת המשאבים."
+  },
+  "finance-investment-researcher": {
+   "name": "חוקר/ת השקעות",
+   "description": "מומחה/ית למחקר שוק, בדיקות נאותות, ניתוח תיקים והערכת שווי נכסים. מבצע/ת ניתוח פונדמנטלי וכמותי לזיהוי הזדמנויות והערכת סיכונים במניות, בשווקים פרטיים ובהשקעות אלטרנטיביות."
+  },
+  "finance-tax-strategist": {
+   "name": "אסטרטג/ית מיסוי",
+   "description": "מומחה/ית לתכנון מס, אופטימיזציה, מחירי העברה ועמידה ברגולציה בכמה תחומי שיפוט. מצמצם/ת את חבות המס תוך עמידה מלאה בדרישות המקומיות והבינלאומיות."
+  },
+  "blender-addon-engineer": {
+   "name": "מפתח/ת תוספים ל-Blender",
+   "description": "מומחה/ית לכלים ב-Blender: בונה תוספי Python, בודקי נכסים, כלי ייצוא ואוטומציות pipeline שהופכים עבודה חוזרת לתהליכים אמינים בלחיצה אחת."
+  },
+  "economy-designer": {
+   "name": "מעצב/ת כלכלת משחק",
+   "description": "ארכיטקט/ית של כלכלות וירטואליות: מערכות מטבע, מקורות וניקוזים, מודלים של מונטיזציה, שליטה באינפלציה ואיזון כלכלי מבוסס נתונים למשחקים חיים."
+  },
+  "game-audio-engineer": {
+   "name": "מהנדס/ת סאונד למשחקים",
+   "description": "מומחה/ית לאודיו אינטראקטיבי: שילוב FMOD/Wwise, מוזיקה אדפטיבית, סאונד מרחבי וניהול תקציב ביצועי אודיו בכל מנועי המשחק."
+  },
+  "game-designer": {
+   "name": "מעצב/ת משחקים",
+   "description": "אדריכל/ית מערכות ומכניקות משחק – כתיבת GDD, פסיכולוגיית שחקנים, איזון כלכלת המשחק ועיצוב לולאות משחקיות בכל מנוע ובכל ז'אנר."
+  },
+  "godot-gameplay-scripter": {
+   "name": "מתכנת/ת גיימפליי ב-Godot",
+   "description": "מומחה/ית לקומפוזיציה ולתקינות סיגנלים – GDScript 2.0, שילוב C#, ארכיטקטורה מבוססת Nodes ועיצוב סיגנלים בטוח-טיפוסים בפרויקטי Godot 4."
+  },
+  "godot-multiplayer-engineer": {
+   "name": "מהנדס/ת מולטיפלייר ב-Godot",
+   "description": "מומחה/ית רשתות ב-Godot 4 – MultiplayerAPI, שכפול סצנות, תעבורת ENet/WebRTC, קריאות RPC ומודלי סמכות למשחקי מולטיפלייר בזמן אמת."
+  },
+  "godot-shader-developer": {
+   "name": "מפתח/ת שיידרים ב-Godot",
+   "description": "מומחה/ית לאפקטים ויזואליים ב-Godot 4 – שפת השיידרים של Godot, עורך VisualShader, שיידרים מסוג CanvasItem ו-Spatial, פוסט-פרוססינג ואופטימיזציית ביצועים לאפקטים ב-2D/3D."
+  },
+  "level-designer": {
+   "name": "מעצב/ת שלבים",
+   "description": "מומחה/ית לסיפור מרחבי ולזרימת משחק – תכנון פריסה, בניית קצב, עיצוב מפגשים וסיפור סביבתי בכל מנועי המשחק."
+  },
+  "narrative-designer": {
+   "name": "מעצב/ת נרטיב",
+   "description": "אדריכל/ית מערכות סיפור ודיאלוג – עיצוב נרטיב התואם ל-GDD, דיאלוגים מסתעפים, בניית עולם ולור, וסיפור סביבתי בכל מנועי המשחק."
+  },
+  "roblox-avatar-creator": {
+   "name": "יוצר/ת אווטארים ב-Roblox",
+   "description": "מומחה/ית ל-UGC ולתהליכי אווטארים ב-Roblox – מערכת האווטארים, יצירת פריטי UGC, ריגינג לאביזרים, תקני טקסטורות והגשה ל-Creator Marketplace."
+  },
+  "roblox-experience-designer": {
+   "name": "מעצב/ת חוויות ב-Roblox",
+   "description": "מומחה/ית UX ומונטיזציה ב-Roblox – עיצוב לולאות מעורבות, התקדמות מבוססת DataStore, מערכות מונטיזציה (Passes, Developer Products, UGC) ושימור שחקנים."
+  },
+  "roblox-systems-scripter": {
+   "name": "מתכנת/ת מערכות ב-Roblox",
+   "description": "מומחה/ית הנדסה בפלטפורמת Roblox – Luau, מודל אבטחת לקוח-שרת, RemoteEvents/RemoteFunctions, DataStore וארכיטקטורת מודולים לחוויות סקיילביליות."
+  },
+  "technical-artist": {
+   "name": "ארטיסט/ית טכני/ת",
+   "description": "מומחה/ית לתהליך המעבר מאמנות למנוע – שיידרים, מערכות VFX, תהליכי LOD, תקציבי ביצועים ואופטימיזציית נכסים בין מנועים שונים."
+  },
+  "unity-architect": {
+   "name": "ארכיטקט/ית Unity",
+   "description": "מומחה/ית למודולריות מבוססת נתונים – ScriptableObjects, מערכות מנותקות ותכנון רכיבים בעלי אחריות יחידה לפרויקטי Unity סקיילביליים."
+  },
+  "unity-editor-tool-developer": {
+   "name": "מפתח/ת כלים לעורך Unity",
+   "description": "מומחה/ית לאוטומציה בעורך Unity – EditorWindows מותאמים, PropertyDrawers, AssetPostprocessors, ScriptedImporters ואוטומציית תהליכים שחוסכת לצוותים שעות בכל שבוע."
+  },
+  "unity-multiplayer-engineer": {
+   "name": "מהנדס/ת מולטיפלייר ב-Unity",
+   "description": "מומחה/ית לגיימפליי ברשת – Netcode for GameObjects, Unity Gaming Services (Relay/Lobby), סמכות לקוח-שרת, פיצוי על השהיה וסנכרון מצב."
+  },
+  "unity-shader-graph-artist": {
+   "name": "ארטיסט/ית Shader Graph ב-Unity",
+   "description": "מומחה/ית לאפקטים ויזואליים ולחומרים – Unity Shader Graph, HLSL, צנרות הרינדור URP/HDRP וכתיבת Custom Passes לאפקטים בזמן אמת."
+  },
+  "unreal-multiplayer-architect": {
+   "name": "ארכיטקט/ית מולטיפלייר ב-Unreal",
+   "description": "מומחה/ית רשתות ב-Unreal Engine – שכפול Actors, ארכיטקטורת GameMode/GameState, גיימפליי בסמכות השרת, חיזוי רשת והקמת שרתים ייעודיים ל-UE5."
+  },
+  "unreal-systems-engineer": {
+   "name": "מהנדס/ת מערכות ב-Unreal",
+   "description": "מומחה/ית לביצועים ולארכיטקטורה היברידית – שילוב C++ ו-Blueprint, גאומטריית Nanite, תאורת Lumen ו-Gameplay Ability System לפרויקטי Unreal ברמת AAA."
+  },
+  "unreal-technical-artist": {
+   "name": "ארטיסט/ית טכני/ת ב-Unreal",
+   "description": "מומחה/ית לצנרת הוויזואלית ב-Unreal Engine – Material Editor, אפקטים ב-Niagara, יצירת תוכן פרוצדורלי (PCG) ותהליך המעבר מאמנות למנוע בפרויקטי UE5."
+  },
+  "unreal-world-builder": {
+   "name": "בונה עולמות ב-Unreal",
+   "description": "מומחה/ית לעולמות פתוחים ולסביבות – World Partition, Landscape, צמחייה פרוצדורלית, HLOD וטעינת שלבים בקנה מידה גדול ב-UE5 לחוויית עולם פתוח רציפה."
+  },
+  "gis-3d-scene-developer": {
+   "name": "מפתח/ת סצנות תלת-ממד",
+   "description": "מומחה/ית להדמיות תלת-ממד ברשת – יצירת סצנות סוחפות, מודלי פני שטח, הדמיות ענני נקודות וחוויות אינטראקטיביות באמצעות Cesium, ArcGIS Scene Viewer ופריימוורקים מודרניים."
+  },
+  "gis-analyst": {
+   "name": "אנליסט/ית GIS",
+   "description": "מפעיל/ה שוטף/ת של מערכות GIS – יצירת מפות, ניהול שכבות, ביצוע שאילתות מרחביות ושמירה על תקינות הנתונים הגאו-מרחביים בסביבות דסקטופ ורשת."
+  },
+  "gis-bim-specialist": {
+   "name": "מומחה/ית BIM/GIS",
+   "description": "מומחה/ית לשילוב BIM ו-GIS – המרת נתוני Revit/IFC, מיפוי פנים מבנים, ארכיטקטורת תאומים דיגיטליים ומודלי נתונים לניהול מתקנים."
+  },
+  "gis-cartography-designer": {
+   "name": "מעצב/ת קרטוגרפיה",
+   "description": "מומחה/ית לאסתטיקה של מפות – עיצוב מפות יפות, קריאות ואפקטיביות: תורת הצבע, טיפוגרפיה, מיקום תוויות, בחירת מפות בסיס והיררכיה ויזואלית לדפוס ולרשת."
+  },
+  "gis-drone-reality-mapping": {
+   "name": "מומחה/ית מיפוי רחפנים",
+   "description": "מומחה/ית לפוטוגרמטריה ולסריקת מציאות – עיבוד צילומי רחפן לאורתופוטו, מודלי פני שטח, ענני נקודות ומודלי תלת-ממד, מהשטח ועד תוצרים מוכנים ל-GIS."
+  },
+  "gis-geoai-ml-engineer": {
+   "name": "מהנדס/ת GeoAI/ML",
+   "description": "מומחה/ית ללמידת מכונה גאו-מרחבית – בניית מודלים לחילוץ ישויות, זיהוי אובייקטים, סגמנטציה וסיווג כיסוי קרקע מתוך צילומי לוויין ואוויר."
+  },
+  "gis-geoprocessing-specialist": {
+   "name": "מומחה/ית Geoprocessing",
+   "description": "מומחה/ית ArcPy ו-Python לאוטומציה של תהליכים מרחביים – בניית ארגזי כלים ‎.pyt, תהליכי Model Builder, עיבוד אצוות וסקריפטים מותאמים ל-ArcGIS Pro."
+  },
+  "gis-qa-engineer": {
+   "name": "מהנדס/ת QA ל-GIS",
+   "description": "מומחה/ית לאבטחת איכות של נתונים גאו-מרחביים – בדיקות טופולוגיה, ביקורת מטא-דאטה, עקביות מערכות קואורדינטות, הערכת דיוק ואימות עמידה בתקנים."
+  },
+  "gis-solution-engineer": {
+   "name": "מהנדס/ת פתרונות",
+   "description": "בונה אבות-טיפוס GIS בפועל – הופך/ת את האסטרטגיה של היועץ הטכני לדמואים עובדים, הוכחות היתכנות ואימותים טכניים על גבי Esri וכלי קוד פתוח."
+  },
+  "gis-spatial-data-engineer": {
+   "name": "מהנדס/ת נתונים מרחביים",
+   "description": "מומחה/ית ETL שהופך/ת נתונים גאו-מרחביים מבולגנים לדאטה נקי, אחיד ומוכן לייצור – המרת פורמטים, הטלה מחדש, נרמול מאפיינים וצנרות אוטומטיות."
+  },
+  "gis-spatial-data-scientist": {
+   "name": "מדען/ית נתונים מרחביים",
+   "description": "מומחה/ית לאנליטיקה מרחבית מתקדמת – מודלים סטטיסטיים, אקונומטריקה מרחבית, אשכולות וניתוח חיזוי, לחשיפת דפוסים שלא רואים על המפה."
+  },
+  "gis-technical-consultant": {
+   "name": "יועץ/ת טכני/ת",
+   "description": "יועץ/ת GIS אסטרטגי/ת שמתרגם/ת בעיות עסקיות לפתרונות גאו-מרחביים – ניתוח פערים, מפות דרכים טכנולוגיות, מענה למכרזים ואסטרטגיית טרנספורמציה דיגיטלית ב-Esri ובקוד פתוח."
+  },
+  "gis-web-gis-developer": {
+   "name": "מפתח/ת Web GIS",
+   "description": "מהנדס/ת Full-stack לאפליקציות מיפוי אינטראקטיביות: MapLibre GL JS, ArcGIS JS API, Leaflet, דשבורדים בזמן אמת, אינטגרציית REST API ושירותי ווב גיאו-מרחביים."
+  },
+  "healthcare-clinical-evidence-agent": {
+   "name": "סוכן ראיות קליניות",
+   "description": "מסגרת סטנדרטים של ראיות ואמינות קלינית לסוכני AI בתחום הבריאות. מבחינה בין טענות מתוקפות ללא מתוקפות, וכותבת גם לשיפוט עמיתים וגם למשקיעים, בלי להתיימר לסמכות אבחנתית."
+  },
+  "healthcare-innovation-strategist": {
+   "name": "אסטרטג/ית חדשנות בבריאות",
+   "description": "בונה נרטיב אסטרטגי למייסדי סטארטאפים בבריאות, השומר על קוהרנטיות מול משקיעים, רגולטורים, ממשלות ורופאים, ומתרגם מציאות קלינית ופיננסית מורכבת לשפה שמגייסת הון ובונה אמון."
+  },
+  "healthcare-sovereign-health-systems-agent": {
+   "name": "סוכן מערכות בריאות ממשלתיות",
+   "description": "מסגרת עבודה מול משרדי בריאות ממשלתיים, מדיניות כיסוי בריאות אוניברסלי ושווקים מתעוררים. מנחה כיצד להתאים טכנולוגיה למנדט הממשלתי ולתזמן השקה כפולה בשווקים מוסדרים וממשלתיים."
+  },
+  "marketing-aeo-foundations": {
+   "name": "ארכיטקט/ית תשתיות AEO",
+   "description": "מומחה/ית לתשתיות AI Engine Optimization: llms.txt, robots.txt מותאם AI, תוכן מותאם לתקציב טוקנים, Markdown מובנה וקבצי גילוי, כדי שסוכני AI ימצאו, יבינו ויפעלו באתר שלכם."
+  },
+  "marketing-agentic-search-optimizer": {
+   "name": "מומחה/ית אופטימיזציה לחיפוש אייג'נטי",
+   "description": "בודק/ת אם סוכני AI מצליחים לבצע משימות באתר (הזמנה, רכישה, הרשמה, מנוי), מיישם/ת דפוסי WebMCP ומודד/ת שיעורי השלמת משימות בקרב סוכני גלישה."
+  },
+  "marketing-ai-citation-strategist": {
+   "name": "אסטרטג/ית ציטוטים ב-AI",
+   "description": "מומחה/ית AEO/GEO שבודק/ת את נראות המותג ב-ChatGPT, Claude, Gemini ו-Perplexity, מזהה למה מתחרים מצוטטים במקומכם ומספק/ת תיקוני תוכן שמגדילים את הציטוטים."
+  },
+  "marketing-app-store-optimizer": {
+   "name": "מומחה/ית ASO",
+   "description": "מומחה/ית לשיווק בחנויות אפליקציות, המתמקד/ת ב-App Store Optimization, אופטימיזציית המרות ושיפור החשיפה של האפליקציה."
+  },
+  "marketing-baidu-seo-specialist": {
+   "name": "מומחה/ית SEO ל-Baidu",
+   "description": "מומחה/ית לקידום ב-Baidu: דירוג במנוע החיפוש הסיני, שילוב באקוסיסטם של Baidu, עמידה ברישיון ICP, מחקר מילות מפתח בסינית ואינדוקס Mobile-first לשוק הסיני."
+  },
+  "marketing-bilibili-content-strategist": {
+   "name": "אסטרטג/ית תוכן ל-Bilibili",
+   "description": "מומחה/ית לשיווק ב-Bilibili: צמיחת יוצרים (UP主), תרבות ה-danmaku, אופטימיזציה לאלגוריתם, בניית קהילה ואסטרטגיית תוכן ממותג בפלטפורמת הווידאו המובילה בסין."
+  },
+  "marketing-book-co-author": {
+   "name": "כותב/ת שותף/ה לספר",
+   "description": "שותף/ה אסטרטגי/ת לכתיבת ספרי מנהיגות מחשבתית למייסדים ומומחים, שהופך/ת הקלטות קוליות, רעיונות מפוזרים ומיצוב לפרקים מובנים בגוף ראשון."
+  },
+  "marketing-carousel-growth-engine": {
+   "name": "מנוע צמיחה לקרוסלות",
+   "description": "יוצר/ת אוטומטית קרוסלות ויראליות ל-TikTok ול-Instagram: מנתח/ת אתר עם Playwright, מייצר/ת 6 שקפים עם Gemini, מפרסם/ת עם מוזיקה, אוסף/ת נתונים ומשתפר/ת בלולאת למידה."
+  },
+  "marketing-china-ecommerce-operator": {
+   "name": "מנהל/ת איקומרס בסין",
+   "description": "מומחה/ית לתפעול מסחר מקוון ב-Taobao, Tmall, Pinduoduo ו-JD: אופטימיזציית מוצרים, Live commerce, ניהול חנויות, קמפייני 618 ו-Double 11 ואסטרטגיה חוצת פלטפורמות."
+  },
+  "marketing-china-market-localization-strategist": {
+   "name": "אסטרטג/ית לוקליזציה לשוק הסיני",
+   "description": "מומחה/ית לוקליזציה מקצה לקצה, שהופך/ת טרנדים בזמן אמת לאסטרטגיות Go-to-market ישימות ב-Douyin, Xiaohongshu, WeChat, Bilibili ועוד."
+  },
+  "marketing-content-creator": {
+   "name": "יוצר/ת תוכן",
+   "description": "אסטרטג/ית ויוצר/ת תוכן לקמפיינים רב-ערוציים: בונה לוחות תוכן, כותב/ת קופי משכנע, מוביל/ה סטוריטלינג למותג וממקסם/ת מעורבות בכל הערוצים הדיגיטליים."
+  },
+  "marketing-cross-border-ecommerce": {
+   "name": "מומחה/ית איקומרס בינלאומי",
+   "description": "אסטרטג/ית מסחר חוצה גבולות ב-Amazon, Shopee, Lazada, AliExpress, Temu ו-TikTok Shop: לוגיסטיקה ומחסנים בחו\"ל, רגולציה ומיסוי, דפי מוצר רב-לשוניים ובניית אתר DTC עצמאי."
+  },
+  "marketing-developer-community-builder": {
+   "name": "בונה קהילות מפתחים",
+   "description": "מצמיח/ה ומתחזק/ת קהילות מפתחים בשרתי Discord, דיוני GitHub, פורומים ותוכניות תורמים, והופך/ת משתמשים לשגרירים ושגרירים לתורמים."
+  },
+  "marketing-douyin-strategist": {
+   "name": "אסטרטג/ית Douyin",
+   "description": "מומחה/ית לשיווק וידאו קצר ב-Douyin: הבנת אלגוריתם ההמלצות, תכנון סרטונים ויראליים, מכירות בלייב וצמיחת מותג מקצה לקצה באמצעות מטריצת תוכן."
+  },
+  "marketing-email-strategist": {
+   "name": "אסטרטג/ית שיווק במייל",
+   "description": "מתכנן/ת קמפיינים מבוססי CRM, אוטומציות מחזור חיים, סגמנטציה ושיפור Deliverability. בונה רצפי ברוכים הבאים, טיפוח והשבה לפי בנצ'מרקים עדכניים ופרסונליזציה מבוססת AI."
+  },
+  "marketing-global-podcast-strategist": {
+   "name": "אסטרטג/ית פודקאסטים גלובלי/ת",
+   "description": "מומחה/ית לצמיחת פודקאסטים: מיצוב, בניית קהל, אסטרטגיית תוכן ומונטיזציה. הופך/ת רעיונות למותגי אודיו שמגדילים מאזינים והכנסות ב-Spotify, Apple Podcasts ו-YouTube."
+  },
+  "marketing-growth-hacker": {
+   "name": "גרואת' האקר/ית",
+   "description": "אסטרטג/ית צמיחה המתמחה בגיוס משתמשים מהיר באמצעות ניסויים מבוססי דאטה. בונה לולאות ויראליות, משפר/ת משפכי המרה ומאתר/ת ערוצי צמיחה סקיילביליים."
+  },
+  "marketing-instagram-curator": {
+   "name": "אוצר/ת Instagram",
+   "description": "מומחה/ית לשיווק ב-Instagram: סטוריטלינג ויזואלי, בניית קהילה ואופטימיזציה לפורמטים שונים. מפתח/ת שפה אסתטית ומניע/ה מעורבות משמעותית."
+  },
+  "marketing-kuaishou-strategist": {
+   "name": "אסטרטג/ית Kuaishou",
+   "description": "מומחה/ית לשיווק ב-Kuaishou: תוכן וידאו קצר לערים הקטנות בסין, מכירות בלייב, בניית אמון קהילתי וצמיחת קהל שורשי."
+  },
+  "marketing-linkedin-content-creator": {
+   "name": "יוצר/ת תוכן ל-LinkedIn",
+   "description": "אסטרטג/ית תוכן ל-LinkedIn: מנהיגות מחשבתית, מיתוג אישי ותוכן מקצועי עם מעורבות גבוהה. מכיר/ה את האלגוריתם והתרבות ומייצר/ת הזדמנויות למייסדים, מחפשי עבודה ומפתחים."
+  },
+  "marketing-livestream-commerce-coach": {
+   "name": "מאמן/ת מכירות בלייב",
+   "description": "מאמן/ת ותיק/ה למנחי לייב ולתפעול שידורים ב-Douyin, Kuaishou, Taobao Live ו-Channels: תסריטים, סדר מוצרים, איזון תנועה ממומנת ואורגנית, טכניקות סגירה ואופטימיזציה בזמן אמת."
+  },
+  "marketing-multi-platform-publisher": {
+   "name": "מפרסם/ת רב-פלטפורמתי/ת",
+   "description": "מפיץ/ה מאמר אחד ל-知乎, 小红书, CSDN, B站, 公众号 ו-掘金 דרך Wechatsync, עם התאמה לכל פלטפורמה ובקרת קצב. לא מפרסם/ת אוטומטית – תמיד עוצר/ת בטיוטה לבדיקה אנושית."
+  },
+  "marketing-podcast-strategist": {
+   "name": "אסטרטג/ית פודקאסטים",
+   "description": "מומחה/ית לשוק הפודקאסטים הסיני ב-Xiaoyuzhou, Ximalaya ועוד: מיצוב, הפקת אודיו, צמיחת קהל, הפצה רב-ערוצית ומונטיזציה לבניית מותגי אודיו נאמנים."
+  },
+  "marketing-pr-communications-manager": {
+   "name": "מנהל/ת יח\"צ ותקשורת",
+   "description": "מומחה/ית ליחסי ציבור: קשרי מדיה, הודעות לעיתונות, תקשורת משברים, מנהיגות מחשבתית להנהלה וניהול מוניטין – בונה ומגן/ה על המותג באמצעות סטוריטלינג ונרטיב יזום."
+  },
+  "marketing-private-domain-operator": {
+   "name": "מנהל/ת קהילות פרטיות ב-WeCom",
+   "description": "מומחה/ית לבניית אקוסיסטם פרטי ב-WeChat Work (WeCom): מערכות SCRM, קהילות מפולחות, מסחר ב-Mini Programs, ניהול מחזור חיי לקוח ואופטימיזציית המרות."
+  },
+  "marketing-reddit-community-builder": {
+   "name": "בונה קהילות ב-Reddit",
+   "description": "מומחה/ית לשיווק ב-Reddit: מעורבות קהילתית אותנטית, תוכן שמספק ערך ובניית קשרים לטווח ארוך, מתוך היכרות עמוקה עם תרבות הפלטפורמה."
+  },
+  "marketing-seo-specialist": {
+   "name": "מומחה/ית SEO",
+   "description": "אסטרטג/ית קידום אורגני המתמחה ב-SEO טכני, אופטימיזציית תוכן ובניית קישורים. מניע/ה צמיחה בתנועה אורגנית יציבה באמצעות אסטרטגיות חיפוש מבוססות נתונים."
+  },
+  "marketing-short-video-editing-coach": {
+   "name": "מאמן/ת עריכת וידאו קצר",
+   "description": "מאמן/ת מעשי/ת לעריכת סרטונים קצרים לאורך כל תהליך הפוסט-פרודקשן ב-CapCut Pro, Premiere Pro, DaVinci Resolve ו-Final Cut Pro: צבע, סאונד, גרפיקה בתנועה, כתוביות, ייצוא לפלטפורמות ועריכה בעזרת AI."
+  },
+  "marketing-social-media-strategist": {
+   "name": "אסטרטג/ית רשתות חברתיות",
+   "description": "אסטרטג/ית רשתות חברתיות ל-LinkedIn, Twitter ופלטפורמות מקצועיות. בונה קמפיינים חוצי פלטפורמות וקהילות, מנהל/ת מעורבות בזמן אמת ומפתח/ת אסטרטגיות להובלה מחשבתית."
+  },
+  "marketing-tiktok-strategist": {
+   "name": "אסטרטג/ית TikTok",
+   "description": "מומחה/ית שיווק ב-TikTok המתמקד/ת ביצירת תוכן ויראלי, התאמה לאלגוריתם ובניית קהילה. שולט/ת בתרבות ובפיצ'רים הייחודיים של TikTok לצמיחת המותג."
+  },
+  "marketing-twitter-engager": {
+   "name": "מנהל/ת מעורבות ב-Twitter",
+   "description": "מומחה/ית שיווק ב-Twitter המתמקד/ת במעורבות בזמן אמת, הובלה מחשבתית וצמיחה קהילתית. בונה סמכות למותג דרך השתתפות אותנטית בשיחות ויצירת שרשורים ויראליים."
+  },
+  "marketing-video-optimization-specialist": {
+   "name": "מומחה/ית אופטימיזציית וידאו",
+   "description": "אסטרטג/ית שיווק בווידאו המתמחה באופטימיזציה לאלגוריתם של YouTube, שימור צופים, חלוקה לפרקים, קונספטים לתמונות ממוזערות והפצת וידאו בין פלטפורמות."
+  },
+  "marketing-wechat-official-account": {
+   "name": "מנהל/ת חשבון WeChat רשמי",
+   "description": "אסטרטג/ית חשבונות WeChat רשמיים המתמחה בשיווק תוכן, מעורבות מנויים ושיפור המרות. יוצר/ת תוכן במגוון פורמטים ובונה קהילות נאמנות דרך ערך עקבי."
+  },
+  "marketing-weibo-strategist": {
+   "name": "אסטרטג/ית Weibo",
+   "description": "מומחה/ית תפעול מקיף ל-Sina Weibo: מנגנוני טרנדים, ניהול קהילות Super Topic, ניטור סנטימנט, כלכלת מעריצים ופרסום, להשגת חשיפה ויראלית וצמיחה מתמשכת בפלטפורמה המובילה בסין."
+  },
+  "marketing-x-twitter-intelligence-analyst": {
+   "name": "אנליסט/ית מודיעין X/Twitter",
+   "description": "מומחה/ית מודיעין חברתי ב-X/Twitter: מחקר, זיהוי טרנדים, מעקב אחר חשבונות ותובנות קהל מבוססות ראיות, על בסיס אותות ציבוריים ותהליכי נתונים מובנים."
+  },
+  "marketing-xiaohongshu-specialist": {
+   "name": "מומחה/ית Xiaohongshu",
+   "description": "מומחה/ית שיווק ב-Xiaohongshu המתמקד/ת בתוכן לייפסטייל, אסטרטגיות מבוססות טרנדים ומעורבות קהילתית אותנטית. מניע/ה צמיחה ויראלית דרך מיקרו-תוכן וסטוריטלינג אסתטי."
+  },
+  "marketing-zhihu-strategist": {
+   "name": "אסטרטג/ית Zhihu",
+   "description": "מומחה/ית שיווק ב-Zhihu המתמקד/ת בהובלה מחשבתית, אמינות קהילתית ומעורבות מבוססת ידע. בונה סמכות למותג דרך אסטרטגיית מענה לשאלות ושיתוף מומחיות אותנטי."
+  },
+  "paid-media-auditor": {
+   "name": "מבקר/ת מדיה ממומנת",
+   "description": "בוחן/ת באופן שיטתי חשבונות Google Ads, Microsoft Ads ו-Meta לפי 200+ נקודות בדיקה, כולל מבנה, מעקב, בידינג, קריאייטיב וקהלים. מפיק/ה דוחות ביקורת עם המלצות מתועדפות והשפעה צפויה."
+  },
+  "paid-media-creative-strategist": {
+   "name": "אסטרטג/ית קריאייטיב לפרסום",
+   "description": "מומחה/ית קריאייטיב למדיה ממומנת: קופירייטינג למודעות, אופטימיזציית RSA, עיצוב קבוצות נכסים ומסגרות לבדיקות קריאייטיב ב-Google, Meta, Microsoft ופלטפורמות פרוגרמטיות. מחבר/ת בין נתוני ביצועים למסרים משכנעים."
+  },
+  "paid-media-paid-social-strategist": {
+   "name": "אסטרטג/ית פרסום ממומן ברשתות",
+   "description": "מומחה/ית פרסום ממומן ב-Meta, LinkedIn, TikTok, Pinterest, X ו-Snapchat. מתכנן/ת תוכניות פרסום לכל המשפך, מאיתור קהלים ועד רימרקטינג, עם קריאייטיב וקהלים מותאמים לכל פלטפורמה."
+  },
+  "paid-media-ppc-strategist": {
+   "name": "אסטרטג/ית קמפייני PPC",
+   "description": "אסטרטג/ית בכיר/ה לקמפייני חיפוש, Shopping ו-Performance Max בהיקף גדול ב-Google, Microsoft ו-Amazon. מתכנן/ת מבני חשבון, הקצאת תקציב ובידינג שמתאימים מ-$10K ועד $10M+ בחודש."
+  },
+  "paid-media-programmatic-buyer": {
+   "name": "קניין/ית מדיה פרוגרמטית ותצוגה",
+   "description": "מומחה/ית לפרסום תצוגה וקניית מדיה פרוגרמטית: מיקומים מנוהלים, Google Display Network, DV360, The Trade Desk, מדיה של שותפים ואסטרטגיות ABM דרך Demandbase ו-6Sense."
+  },
+  "paid-media-search-query-analyst": {
+   "name": "אנליסט/ית שאילתות חיפוש",
+   "description": "מומחה/ית לניתוח מונחי חיפוש, מבנה מילות מפתח שליליות ומיפוי שאילתות לכוונה. הופך/ת נתוני חיפוש גולמיים לאופטימיזציות שמצמצמות בזבוז ומגבירות תנועה איכותית."
+  },
+  "paid-media-tracking-specialist": {
+   "name": "מומחה/ית מעקב ומדידה",
+   "description": "מומחה/ית למעקב המרות, ניהול תגים ומודלי ייחוס ב-Google Tag Manager, GA4, Google Ads, Meta CAPI, LinkedIn Insight Tag ובמימוש צד-שרת. מוודא/ת שכל המרה נספרת וכל שקל בפרסום נמדד."
+  },
+  "product-behavioral-nudge-engine": {
+   "name": "מנוע דחיפה התנהגותית",
+   "description": "מומחה/ית לפסיכולוגיה התנהגותית שמתאים/ה את קצב וסגנון האינטראקציה בתוכנה כדי למקסם את המוטיבציה וההצלחה של המשתמשים."
+  },
+  "product-dx-engineer": {
+   "name": "מהנדס/ת DX",
+   "description": "מסיר/ה כל צעד מיותר בדרך להצלחה הראשונה של מפתחים: דוגמאות SDK, תהליכי אונבורדינג, הודעות שגיאה ולולאות משוב, כך שהמוצר ירגיש שנבנה על ידי מי שמשתמש בו."
+  },
+  "product-feedback-synthesizer": {
+   "name": "מסנתז/ת משובים",
+   "description": "אוסף/ת, מנתח/ת ומסנתז/ת משוב משתמשים ממגוון ערוצים להפקת תובנות מוצר מעשיות. הופך/ת משוב איכותני לסדרי עדיפויות כמותיים והמלצות אסטרטגיות."
+  },
+  "product-manager": {
+   "name": "מנהל/ת מוצר",
+   "description": "מוביל/ת מוצר שאחראי/ת על כל מחזור החיים: מגילוי ואסטרטגיה, דרך רודמפ, תיאום בעלי עניין ו-go-to-market, ועד מדידת תוצאות. מחבר/ת בין יעדים עסקיים, צרכי משתמשים ומציאות טכנית."
+  },
+  "product-sprint-prioritizer": {
+   "name": "מתעדף/ת ספרינטים",
+   "description": "מנהל/ת מוצר המתמחה בתכנון ספרינטים אג'יליים, תעדוף פיצ'רים והקצאת משאבים. ממקסם/ת את מהירות הצוות והערך העסקי באמצעות מסגרות תעדוף מבוססות נתונים."
+  },
+  "product-trend-researcher": {
+   "name": "חוקר/ת טרנדים",
+   "description": "אנליסט/ית מודיעין שוק המתמחה בזיהוי טרנדים מתפתחים, ניתוח מתחרים והערכת הזדמנויות. מספק/ת תובנות מעשיות שמניעות אסטרטגיית מוצר והחלטות חדשנות."
+  },
+  "project-management-experiment-tracker": {
+   "name": "מנהל/ת ניסויים",
+   "description": "מנהל/ת פרויקטים המתמחה בתכנון ניסויים, מעקב אחר ביצועם וקבלת החלטות מבוססת נתונים. מנהל/ת בדיקות A/B, ניסויי פיצ'רים ואימות השערות בניתוח קפדני."
+  },
+  "project-management-jira-workflow-steward": {
+   "name": "אחראי/ת תהליכי Jira",
+   "description": "מומחה/ית תפעול אספקה שאוכף/ת תהליכי Git מקושרים ל-Jira, קומיטים ניתנים למעקב, pull requests מובנים ואסטרטגיית branches בטוחה לשחרור בצוותי פיתוח."
+  },
+  "project-management-meeting-notes-specialist": {
+   "name": "מומחה/ית סיכומי פגישות",
+   "description": "מחלץ/ת החלטות, משימות לביצוע ושאלות פתוחות מתמלולי פגישות או רשימות גולמיות, ומסכם/ת אותם בסיכום מסודר בן 4 חלקים."
+  },
+  "project-management-project-shepherd": {
+   "name": "רועה פרויקטים",
+   "description": "מנהל/ת פרויקטים המתמחה בתיאום בין צוותים, ניהול לוחות זמנים ותיאום בעלי עניין. מוביל/ת פרויקטים מהרעיון ועד הסיום תוך ניהול משאבים, סיכונים ותקשורת בין מחלקות."
+  },
+  "project-management-studio-operations": {
+   "name": "תפעול סטודיו",
+   "description": "מנהל/ת תפעול המתמחה ביעילות יומיומית של הסטודיו, שיפור תהליכים ותיאום משאבים. מבטיח/ה תפעול חלק ומספק/ה לכל הצוותים את הכלים והתהליכים הדרושים להצלחה."
+  },
+  "project-management-studio-producer": {
+   "name": "מפיק/ת סטודיו",
+   "description": "מוביל/ת אסטרטגי/ת בכיר/ה לניהול פרויקטים קריאייטיביים וטכניים, הקצאת משאבים וניהול תיק פרויקטים. מיישר/ת את החזון הקריאייטיבי עם היעדים העסקיים ומבטיח/ה תפעול סטודיו מיטבי."
   }
  },
  "divisions": {}

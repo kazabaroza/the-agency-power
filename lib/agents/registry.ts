@@ -48,6 +48,13 @@ export const CORE_TEAM: { slug: string; role: string }[] = [
   { slug: "product-trend-researcher", role: "מחקר שוק ומתחרים" },
 ];
 
+const HE_DIVISIONS: Record<string, string> = {
+  academic: "אקדמיה", design: "עיצוב", engineering: "פיתוח", finance: "כספים", "game-development": "פיתוח משחקים",
+  gis: "מיפוי וגיאוגרפיה", healthcare: "בריאות", marketing: "שיווק", "paid-media": "פרסום ממומן", product: "מוצר",
+  "project-management": "ניהול פרויקטים", research: "מחקר", sales: "מכירות", security: "אבטחת מידע",
+  "spatial-computing": "מחשוב מרחבי", specialized: "התמחויות מיוחדות", support: "תמיכה ושירות", testing: "בדיקות ואיכות",
+};
+
 let cache: AgencyAgent[] | null = null;
 
 export function loadAgents(): AgencyAgent[] {
@@ -80,7 +87,7 @@ export function loadAgents(): AgencyAgent[] {
         body: content.trim(),
         nameHe: he.agents[file.replace(/\.md$/, "")]?.name || String(data.name),
         descriptionHe: he.agents[file.replace(/\.md$/, "")]?.description || String(data.description || ""),
-        divisionLabelHe: he.divisions[division] || divisions[division].label,
+        divisionLabelHe: he.divisions[division] || HE_DIVISIONS[division] || divisions[division].label,
       });
     }
   }
