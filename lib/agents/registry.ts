@@ -16,6 +16,10 @@ export type AgencyAgent = {
   emoji: string;
   vibe: string;
   body: string;
+  /** Hebrew name / description / division label (agents/he.json), falling back to English. */
+  nameHe: string;
+  descriptionHe: string;
+  divisionLabelHe: string;
 };
 
 const ROOT = path.join(process.cwd(), "agents");
@@ -52,6 +56,9 @@ export function loadAgents(): AgencyAgent[] {
     string,
     { label: string; color: string }
   >;
+  const he = fs.existsSync(path.join(ROOT, "he.json"))
+    ? (JSON.parse(fs.readFileSync(path.join(ROOT, "he.json"), "utf8")) as { agents: Record<string, { name: string; description: string }>; divisions: Record<string, string> })
+    : { agents: {}, divisions: {} };
   const out: AgencyAgent[] = [];
   for (const division of Object.keys(divisions)) {
     const dir = path.join(ROOT, division);
@@ -71,6 +78,9 @@ export function loadAgents(): AgencyAgent[] {
         emoji: String(data.emoji || "🤖"),
         vibe: String(data.vibe || ""),
         body: content.trim(),
+        nameHe: he.agents[file.replace(/\.md$/, "")]?.name || String(data.name),
+        descriptionHe: he.agents[file.replace(/\.md$/, "")]?.description || String(data.description || ""),
+        divisionLabelHe: he.divisions[division] || divisions[division].label,
       });
     }
   }

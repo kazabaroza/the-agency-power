@@ -21,6 +21,8 @@ export type SkillCtx = {
 export type Skill = {
   name: string;
   label: string;
+  /** Short Hebrew explanation for the owner (the English description is what the model reads). */
+  descHe: string;
   description: string;
   input_schema: Anthropic.Tool["input_schema"];
   /** Skills that spend money or publish publicly wait for an approval card. */
@@ -52,6 +54,7 @@ function showAgent(ctx: SkillCtx, slug: string, task: string) {
 const analyzeBusiness: Skill = {
   name: "analyze_business",
   label: "ניתוח עסק ובניית פרופיל מותג",
+  descHe: "בונה פרופיל מותג מתוך קישור לאתר או תיאור של בעל העסק: שם, מה העסק מציע, קהל יעד, טון דיבור וצבעים. זה הצעד הראשון כשאין עדיין פרופיל.",
   description: "Build or update the brand profile from a website URL and/or the owner's description. Reads the site, extracts name, offer, audience, tone and colors. Use this first when there is no brand profile.",
   input_schema: {
     type: "object",
@@ -118,6 +121,7 @@ Return JSON: {"name":"","description":"one or two sentences","audience":"who buy
 const consult: Skill = {
   name: "consult_specialist",
   label: "התייעצות עם מומחה מ-The Agency",
+  descHe: "מעביר משימה למומחה אחד מהצוות של The Agency, למשל אסטרטגיה, קופי, מחקר, SEO או תכנון פרסום. אפשר להפעיל חיפוש חי ברשת למחקר שוק ומתחרים.",
   description: "Hand a task to one specialist agent from The Agency roster (use the slug). Use for strategy, copy, research, audits, SEO, paid media planning and anything that benefits from a specialist. Set web_search true for live market or competitor research.",
   input_schema: {
     type: "object",
@@ -140,6 +144,7 @@ const consult: Skill = {
 const marketResearch: Skill = {
   name: "market_research",
   label: "מחקר שוק ומתחרים",
+  descHe: "מחקר שוק ומתחרים חי מהרשת: מה הלקוחות מחפשים, איך המתחרים ממצבים את עצמם, אילו זוויות הם מפספסים, ושלושה מסרים מומלצים.",
   description: "Live research on the market, competitors and angles they miss, using web search. Returns findings and recommended angles. Use before plans, campaigns and landing pages.",
   input_schema: { type: "object", properties: { question: { type: "string" } }, required: ["question"] },
   async run(input, ctx) {
@@ -158,6 +163,7 @@ Cover: what buyers search for and care about, 3-5 real competitors and how they 
 const createPost: Skill = {
   name: "create_social_post",
   label: "פוסט / קרוסלה / באנר לרשתות",
+  descHe: "יוצר פוסט לרשתות עם טקסט ותמונה מעוצבת: טיפ, קרוסלה, ניפוץ מיתוס, ביקורת, חג, מבצע או הודעה. בקרוסלה בוחרים 3 עד 8 שקפים.",
   description: "Create an organic social post: copy + designed image(s). Types: tip, carousel, myth_buster, review, holiday, promo, announcement. For carousel, set slides (3-8). Returns the asset id.",
   input_schema: {
     type: "object",
@@ -205,6 +211,7 @@ Return JSON: {"caption":"post caption with line breaks","hashtags":["..."],"slid
 const createBanner: Skill = {
   name: "create_banner",
   label: "באנר / מודעה",
+  descHe: "מעצב באנר או מודעה בודדת עם כותרת, שורת משנה וכפתור, בצבעי המותג. אפשר להוסיף רקע מצולם שנוצר ב-AI.",
   description: "Design a single banner or ad image with headline, sub-line and CTA in the brand colors. Optionally with an AI-generated photo background.",
   input_schema: {
     type: "object",
@@ -228,6 +235,7 @@ const createBanner: Skill = {
 const buildLanding: Skill = {
   name: "build_landing_page",
   label: "דף נחיתה / אתר",
+  descHe: "כותב ומפרסם דף נחיתה או אתר תדמית עם טופס לידים, מדידת צפיות וכפתור וואטסאפ. ארבעה סגנונות: לידים, אתר מותג, השוואה למתחרים וסיפור.",
   description: "Write and publish a landing page or one-page site with lead form, analytics and WhatsApp button. Styles: lead (lead generation), brand (one-page brand site), comparison (vs competitors), story (storytelling). Returns the live URL.",
   input_schema: {
     type: "object",
@@ -280,6 +288,7 @@ Do not include testimonials.`,
 const createVideo: Skill = {
   name: "create_video",
   label: "סרטון עם מציג AI / UGC",
+  descHe: "כותב תסריט לסרטון קצר ומרנדר אותו. בסרטוני מציג ו-UGC יש קריינות טבעית בעברית ומציג/ה עם סנכרון שפתיים. סרטוני מוצר ואנימציה נוצרים עם מוזיקה. עולה כסף, ולכן דורש אישור.",
   description: "Write a short-video script and render it: presenter (AI presenter talking to camera) and ugc (creator-style reel) get a natural voice-over in the brand language with a lip-synced presenter; product (product showcase) and animation are rendered by a text-to-video model with music/ambient sound. 4-15 seconds, vertical by default. Costs money - needs approval.",
   gated: true,
   input_schema: {
@@ -345,6 +354,7 @@ Return JSON: {"hook":"first line","voiceover":"exact spoken words, written for t
 const schedulePost: Skill = {
   name: "schedule_post",
   label: "תזמון ופרסום ברשתות",
+  descHe: "מפרסם עכשיו או מתזמן פוסט, קרוסלה, באנר או סרטון ל-Facebook, Instagram, TikTok, LinkedIn ו-YouTube. פרסום הוא פעולה ציבורית, ולכן דורש אישור.",
   description: "Publish now or schedule an existing post/carousel/banner/video asset to Facebook, Instagram, TikTok, LinkedIn and/or YouTube. 'when' is ISO 8601 with timezone, or 'now'. Publishing is public - needs approval.",
   gated: true,
   input_schema: {
@@ -383,6 +393,7 @@ const schedulePost: Skill = {
 const generateAudiences: Skill = {
   name: "generate_audiences",
   label: "קהלי יעד",
+  descHe: "מציע 3 עד 5 קהלי יעד לקמפיין: תחומי עניין, טווח גילים, בסיס לקהל דומה (Lookalike) ומילות מפתח לחיפוש.",
   description: "Propose 3-5 target audiences for a campaign (interests, age range, lookalike seeds, keywords for search).",
   input_schema: { type: "object", properties: { goal: { type: "string" } }, required: ["goal"] },
   async run(input, ctx) {
@@ -398,6 +409,7 @@ const generateAudiences: Skill = {
 const createCampaign: Skill = {
   name: "create_ad_campaign",
   label: "קמפיין ממומן ב-Meta / Google",
+  descHe: "בונה ומעלה קמפיין ממומן ב-Meta או ב-Google Ads מקצה לקצה: מבנה, קהלים, מודעות, מילות מפתח, תקציב ורדיוס. מוציא כסף, ולכן תמיד דורש אישור.",
   description: "Build and launch a paid campaign end to end on Meta and/or Google Ads: structure (CBO/ABO), audiences, creatives, keywords, budget, location radius. Spends money - always needs approval. Prepare creatives and landing page first.",
   gated: true,
   input_schema: {
@@ -458,6 +470,7 @@ const createCampaign: Skill = {
 const report: Skill = {
   name: "performance_report",
   label: "דוח ביצועים",
+  descHe: "מסכם מה נוצר ואיך הוא מתפקד: נכסים, פרסומים, צפיות ולידים בדפי הנחיתה, ומצב הקמפיינים בשבוע האחרון.",
   description: "Summarize what was produced and how it performs: assets, scheduled/published posts, landing page views and leads, campaign status and metrics for the last 7 days.",
   input_schema: { type: "object", properties: {} },
   async run(_i, ctx) {
@@ -477,6 +490,7 @@ const report: Skill = {
 const listAssets: Skill = {
   name: "list_assets",
   label: "רשימת נכסים",
+  descHe: "מציג את הנכסים האחרונים, כדי שמנהל החשבון יוכל להפנות אליהם בתזמון או בקמפיין.",
   description: "List the latest assets (id, type, title, url) so you can reference them for scheduling or campaigns.",
   input_schema: { type: "object", properties: { type: { type: "string" } } },
   async run(input, ctx) {
