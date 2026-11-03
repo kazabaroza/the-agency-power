@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JAP · שמן חוחובה אורגני</title>
+<meta name="description" content="JAP: שמן חוחובה אורגני. סופר־פוד לעור שלך, שהולך איתך לכל מקום.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23170c16'/><circle cx='16' cy='18' r='6' fill='%23f2a93b'/></svg>">
+<script>
+  /* Language is decided before anything paints. #en / #he (or ?lang=) wins, then a remembered
+     choice, then Hebrew. Storage can throw in private windows, so it is guarded. */
+  (function () {
+    var h = location.hash.slice(1), q = new URLSearchParams(location.search).get("lang"), saved = null;
+    if (h === "en" || h === "he") q = h;
+    try { saved = localStorage.getItem("jap-lang"); } catch (e) {}
+    var lang = q === "en" || q === "he" ? q : (saved === "en" ? "en" : "he");
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "he" ? "rtl" : "ltr";
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@300;400;500&family=Assistant:wght@300;400;600&display=swap">
+<link rel="stylesheet" href="scrollcraft.css">
+<style>
+  :root {
+    --sc-canvas:     #24110f;
+    --sc-surface:    #2e1814;
+    --sc-ink:        #f7ecdf;
+    --sc-ink-soft:   #cdb5a4;
+    --sc-accent:     #f2a93b;
+    --sc-accent-ink: #1a0d06;
+    --sc-font-display: "Frank Ruhl Libre", Georgia, serif;
+    --sc-font-text:    "Assistant", system-ui, sans-serif;
+    --gold-hi: #ffe2a0;
+    --gold-lo: #9c5410;
+  }
+  body { background: var(--sc-canvas); color: var(--sc-ink); font-family: var(--sc-font-text); }
+  :lang(he) .sc-display, :lang(he) .poster { letter-spacing: -0.005em; }
+  .sc-display { font-weight: 400; }
+
+  /* ---------------------------------------------------------- corner bar -- */
+  .corner {
+    position: absolute; z-index: 30; inset-inline: var(--sc-gutter); top: clamp(1rem, 3vh, 1.75rem);
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: var(--sc-t-sm, 0.9rem); letter-spacing: 0.02em;
+  }
+  .corner a { text-decoration: none; color: var(--sc-ink); opacity: .86; padding: .6rem .2rem; }
+  .corner a:hover { opacity: 1; text-decoration: underline; }
+  .corner__mark { font-family: var(--sc-font-display); font-size: 1.15rem; letter-spacing: .14em; opacity: 1 !important; }
+  .corner__links { display: flex; gap: 1.4rem; }
+
+  /* ---------------------------------------------------------------- hero -- */
+  .hero { position: relative; height: 100vh; height: 100svh; min-height: 34rem; overflow: clip; isolation: isolate;
+    background: linear-gradient(180deg, #2a1430 0%, #5b2342 24%, #b4485a 46%, #ec8a57 64%, #ffc98a 76%, #ffd9a4 82%); }
+  .plane { position: absolute; inset: 0; pointer-events: none; }
+  .plane svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; max-width: none; }
+  .sun { position: absolute; width: clamp(9rem, 16vw, 17rem); aspect-ratio: 1; border-radius: 50%;
+    left: 50%; top: 52%; translate: -50% 0;
+    background: radial-gradient(circle at 50% 50%, #fff6dc 0 38%, #ffd58c 58%, rgba(255,186,110,.0) 72%);
+    box-shadow: 0 0 120px 40px rgba(255,170,100,.35); }
+  .wordmark { position: absolute; inset-inline: 0; bottom: 21%; text-align: center; line-height: .78;
+    font-family: var(--sc-font-display); font-weight: 300; font-size: clamp(9rem, 38vw, 44rem);
+    letter-spacing: -0.045em; color: #7c2f2a; opacity: .9; user-select: none; direction: ltr; }
+  .hero__copy { position: absolute; z-index: 20; inset-inline-start: var(--sc-gutter); top: clamp(4.5rem, 13vh, 8rem); max-width: min(30rem, 80vw); }
+  .hero__copy h1 { font-size: clamp(2.1rem, 4.2vw, 3.6rem); line-height: 1.04; }
+  .hero__copy p { margin-top: 1rem; font-size: clamp(1.02rem, 1.25vw, 1.18rem); line-height: 1.55; color: #ecd6cb; max-width: 34ch; }
+  .hero__fade { position: absolute; inset-inline: 0; bottom: 0; height: 22vh; z-index: 15; pointer-events: none;
+    background: linear-gradient(180deg, transparent, #24110f 92%); }
+
+  /* -------------------------------------------------------------- origin -- */
+  .origin [data-sc-stage] { display: grid; place-items: center; }
+  .origin__word { font-family: var(--sc-font-display); font-weight: 300; line-height: .9; white-space: nowrap;
+    font-size: clamp(5rem, 22vw, 24rem); color: #8f3b2c;
+    transform: scale(calc(1 + 2.1 * (1 - min(1, var(--sc-p, 0) / 0.62))));
+    opacity: calc(0.35 + 0.65 * min(1, var(--sc-p, 0) / 0.62)); will-change: transform; }
+  .origin__copy { position: absolute; inset-inline-start: var(--sc-gutter); bottom: clamp(3rem, 12vh, 8rem); max-width: 32rem; }
+  .origin__copy .sc-lede { color: var(--sc-ink); }
+  .origin__ridge { position: absolute; inset-inline: 0; bottom: 0; height: 26vh; pointer-events: none; }
+  .origin__ridge svg { width: 100%; height: 100%; display: block; }
+
+  /* ---------------------------------------------------------------- turn -- */
+  .turn { padding-block: clamp(3rem, 8vh, 6rem) clamp(5rem, 14vh, 10rem); }
+  .turn__grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--sc-5, 1.5rem); align-items: end; }
+  .turn__head { grid-column: 1 / span 9; padding-block: .12em .2em; }
+  .turn__head h2 { font-size: clamp(3.2rem, 9vw, 9.5rem); line-height: 1; }
+  .turn__body { grid-column: 7 / span 6; }
+  .turn__body .sc-body { color: var(--sc-ink-soft); font-size: clamp(1.05rem, 1.3vw, 1.22rem); line-height: 1.6; }
+  .turn__body strong { color: var(--sc-ink); font-weight: 600; }
+
+  /* ---------------------------------------------------------------- peak -- */
+  .peak {
+    --form: clamp(0, calc(var(--sc-p, 0) / 0.40), 1);
+    --fall: clamp(0, calc((var(--sc-p, 0) - 0.42) / 0.14), 1);
+    --land: clamp(0, calc((var(--sc-p, 0) - 0.56) / 0.20), 1);
+  }
+  .pipette { position: absolute; left: 50%; top: 0; width: clamp(2.4rem, 3.4vw, 3.2rem); height: 27svh; translate: -50% 0; }
+  .pipette svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .drop { position: absolute; left: 50%; top: 27svh; width: clamp(1.4rem, 2vw, 1.9rem); aspect-ratio: .82;
+    border-radius: 50% 50% 50% 50% / 58% 58% 42% 42%;
+    background: radial-gradient(circle at 36% 30%, #fff4cf 0 12%, var(--gold-hi) 22%, var(--sc-accent) 55%, var(--gold-lo) 100%);
+    box-shadow: 0 0 22px 4px rgba(242,169,59,.35);
+    transform-origin: 50% 0;
+    transform: translate(-50%, calc(var(--fall) * var(--fall) * 46svh)) scale(calc(0.22 + 0.78 * var(--form)), calc((0.22 + 0.78 * var(--form)) * (1 + 0.22 * var(--fall))));
+    opacity: calc(1 - min(1, var(--land) * 6)); will-change: transform; }
+  .pool { position: absolute; left: 50%; top: 75svh; width: min(64rem, 92vw); height: 11rem; translate: -50% -50%;
+    background: radial-gradient(50% 50% at 50% 50%, rgba(255,205,120,.55), rgba(242,169,59,.18) 45%, transparent 72%);
+    transform: scale(calc(0.2 + 0.8 * var(--land)), calc(0.2 + 0.8 * var(--land))); opacity: calc(var(--land) * 1); }
+  .ring { position: absolute; left: 50%; top: 75svh; width: 9rem; height: 2.2rem; border-radius: 50%;
+    border: 1.5px solid rgba(255,214,150,.9); translate: -50% -50%;
+    transform: scale(calc(0.1 + var(--land) * 5.5)); opacity: calc((1 - var(--land)) * min(1, var(--land) * 25)); }
+  .ring--late { transform: scale(calc(0.1 + max(0, var(--land) - .18) * 6.5)); opacity: calc((1 - var(--land)) * min(1, max(0, var(--land) - .18) * 25) * .7); }
+  .peak__word { position: absolute; inset-inline: 0; top: 33svh; text-align: center; }
+  .peak__word h2 { font-size: clamp(4.4rem, 17vw, 17rem); line-height: 1; font-weight: 300; }
+  .peak__sub { position: absolute; inset-inline: 0; top: 84svh; text-align: center; }
+  .peak__sub p { margin-inline: auto; font-size: clamp(1.02rem, 1.3vw, 1.2rem); color: var(--sc-ink-soft); }
+
+  /* ----------------------------------------------------------- substance -- */
+  .facts { padding-block: clamp(3rem, 8vh, 6rem) var(--sc-section); }
+  .facts__grid { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--sc-5, 1.5rem); row-gap: clamp(4rem, 12vh, 8rem); }
+  .fact h3 { font-family: var(--sc-font-display); font-weight: 400; margin: 0; line-height: 1.02; letter-spacing: -0.01em; }
+  .fact p { margin-top: .9rem; color: var(--sc-ink-soft); max-width: 34ch; line-height: 1.55; font-size: 1.05rem; }
+  .fact--xl { grid-column: 1 / span 8; } .fact--xl h3 { font-size: clamp(4rem, 11vw, 11rem); color: var(--sc-accent); font-weight: 300; }
+  .fact--md { grid-column: 7 / span 6; } .fact--md h3 { font-size: clamp(2rem, 4vw, 3.6rem); }
+  .fact--sm { grid-column: 2 / span 5; } .fact--sm h3 { font-size: clamp(1.5rem, 2.4vw, 2.2rem); }
+  .fact--wide { grid-column: 1 / -1; } .fact--wide h3 { font-size: clamp(2.2rem, 6.4vw, 6.6rem); font-weight: 300; }
+  .fact--end { grid-column: 5 / span 8; } .fact--end h3 { font-size: clamp(2.4rem, 5vw, 4.6rem); }
+  .fact--wide .uses { display: flex; flex-wrap: wrap; column-gap: .45em; }
+  .uses span + span::before { content: "·"; color: var(--sc-accent); margin-inline-end: .45em; }
+
+  /* --------------------------------------------------------------- close -- */
+  .close [data-sc-stage] { display: grid; align-content: center; }
+  .stars { position: absolute; inset: 0 0 30% 0; pointer-events: none;
+    background-image:
+      radial-gradient(1.2px 1.2px at 12% 22%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 28% 12%, #fbe9cf 50%, transparent 51%),
+      radial-gradient(1.4px 1.4px at 46% 30%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 63% 9%, #fff 50%, transparent 51%),
+      radial-gradient(1.2px 1.2px at 77% 26%, #fbe9cf 50%, transparent 51%),
+      radial-gradient(1px 1px at 88% 15%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 36% 44%, #fff 50%, transparent 51%),
+      radial-gradient(1.2px 1.2px at 7% 52%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 94% 48%, #fbe9cf 50%, transparent 51%),
+      radial-gradient(1px 1px at 55% 56%, #fff 50%, transparent 51%);
+    opacity: .7; }
+  .close__ridge { position: absolute; inset-inline: 0; bottom: 0; height: 30vh; pointer-events: none; }
+  .close__ridge svg { width: 100%; height: 100%; display: block; }
+  .close__inner { position: relative; z-index: 2; padding-inline: var(--sc-gutter); max-width: 34rem; margin-inline-start: clamp(0rem, 8vw, 9rem); }
+  .close__mark { font-family: var(--sc-font-display); font-size: 2rem; letter-spacing: .16em; margin: 0; }
+  .close__line { margin-top: .8rem; color: var(--sc-ink-soft); font-size: 1.15rem; line-height: 1.55; max-width: 32ch; }
+  .buy { display: inline-block; margin-top: 1.6rem; font-size: 1.08rem; color: var(--sc-accent); text-decoration: underline;
+    text-underline-offset: .3em; text-decoration-thickness: 1px; padding-block: .5rem; }
+  .buy:hover { text-decoration-thickness: 2px; }
+  .foot { position: absolute; z-index: 3; inset-inline: var(--sc-gutter); bottom: clamp(1rem, 3vh, 1.6rem);
+    display: flex; justify-content: space-between; gap: 1rem; font-size: .85rem; color: #a8918a; }
+  .foot a { color: inherit; padding: .5rem 0; }
+
+  /* --------------------------------------------------------------- sheen -- */
+  .sheen { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 40; mix-blend-mode: screen; }
+
+  /* -------------------------------------------------------------- phones -- */
+  @media (max-width: 760px) {
+    .wordmark { font-size: 54vw; bottom: 27%; }
+    .hero__copy { top: 4.6rem; }
+    .hero__copy h1 { font-size: 2.15rem; }
+    .turn__head, .turn__body, .fact--xl, .fact--md, .fact--sm, .fact--end { grid-column: 1 / -1; }
+    .fact--md, .fact--end { padding-inline-start: 12%; }
+    .peak__word { top: 36svh; }
+    .close__inner { margin-inline-start: 0; }
+    .foot { flex-direction: column; gap: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .peak { --form: 1; --fall: 1; --land: 1; }
+    .origin__word { transform: none; opacity: 1; }
+    .sheen { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<span data-sc-progress></span>
+<div class="sc-grain" aria-hidden="true"></div>
+
+<main id="top">
+
+  <!-- 1 · ARRIVAL: flow + layered parallax. Planes back to front; the copy and
+       the foreground ride at 1x. Bottle and its shadow share the mid plane, so
+       the contact never slips. -->
+  <section class="hero" data-sc-act="flow" data-sc-drift="#24110f">
+    <nav class="corner" aria-label="JAP">
+      <a class="corner__mark" href="#top" aria-label="JAP">JAP</a>
+      <div class="corner__links">
+        <a href="#en" data-l="he" data-lang-switch="en" lang="en">English</a>
+        <a href="#he" data-l="en" data-lang-switch="he" lang="he">עברית</a>
+        <a href="#buy" data-l="he">לרכישה</a>
+        <a href="#buy" data-l="en">Shop JAP</a>
+      </div>
+    </nav>
+
+    <div class="plane" data-sc-parallax="5" aria-hidden="true"><div class="sun"></div></div>
+
+    <div class="plane" data-sc-parallax="2.6" aria-hidden="true">
+      <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice">
+        <defs><linearGradient id="far" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e59a76"/><stop offset=".5" stop-color="#c96b55"/></linearGradient></defs>
+        <path d="M0 590 C 180 540 360 520 560 556 C 720 584 860 600 1040 566 C 1220 532 1420 520 1600 552 L1600 1400 L0 1400 Z" fill="url(#far)"/>
+      </svg>
+    </div>
+
+    <div class="plane" data-sc-parallax="1.8" aria-hidden="true"><div class="wordmark">JAP</div></div>
+
+    <div class="plane" data-sc-parallax="0.9" aria-hidden="true">
+      <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice">
+        <defs>
+          <linearGradient id="mid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b6583a"/><stop offset=".35" stop-color="#8c3d27"/><stop offset="1" stop-color="#5a2418"/></linearGradient>
+          <linearGradient id="crest" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffcf9a" stop-opacity=".0"/><stop offset=".35" stop-color="#ffcf9a" stop-opacity=".55"/><stop offset=".7" stop-color="#ffcf9a" stop-opacity=".0"/></linearGradient>
+          <linearGradient id="glass" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#2c0f04"/><stop offset=".16" stop-color="#7a300c"/><stop offset=".32" stop-color="#c8681d"/>
+            <stop offset=".5" stop-color="#8a3a10"/><stop offset=".82" stop-color="#4a1b07"/><stop offset="1" stop-color="#220b03"/>
+          </linearGradient>
+          <radialGradient id="glow" cx=".42" cy=".8" r=".55"><stop offset="0" stop-color="#ffb347" stop-opacity=".55"/><stop offset="1" stop-color="#ffb347" stop-opacity="0"/></radialGradient>
+          <linearGradient id="cap" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#050404"/><stop offset=".3" stop-color="#3a3532"/><stop offset=".5" stop-color="#141212"/><stop offset="1" stop-color="#030303"/></linearGradient>
+          <filter id="soft" x="-50%" y="-200%" width="200%" height="500%"><feGaussianBlur stdDeviation="6"/></filter>
+        </defs>
+        <path d="M0 640 C 220 600 480 612 640 668 C 720 692 880 692 960 668 C 1120 620 1380 592 1600 626 L1600 1400 L0 1400 Z" fill="url(#mid)"/>
+        <path d="M0 640 C 220 600 480 612 640 668 C 720 692 880 692 960 668" fill="none" stroke="url(#crest)" stroke-width="3"/>
+        <!-- contact shadow: the sun is low and behind, so it falls long and forward -->
+        <ellipse cx="826" cy="688" rx="120" ry="10" fill="#2a0e08" opacity=".7" filter="url(#soft)"/>
+        <ellipse cx="800" cy="686" rx="62" ry="5" fill="#1a0805" opacity=".85"/>
+        <!-- bottle -->
+        <g>
+          <path d="M752 686 Q740 686 740 672 V522 Q740 490 770 482 L786 478 V458 H814 V478 L830 482 Q860 490 860 522 V672 Q860 686 848 686 Z" fill="url(#glass)"/>
+          <path d="M752 686 Q740 686 740 672 V522 Q740 490 770 482 L786 478 V458 H814 V478 L830 482 Q860 490 860 522 V672 Q860 686 848 686 Z" fill="url(#glow)"/>
+          <rect x="749" y="512" width="5" height="160" rx="2.5" fill="#ffd9a0" opacity=".38"/>
+          <rect x="846" y="520" width="2" height="150" rx="1" fill="#ffb070" opacity=".25"/>
+          <rect x="780" y="418" width="40" height="44" rx="4" fill="url(#cap)"/>
+          <g stroke="#000" stroke-opacity=".55" stroke-width="1">
+            <line x1="786" y1="420" x2="786" y2="460"/><line x1="792" y1="420" x2="792" y2="460"/><line x1="798" y1="420" x2="798" y2="460"/>
+            <line x1="804" y1="420" x2="804" y2="460"/><line x1="810" y1="420" x2="810" y2="460"/><line x1="816" y1="420" x2="816" y2="460"/>
+          </g>
+          <path d="M787 420 V392 Q787 366 800 366 Q813 366 813 392 V420 Z" fill="url(#cap)"/>
+          <rect x="790" y="372" width="3" height="40" rx="1.5" fill="#fff" opacity=".18"/>
+          <text x="800" y="584" text-anchor="middle" font-family="Frank Ruhl Libre, Georgia, serif" font-size="34" fill="#f7ecdf" letter-spacing="2">JAP</text>
+          <text x="800" y="604" text-anchor="middle" font-family="Assistant, sans-serif" font-size="7" fill="#f2dcc8" letter-spacing="1.6">ORGANIC JOJOBA OIL</text>
+          <line x1="776" y1="616" x2="824" y2="616" stroke="#f2a93b" stroke-width=".8" opacity=".8"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="plane" aria-hidden="true" style="z-index:12">
+      <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice">
+        <defs><linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a1d14"/><stop offset=".25" stop-color="#2c120d"/><stop offset="1" stop-color="#24110f"/></linearGradient></defs>
+        <path d="M0 742 C 260 704 520 800 800 812 C 1080 824 1320 724 1600 712 L1600 1400 L0 1400 Z" fill="url(#fg)"/>
+        <path d="M0 742 C 260 704 520 800 800 812" fill="none" stroke="#c8704a" stroke-opacity=".35" stroke-width="2"/>
+      </svg>
+    </div>
+
+    <div class="hero__fade" aria-hidden="true"></div>
+
+    <div class="hero__copy">
+      <h1 class="sc-display" data-l="he">סופר־פוד אורגני לעור שלך.</h1>
+      <h1 class="sc-display" data-l="en">An organic superfood for your skin.</h1>
+      <p data-l="he">שמן חוחובה אורגני שהולך איתך לכל מקום, ומטפל בך.</p>
+      <p data-l="en">Organic jojoba oil that goes everywhere with you, and takes care of you.</p>
+    </div>
+  </section>
+
+  <!-- 2 · ORIGIN: pin, scale driven from --sc-p. The word is the ground, so
+       the stage is never empty while it slides in. -->
+  <section class="origin" data-sc-act="pin" data-sc-span="2" data-sc-drift="#2a1311">
+    <div data-sc-stage>
+      <div class="origin__word" aria-hidden="true"><span data-l="he">מדבר</span><span data-l="en">Desert</span></div>
+      <div class="origin__ridge" aria-hidden="true">
+        <svg viewBox="0 0 1600 300" preserveAspectRatio="none"><path d="M0 170 C 300 120 520 150 760 190 C 1000 230 1260 170 1600 140 L1600 300 L0 300 Z" fill="#1d0c0b"/><path d="M0 170 C 300 120 520 150 760 190 C 1000 230 1260 170 1600 140" fill="none" stroke="#e0784e" stroke-opacity=".35" stroke-width="1.5"/></svg>
+      </div>
+      <div class="origin__copy">
+        <p class="sc-lede" data-l="he" data-sc-cue="0.34 1">חוחובה הוא שיח מדברי. הוא עומד בחום של היום ובקור של הלילה, ושומר את כל מה שיש לו בתוך הזרע.</p>
+        <p class="sc-lede" data-l="en" data-sc-cue="0.34 1">Jojoba is a desert shrub. It stands through the heat of the day and the cold of the night, and keeps everything it has inside its seed.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · TURN: flow + reveal across the letterforms (on a wrapper, so the
+       wipe does not shave the ascenders). -->
+  <section class="turn" data-sc-act="flow" data-sc-drift="#22101a">
+    <div class="sc-wrap turn__grid">
+      <div class="turn__head" data-sc-reveal="right" data-sc-reveal-at="0.12 0.46">
+        <h2 class="sc-display" data-l="he">זה בכלל לא שמן.</h2>
+        <h2 class="sc-display" data-l="en">It isn't really an oil.</h2>
+      </div>
+      <div class="turn__body sc-stack" data-sc-in data-sc-stagger="70">
+        <p class="sc-body" data-l="he">מבחינה כימית, חוחובה היא <strong>שעווה נוזלית</strong>. המבנה שלה קרוב מאוד לסבום, השומן הטבעי שהעור מייצר בעצמו.</p>
+        <p class="sc-body" data-l="he">לכן העור מקבל אותה כמו משהו שהוא כבר מכיר.</p>
+        <p class="sc-body" data-l="en">Chemically, jojoba is a <strong>liquid wax</strong>. Its structure is remarkably close to sebum, the oil your skin makes on its own.</p>
+        <p class="sc-body" data-l="en">So your skin takes it in like something it already knows.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · PEAK: pin, the longest span on the page. ~40% of authored silence
+       while the drop gathers, then it falls, lands, and the word opens. -->
+  <section class="peak" data-sc-act="pin" data-sc-span="3.4" data-sc-drift="#170c16">
+    <div data-sc-stage>
+      <div class="pipette" aria-hidden="true">
+        <svg viewBox="0 0 40 240" preserveAspectRatio="xMidYMax meet">
+          <defs><linearGradient id="tube" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity=".08"/><stop offset=".3" stop-color="#fff" stop-opacity=".34"/><stop offset=".7" stop-color="#fff" stop-opacity=".06"/><stop offset="1" stop-color="#fff" stop-opacity=".16"/></linearGradient>
+            <linearGradient id="oilIn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2a93b" stop-opacity="0"/><stop offset=".5" stop-color="#f2a93b" stop-opacity=".55"/><stop offset="1" stop-color="#ffcf7a" stop-opacity=".9"/></linearGradient></defs>
+          <path d="M10 -400 H30 V200 Q30 214 22 236 Q20 240 18 236 Q10 214 10 200 Z" fill="url(#tube)" stroke="#ffffff" stroke-opacity=".28" stroke-width=".8"/>
+          <path d="M14 120 H26 V202 Q26 214 20.6 232 Q20 234 19.4 232 Q14 214 14 202 Z" fill="url(#oilIn)"/>
+        </svg>
+      </div>
+      <div class="pool" aria-hidden="true"></div>
+      <div class="ring" aria-hidden="true"></div>
+      <div class="ring ring--late" aria-hidden="true"></div>
+      <div class="drop" aria-hidden="true"></div>
+      <div class="peak__word">
+        <h2 class="sc-display" data-l="he" data-sc-cue="0.57 1 0.05 0.05" data-sc-kinetic="words">ליטוף.</h2>
+        <h2 class="sc-display" data-l="en" data-sc-cue="0.57 1 0.05 0.05" data-sc-kinetic="words">A caress.</h2>
+      </div>
+      <div class="peak__sub">
+        <p data-l="he" data-sc-cue="0.66 1 0.06 0.05">טיפה אחת. כפות ידיים חמות. זה כל הטקס.</p>
+        <p data-l="en" data-sc-cue="0.66 1 0.06 0.05">One drop. Warm hands. That's the whole ritual.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 · SUBSTANCE: flow + in. Facts at very different sizes; nothing shouted. -->
+  <section class="facts" data-sc-act="flow" data-sc-drift="#130b14">
+    <div class="sc-wrap facts__grid">
+      <div class="fact fact--xl" data-sc-in>
+        <h3 data-l="he" lang="en">Vitamin E</h3><h3 data-l="en">Vitamin E</h3>
+        <p data-l="he">בטבעה, חוחובה מכילה ויטמין E.</p>
+        <p data-l="en">Jojoba naturally carries vitamin E.</p>
+      </div>
+      <div class="fact fact--md" data-sc-in>
+        <h3 data-l="he">נספג, בלי שכבה שמנונית.</h3><h3 data-l="en">Soaks in. No greasy film.</h3>
+        <p data-l="he">העור נשאר רך, ואפשר להמשיך ביום.</p>
+        <p data-l="en">Skin stays soft, and you get on with your day.</p>
+      </div>
+      <div class="fact fact--sm" data-sc-in>
+        <h3 data-l="he">לא סותם נקבוביות.</h3><h3 data-l="en">Won't clog pores.</h3>
+        <p data-l="he">חוחובה נחשבת לא קומדוגנית, ולכן מתאימה גם לעור מעורב.</p>
+        <p data-l="en">Jojoba is considered non-comedogenic, so it suits combination skin too.</p>
+      </div>
+      <div class="fact fact--md" data-sc-in>
+        <h3 data-l="he">עמידה במיוחד.</h3><h3 data-l="en">Unusually stable.</h3>
+        <p data-l="he">היא עמידה לחמצון, ולכן נשמרת זמן רב בלי לאבד מאיכותה.</p>
+        <p data-l="en">It resists oxidation, so it keeps for a long time without losing quality.</p>
+      </div>
+      <div class="fact fact--wide" data-sc-in>
+        <h3 class="uses" data-l="he"><span>פנים</span><span>גוף</span><span>שיער</span><span>זקן</span><span>ציפורניים</span></h3>
+        <h3 class="uses" data-l="en"><span>Face</span><span>Body</span><span>Hair</span><span>Beard</span><span>Nails</span></h3>
+      </div>
+      <div class="fact fact--end" data-sc-in>
+        <h3 data-l="he">הולך איתך לכל מקום.</h3><h3 data-l="en">Goes everywhere with you.</h3>
+        <p data-l="he">בתיק, ברכב, ליד המיטה. כשהעור מבקש, הוא שם.</p>
+        <p data-l="en">In your bag, in the car, by the bed. When your skin asks, it's there.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · CLOSE: short pin, inverted. Night ground, the smallest type on the
+       page, one link. One-value cues hold to the end. -->
+  <section id="buy" class="close" data-sc-act="pin" data-sc-span="1.3" data-sc-drift="#0c0910">
+    <div data-sc-stage>
+      <div class="stars" aria-hidden="true"></div>
+      <div class="close__ridge" aria-hidden="true">
+        <svg viewBox="0 0 1600 300" preserveAspectRatio="none"><path d="M0 200 C 320 150 600 190 860 222 C 1120 254 1360 196 1600 170 L1600 300 L0 300 Z" fill="#07050a"/></svg>
+      </div>
+      <div class="close__inner" data-sc-cue="0.1">
+        <p class="close__mark">JAP</p>
+        <p class="close__line" data-l="he">שמן חוחובה אורגני. סופר־פוד לעור שלך, שהולך איתך לכל מקום ומטפל בך.</p>
+        <p class="close__line" data-l="en">Organic jojoba oil. A superfood for your skin that goes everywhere with you and takes care of you.</p>
+        <!-- TODO(client): replace # with the real shop URL. -->
+        <a class="buy" href="#" data-l="he">לרכישה ←</a>
+        <a class="buy" href="#" data-l="en">Shop JAP →</a>
+      </div>
+      <footer class="foot">
+        <span>© JAP</span>
+        <span>
+          <a href="#en" data-l="he" data-lang-switch="en" lang="en">English</a>
+          <a href="#he" data-l="en" data-lang-switch="he" lang="he">עברית</a>
+        </span>
+      </footer>
+    </div>
+  </section>
+
+</main>
+
+<canvas class="sheen" aria-hidden="true"></canvas>
+
+<script>
+  /* Keep only the current language's nodes, before the engine measures anything. */
+  (function () {
+    var lang = document.documentElement.lang;
+    document.querySelectorAll("[data-l]").forEach(function (n) {
+      if (n.getAttribute("data-l") !== lang) n.remove();
+    });
+    // In RTL the wipe opens from the reading edge.
+    if (lang === "en") document.querySelectorAll('[data-sc-reveal="right"]').forEach(function (n) { n.setAttribute("data-sc-reveal", "left"); });
+    document.querySelectorAll("[data-lang-switch]").forEach(function (a) {
+      a.addEventListener("click", function () {
+        try { localStorage.setItem("jap-lang", a.getAttribute("data-lang-switch")); } catch (e) {}
+      });
+    });
+    addEventListener("hashchange", function () {
+      var h = location.hash.slice(1);
+      if ((h === "en" || h === "he") && h !== lang) location.reload();
+    });
+  })();
+</script>
+<script src="scrollcraft.js"></script>
+<script>ScrollCraft.mount(document.body);</script>
+<script>
+  /* Signature move: the sheen. Your hand leaves warm light on the page, like oil
+     on skin, and it soaks away over about two seconds. Bespoke to this page; the
+     engine is untouched. Off under reduced motion. */
+  (function () {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var c = document.querySelector(".sheen"), ctx = c.getContext("2d");
+    var dpr = Math.min(2, window.devicePixelRatio || 1), w = 0, h = 0, last = null, alive = 0, raf = 0;
+    function size() { w = innerWidth; h = innerHeight; c.width = w * dpr; c.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+    size(); addEventListener("resize", size);
+    function dab(x, y, r, a) {
+      var g = ctx.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, "rgba(255,214,150," + a + ")");
+      g.addColorStop(.45, "rgba(242,169,59," + a * .45 + ")");
+      g.addColorStop(1, "rgba(242,169,59,0)");
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+    }
+    function stroke(x, y, touch) {
+      ctx.globalCompositeOperation = "lighter";
+      var r = touch ? 46 : 34, a = touch ? .09 : .07;
+      if (last) {
+        var dx = x - last.x, dy = y - last.y, d = Math.hypot(dx, dy), n = Math.min(24, Math.ceil(d / 6));
+        if (d > 220) n = 1;
+        for (var i = 1; i <= n; i++) dab(last.x + dx * i / n, last.y + dy * i / n, r, a);
+      } else dab(x, y, r, a);
+      last = { x: x, y: y }; alive = 150;
+      if (!raf) raf = requestAnimationFrame(tick);
+    }
+    function tick() {
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.fillStyle = "rgba(0,0,0,.035)"; ctx.fillRect(0, 0, w, h);
+      if (--alive > 0) raf = requestAnimationFrame(tick);
+      else { ctx.clearRect(0, 0, w, h); raf = 0; }
+    }
+    addEventListener("pointermove", function (e) { if (e.pointerType === "mouse" || e.pointerType === "pen") stroke(e.clientX, e.clientY, false); }, { passive: true });
+    addEventListener("pointerleave", function () { last = null; });
+    addEventListener("touchmove", function (e) { var t = e.touches[0]; if (t) stroke(t.clientX, t.clientY, true); }, { passive: true });
+    addEventListener("touchend", function () { last = null; }, { passive: true });
+  })();
+</script>
+</body>
+</html>
