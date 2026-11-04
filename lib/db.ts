@@ -88,11 +88,15 @@ export const id = (prefix = "") => prefix + crypto.randomBytes(9).toString("base
 type Row = Record<string, unknown>;
 type Param = string | number | null | bigint;
 
+// node:sqlite returns rows with a null prototype; React refuses to pass those to
+// client components, so rows are copied into plain objects.
+const plain = <T,>(r: unknown) => (r ? ({ ...(r as object) } as T) : undefined);
+
 export function all<T = Row>(sql: string, ...params: Param[]): T[] {
-  return db().prepare(sql).all(...params) as T[];
+  return db().prepare(sql).all(...params).map((r) => plain<T>(r) as T);
 }
 export function get<T = Row>(sql: string, ...params: Param[]): T | undefined {
-  return db().prepare(sql).get(...params) as T | undefined;
+  return plain<T>(db().prepare(sql).get(...params));
 }
 export function run(sql: string, ...params: Param[]) {
   return db().prepare(sql).run(...params);

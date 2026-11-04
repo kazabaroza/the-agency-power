@@ -18,7 +18,7 @@ export default function AssetCard({ a }: { a: Asset }) {
       {(a.type === "post" || a.type === "carousel" || a.type === "banner") && images.length > 0 && (
         <div className="relative bg-black/25">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={images[i]} alt={a.title} className="mx-auto max-h-[420px] w-auto" />
+          <img src={images[i]} alt={a.title} className="mx-auto h-auto max-h-[420px] w-auto max-w-full object-contain" />
           {images.length > 1 && (
             <div className="absolute inset-x-0 bottom-2 flex justify-center gap-1">
               {images.map((_, k) => <button key={k} onClick={() => setI(k)} className={`h-2 w-2 rounded-full ${k === i ? "bg-brand" : "bg-white/80"}`} aria-label={`שקף ${k + 1}`} />)}
