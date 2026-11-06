@@ -3,6 +3,7 @@ import { publish, type Platform, type PublishResult } from "./providers/social";
 import { pollVideo } from "./providers/media";
 import { addMessage } from "./conversation";
 import { notifyUser } from "./notify";
+import { dailyBackup } from "./backup";
 
 /** Publishes one scheduled post to all of its platforms. */
 export async function publishScheduled(sid: string): Promise<PublishResult[]> {
@@ -18,8 +19,13 @@ export async function publishScheduled(sid: string): Promise<PublishResult[]> {
   return results;
 }
 
-/** Runs every minute: due posts and finished videos. */
+/** Runs every minute: daily database backup, due posts and finished videos. */
 export async function tick() {
+  try {
+    dailyBackup();
+  } catch (e) {
+    console.error("[backup] failed", e);
+  }
   const due = all<{ id: string }>("SELECT id FROM scheduled_posts WHERE status = 'scheduled' AND run_at <= ?", new Date().toISOString());
   for (const d of due) await publishScheduled(d.id).catch((e) => console.error("[scheduler] publish", e));
 

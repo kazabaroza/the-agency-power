@@ -10,6 +10,10 @@ on:
         description: "Destroy existing machines first (data on the volume is kept)"
         type: boolean
         default: false
+      restore_db_copy:
+        description: "Restore the database from a daily copy, e.g. agency-2026-11-05.db (leave empty for a normal deploy)"
+        type: string
+        default: ""
   push:
     branches: [main]
 
@@ -113,6 +117,19 @@ jobs:
             echo "destroying $id"; flyctl machines destroy "$id" -a "$APP" --force
           done
 
+      - name: Restore database from a daily copy
+        if: steps.token.outputs.skip != 'true' && inputs.restore_db_copy != ''
+        env:
+          COPY: ${{ inputs.restore_db_copy }}
+        run: |
+          if ! printf '%s' "$COPY" | grep -Eq '^agency-[0-9]{4}-[0-9]{2}-[0-9]{2}\.db$'; then
+            echo "::error title=restore::Name must look like agency-2026-11-05.db"; exit 1
+          fi
+          # Keep the current database first, then put the copy in place; the deploy below restarts the app.
+          flyctl ssh console -a "$APP" -C "sh -c 'test -f /data/backups/$COPY && cp /data/agency.db /data/backups/before-restore-\$(date +%Y%m%d%H%M%S).db && cp /data/backups/$COPY /data/agency.db && rm -f /data/agency.db-wal /data/agency.db-shm && echo restored'" | tee restore.log
+          grep -q restored restore.log || { echo "::error title=restore::Copy $COPY not found on the server"; exit 1; }
+          echo "::notice title=restore::Database restored from $COPY (previous state kept in /data/backups)."
+
       - name: Deploy
         if: steps.token.outputs.skip != 'true'
         run: |
@@ -166,6 +183,21 @@ jobs:
           } | tr -d '\r' | sed 's/\x1b\[[0-9;]*m//g' | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
           echo "::error title=deploy::${msg}"
           exit 1
+
+      - name: Backups (volume snapshots + daily database copies)
+        if: steps.token.outputs.skip != 'true'
+        run: |
+          set +e
+          VOL=$(flyctl volumes list -a "$APP" --json | jq -r '[.[] | select(.name=="agency_data")][0].id // empty')
+          if [ -z "$VOL" ]; then echo "::warning title=backups::volume agency_data not found"; exit 0; fi
+          upd=$(flyctl volumes update "$VOL" -a "$APP" --scheduled-snapshots=true --snapshot-retention "${SNAPSHOT_RETENTION:-30}" 2>&1 | tail -n 2 | tr '\n' ' ')
+          snaps=$(flyctl volumes snapshots list "$VOL" -a "$APP" --json 2>/dev/null)
+          n=$(echo "$snaps" | jq 'length' 2>/dev/null || echo "?")
+          last=$(echo "$snaps" | jq -r 'sort_by(.created_at) | last | .created_at // "none"' 2>/dev/null)
+          copies=$(timeout 60 flyctl ssh console -a "$APP" -C "ls /data/backups" 2>/dev/null | grep -o 'agency-[0-9-]*\.db' | tr '\n' ' ')
+          echo "::notice title=backups::volume snapshots: $n (latest: $last) | retention set: ${upd:-ok} | daily DB copies: ${copies:-none yet}"
+        env:
+          SNAPSHOT_RETENTION: ${{ vars.SNAPSHOT_RETENTION || '30' }}
 
       - name: Check WhatsApp setup
         if: steps.token.outputs.skip != 'true'

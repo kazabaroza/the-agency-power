@@ -44,6 +44,9 @@ npm run build && npm start   # http://localhost:3000
 2. מגדירים Webhook לכתובת `https://<הדומיין>/api/whatsapp/webhook`, עם אותו `WHATSAPP_VERIFY_TOKEN` שב-env, ונרשמים לאירוע `messages`.
 3. מגדירים `WHATSAPP_APP_SECRET` כדי שחתימות ה-webhook ייבדקו.
 
+## גיבוי ושחזור
+גיבוי יומי של הדיסק ושל מסד הנתונים, ושחזור בלחיצה: [docs/BACKUP_RESTORE.md](docs/BACKUP_RESTORE.md)
+
 ## הערות
 - סרטוני מציג ו-UGC: קריינות בעברית מ-OpenAI TTS ומציג/ה מסונכרנ/ת שפתיים ב-Kling AI Avatar v2 (fal.ai). מודלי וידאו שמייצרים דיבור בעצמם משבשים עברית. סרטוני מוצר ואנימציה נשארים ב-Seedance 2.0.
 - OpenAI סגרה את ממשק הווידאו של Sora ב-24.9.2026, ולכן הסרטונים נוצרים ב-fal.ai. מחליפים מודל עם `FAL_VIDEO_MODEL`.
