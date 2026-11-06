@@ -38,7 +38,7 @@ export default function Login() {
       <div className="card w-full max-w-md p-8">
         <a href="/" className="flex items-center gap-2 text-lg font-extrabold"><span className="grid h-9 w-9 place-items-center rounded-xl bg-brand text-forest-900"><IconBolt className="h-4 w-4" /></span> The Agency Power</a>
         <h1 className="mt-6 text-2xl font-extrabold">{step === "email" ? "כניסה / הרשמה" : "הזינו את הקוד"}</h1>
-        <p className="muted mt-1 text-sm">{step === "email" ? "נשלח קוד חד-פעמי לאימייל. בלי סיסמאות." : `שלחנו קוד בן 6 ספרות ל-${email}`}</p>
+        <p className="muted mt-1 text-sm">{step === "email" ? "נשלח קוד חד-פעמי לאימייל. בלי סיסמאות." : demoCode ? `קוד בן 6 ספרות עבור ${email}` : `שלחנו קוד בן 6 ספרות ל-${email}. כדאי לבדוק גם בתיקיית הספאם.`}</p>
         {step === "email" ? (
           <form onSubmit={send} className="mt-6 space-y-3">
             <input className="input" type="email" dir="ltr" placeholder="you@business.com" value={email} onChange={(e) => setEmail(e.target.value)} required />

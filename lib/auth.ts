@@ -49,25 +49,49 @@ export async function clearSession() {
   (await cookies()).delete(COOKIE);
 }
 
-/** Creates a 6-digit login code. Returns the code only when no email provider is configured (demo). */
-export async function createOtp(email: string): Promise<{ sent: boolean; demoCode?: string }> {
+/**
+ * Creates a 6-digit login code and emails it. With an email provider configured the code is
+ * never returned to the caller, even when sending fails, so it can only be read from the inbox.
+ * Without a provider (local/demo) the code is returned for display; the route decides when that
+ * is allowed.
+ */
+export async function createOtp(email: string): Promise<{ sent: boolean; demoCode?: string; error?: string }> {
   const code = String(crypto.randomInt(100000, 1000000));
   run("DELETE FROM otps WHERE email = ?", email);
   insert("otps", { email, code_hash: hash(code), expires_at: Date.now() + 10 * 60_000, attempts: 0 });
-  if (process.env.RESEND_API_KEY && process.env.EMAIL_FROM) {
+  if (!(process.env.RESEND_API_KEY && process.env.EMAIL_FROM)) return { sent: false, demoCode: code };
+
+  try {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         from: process.env.EMAIL_FROM,
         to: email,
-        subject: "קוד הכניסה שלך ל-The Agency Power",
-        text: `קוד הכניסה שלך: ${code}\nהקוד בתוקף ל-10 דקות.`,
+        subject: `${code} – קוד הכניסה שלך ל-The Agency Power`,
+        text: `קוד הכניסה שלך: ${code}\nהקוד בתוקף ל-10 דקות.\nאם לא ביקשת להיכנס, אפשר להתעלם מהמייל הזה.`,
+        html: otpEmailHtml(code),
       }),
+      signal: AbortSignal.timeout(15000),
     });
     if (res.ok) return { sent: true };
+    console.error("[auth] email send failed", res.status, (await res.text()).slice(0, 300));
+  } catch (e) {
+    console.error("[auth] email send failed", e);
   }
-  return { sent: false, demoCode: code };
+  run("DELETE FROM otps WHERE email = ?", email);
+  return { sent: false, error: "לא הצלחנו לשלוח את המייל כרגע. נסו שוב בעוד דקה." };
+}
+
+function otpEmailHtml(code: string) {
+  return `<!doctype html><html lang="he" dir="rtl"><body style="margin:0;background:#0a241c;font-family:Arial,Helvetica,sans-serif">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0a241c;padding:32px 12px"><tr><td align="center">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:460px;background:#0e2f25;border:1px solid rgba(243,238,226,.14);border-radius:18px">
+<tr><td style="padding:28px 28px 8px;color:#f3eee2;font-size:18px;font-weight:bold;text-align:right">The Agency Power</td></tr>
+<tr><td style="padding:4px 28px 0;color:rgba(243,238,226,.75);font-size:15px;line-height:1.6;text-align:right">זה קוד הכניסה שלך. הוא בתוקף ל-10 דקות.</td></tr>
+<tr><td align="center" style="padding:24px 28px"><div style="display:inline-block;background:#d4b06a;color:#0a241c;font-size:32px;font-weight:bold;letter-spacing:8px;padding:14px 26px;border-radius:12px;direction:ltr">${code}</div></td></tr>
+<tr><td style="padding:0 28px 28px;color:rgba(243,238,226,.55);font-size:13px;line-height:1.6;text-align:right">אם לא ביקשת להיכנס, אפשר להתעלם מהמייל הזה. אף אחד לא ייכנס בלי הקוד.</td></tr>
+</table></td></tr></table></body></html>`;
 }
 
 export function verifyOtp(email: string, code: string): boolean {

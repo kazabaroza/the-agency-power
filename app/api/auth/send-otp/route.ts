@@ -19,5 +19,6 @@ export async function POST(req: Request) {
   }
 
   const r = await createOtp(e);
+  if (r.error) return json({ error: r.error }, 502);
   return json({ ok: true, sent: r.sent, demoCode: r.demoCode });
 }
