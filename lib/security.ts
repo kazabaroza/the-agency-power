@@ -52,11 +52,23 @@ const list = (v?: string) => (v || "").split(/[,\s]+/).map((x) => x.trim()).filt
 
 export const loginAllowlist = () => list(process.env.LOGIN_ALLOWLIST).map((e) => e.toLowerCase());
 
-/** Phone numbers as digits only, Israeli 05x normalised to 9725x. */
+/**
+ * Phone numbers as international digits: "+972 50-123-4567", "00972501234567",
+ * "972 0501234567" and "050-1234567" all become "972501234567".
+ */
 export function normalizePhone(p: string) {
-  const d = p.replace(/\D/g, "");
-  return d.startsWith("0") ? "972" + d.slice(1) : d;
+  let d = p.replace(/\D/g, "");
+  if (d.startsWith("00")) d = d.slice(2);
+  if (d.startsWith("9720")) d = "972" + d.slice(4);
+  if (d.startsWith("0")) d = "972" + d.slice(1);
+  return d;
 }
+
+/** For logs: keep the country/area prefix and the last two digits only. */
+export const maskPhone = (p: string) => {
+  const d = normalizePhone(p);
+  return d.length > 7 ? d.slice(0, 5) + "*".repeat(d.length - 7) + d.slice(-2) : "***";
+};
 
 export const whatsappAllowlist = () => list(process.env.WHATSAPP_ALLOWLIST).map(normalizePhone);
 
