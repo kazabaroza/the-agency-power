@@ -195,9 +195,9 @@ jobs:
           fi
           echo "::notice title=whatsapp::$out"
           # Allowlist as the server will read it (masked), and recent denied senders (masked).
-          al=$(printf '%s' "$WA_ALLOW" | tr ',; ' '\n\n\n' | sed '/^$/d' | while read -r n; do d=$(printf '%s' "$n" | tr -cd '0-9'); d=${d#00}; case "$d" in 9720*) d="972${d#9720}";; 0*) d="972${d#0}";; esac; printf '%s ' "${d:0:5}***${d: -2} (${#d} digits)"; done)
+          al=$( (printf '%s' "$WA_ALLOW" | tr ',; ' '\n\n\n' | sed '/^$/d'; echo) | while read -r n || [ -n "$n" ]; do [ -z "$n" ] && continue; d=$(printf '%s' "$n" | tr -cd '0-9'); d=${d#00}; case "$d" in 9720*) d="972${d#9720}";; 0*) d="972${d#0}";; esac; printf '%s ' "${d:0:5}***${d: -2} (${#d} digits)"; done)
           denied=$(timeout 40 flyctl logs -a "$APP" --no-tail 2>/dev/null | grep -o 'denied [0-9*]*' | sort -u | tail -n 5 | tr '\n' ' ')
-          echo "::notice title=whatsapp-allowlist::allowlist: ${al:-EMPTY} | recently denied: ${denied:-none}"
+          echo "::notice title=whatsapp-allowlist::allowlist secret: $( [ -n "$WA_ALLOW" ] && echo "set (${#WA_ALLOW} chars)" || echo MISSING ) | numbers: ${al:-none} | recently denied: ${denied:-none}"
 
       - name: Connect WhatsApp webhook at Meta
         if: steps.token.outputs.skip != 'true'
