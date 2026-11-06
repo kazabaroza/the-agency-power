@@ -285,8 +285,10 @@ jobs:
               p=$(curl -s "$G/$c/phone_numbers?fields=id" -H "Authorization: Bearer $WHATSAPP_TOKEN" | jq -r '.data[]?.id')
               if [ -z "$WHATSAPP_PHONE_NUMBER_ID" ] || echo "$p" | grep -qx "$WHATSAPP_PHONE_NUMBER_ID"; then WABA=$c; LIST=$r; break; fi
               tried="$tried ${c: -4}:no-phone"
-            else tried="$tried ${c: -4}:$(echo "$r" | jq -r '.error.code // "?"')"; fi
+            else tried="$tried ${c: -4}:$(echo "$r" | jq -r '"\(.error.code // "?")/\(.error.error_subcode // "-") \(.error.message // "" | .[0:120])"')"; fi
           done
+          tinfo=$(echo "$dbg" | jq -r '.data | "type=\(.type // "?") app=\(.application // "?") valid=\(.is_valid) scopes=\((.scopes // []) | join(",")) granular=\([(.granular_scopes // [])[] | "\(.scope):\([(.target_ids // [])[] | .[-4:]] | join("/"))"] | join(" "))"')
+          echo "::notice title=whatsapp-token-scopes::$tinfo"
           if [ -z "$WABA" ]; then echo "::warning title=whatsapp-template::no usable business account (tried:${tried:- none}). Add WHATSAPP_BUSINESS_ACCOUNT_ID from Meta > WhatsApp > API Setup."; exit 0; fi
           cur=$(echo "$LIST" | jq -r --arg n "$NAME" '[.data[] | select(.name==$n)][0] | if . then "\(.status) (\(.category), \(.language))" else empty end')
           if [ -z "$cur" ]; then
