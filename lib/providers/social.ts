@@ -15,8 +15,8 @@ type Post = { caption: string; mediaUrl?: string | null; title?: string };
 const isVideo = (u?: string | null) => !!u && /\.mp4(\?|$)/i.test(u);
 
 export function platformConnected(p: Platform, userId: string) {
-  if (p === "facebook") return isConnected("meta", userId) && !!creds("meta", userId).META_PAGE_ID;
-  if (p === "instagram") return isConnected("meta", userId) && !!creds("meta", userId).META_IG_USER_ID;
+  // With a Meta token the page and Instagram account are found at publish time.
+  if (p === "facebook" || p === "instagram") return isConnected("meta", userId);
   if (p === "linkedin") return isConnected("linkedin", userId);
   if (p === "tiktok") return isConnected("tiktok", userId);
   return isConnected("youtube", userId);
@@ -41,16 +41,54 @@ export async function publish(platform: Platform, post: Post, userId: string): P
 
 async function graph(pathname: string, params: Record<string, string>, token: string) {
   const body = new URLSearchParams({ ...params, access_token: token });
-  const r = await fetch(`${GRAPH}/${pathname}`, { method: "POST", body });
+  const r = await fetch(`${GRAPH}/${pathname}`, { method: "POST", body, signal: AbortSignal.timeout(60000) });
   const j = (await r.json()) as { id?: string; post_id?: string; error?: { message: string } };
   if (!r.ok || j.error) throw new Error(j.error?.message || `Graph error ${r.status}`);
   return j;
 }
 
-async function facebook(post: Post, userId: string): Promise<PublishResult> {
+async function graphGet<T>(pathname: string, token: string): Promise<T> {
+  const sep = pathname.includes("?") ? "&" : "?";
+  const r = await fetch(`${GRAPH}/${pathname}${sep}access_token=${encodeURIComponent(token)}`, { signal: AbortSignal.timeout(20000) });
+  const j = (await r.json()) as T & { error?: { message: string } };
+  if (!r.ok || j.error) throw new Error(j.error?.message || `Graph error ${r.status}`);
+  return j;
+}
+
+/**
+ * Finds the Page (and its Instagram account) the token can post to. META_PAGE_ID and
+ * META_IG_USER_ID win when set; otherwise the token's only Page is used.
+ * Posting to a Page needs that Page's own token, which is read with the user/system token.
+ */
+export async function metaTargets(userId: string | null) {
   const c = creds("meta", userId);
-  const page = c.META_PAGE_ID;
   const token = c.META_ACCESS_TOKEN;
+  if (!token) throw new Error("META_ACCESS_TOKEN חסר");
+  const pages = await graphGet<{ data: { id: string; name: string; access_token?: string; instagram_business_account?: { id: string } }[] }>(
+    "me/accounts?fields=id,name,access_token,instagram_business_account&limit=50", token,
+  ).catch(() => ({ data: [] }));
+  let page = c.META_PAGE_ID ? pages.data.find((p) => p.id === c.META_PAGE_ID) : pages.data.length === 1 ? pages.data[0] : undefined;
+  if (!page && c.META_PAGE_ID) {
+    const p = await graphGet<{ id: string; name: string; access_token?: string; instagram_business_account?: { id: string } }>(
+      `${c.META_PAGE_ID}?fields=id,name,access_token,instagram_business_account`, token,
+    ).catch(() => undefined);
+    if (p) page = p;
+  }
+  return {
+    token,
+    pageId: page?.id ?? c.META_PAGE_ID,
+    pageName: page?.name,
+    pageToken: page?.access_token ?? token,
+    igUserId: c.META_IG_USER_ID || page?.instagram_business_account?.id,
+    pagesSeen: pages.data.length,
+  };
+}
+
+async function facebook(post: Post, userId: string): Promise<PublishResult> {
+  const t = await metaTargets(userId);
+  if (!t.pageId) throw new Error("לא נמצא עמוד פייסבוק. צריך להגדיר META_PAGE_ID או לתת לטוקן גישה לעמוד");
+  const page = t.pageId;
+  const token = t.pageToken;
   let j;
   if (isVideo(post.mediaUrl)) j = await graph(`${page}/videos`, { file_url: absoluteUrl(post.mediaUrl!), description: post.caption }, token);
   else if (post.mediaUrl) j = await graph(`${page}/photos`, { url: absoluteUrl(post.mediaUrl), caption: post.caption }, token);
@@ -60,16 +98,17 @@ async function facebook(post: Post, userId: string): Promise<PublishResult> {
 }
 
 async function instagram(post: Post, userId: string): Promise<PublishResult> {
-  const c = creds("meta", userId);
-  if (!post.mediaUrl) throw new Error("Instagram requires an image or video");
-  const ig = c.META_IG_USER_ID;
-  const token = c.META_ACCESS_TOKEN;
+  if (!post.mediaUrl) throw new Error("באינסטגרם חייבים תמונה או סרטון");
+  const t = await metaTargets(userId);
+  const ig = t.igUserId;
+  if (!ig) throw new Error("לא נמצא חשבון אינסטגרם עסקי שמחובר לעמוד הפייסבוק");
+  const token = t.token;
   const media = isVideo(post.mediaUrl)
     ? await graph(`${ig}/media`, { media_type: "REELS", video_url: absoluteUrl(post.mediaUrl), caption: post.caption }, token)
     : await graph(`${ig}/media`, { image_url: absoluteUrl(post.mediaUrl), caption: post.caption }, token);
   // Videos need processing time before they can be published.
   for (let i = 0; i < 30 && isVideo(post.mediaUrl); i++) {
-    const s = (await (await fetch(`${GRAPH}/${media.id}?fields=status_code&access_token=${token}`)).json()) as { status_code?: string };
+    const s = await graphGet<{ status_code?: string }>(`${media.id}?fields=status_code`, token);
     if (s.status_code === "FINISHED") break;
     if (s.status_code === "ERROR") throw new Error("Instagram could not process the video");
     await new Promise((r) => setTimeout(r, 5000));

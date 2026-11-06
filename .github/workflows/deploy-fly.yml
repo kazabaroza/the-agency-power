@@ -317,6 +317,28 @@ jobs:
           fi
           echo "::notice title=whatsapp-template::account ...${WABA: -4} | $NAME: $cur"
 
+      - name: Check Facebook and Instagram publishing
+        if: steps.token.outputs.skip != 'true'
+        env:
+          META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
+          META_PAGE_ID: ${{ secrets.META_PAGE_ID }}
+          META_IG_USER_ID: ${{ secrets.META_IG_USER_ID }}
+        run: |
+          set +e
+          if [ -z "$META_ACCESS_TOKEN" ]; then echo "::notice title=social::META_ACCESS_TOKEN missing - posts run in demo mode"; exit 0; fi
+          G=https://graph.facebook.com/v23.0
+          dbg=$(curl -s "$G/debug_token?input_token=$META_ACCESS_TOKEN&access_token=$META_ACCESS_TOKEN")
+          have=$(echo "$dbg" | jq -r '(.data.scopes // []) | join(" ")')
+          miss=""; for s in pages_show_list pages_read_engagement pages_manage_posts instagram_basic instagram_content_publish; do echo " $have " | grep -q " $s " || miss="$miss $s"; done
+          exp=$(echo "$dbg" | jq -r '.data.expires_at // 0'); [ "$exp" = 0 ] && exp=never || exp=$(date -u -d "@$exp" +%F)
+          out="token: $(echo "$dbg" | jq -r '.data.type // "?"') valid=$(echo "$dbg" | jq -r '.data.is_valid // .error.message // "?"') expires=$exp | missing permissions:${miss:- none}"
+          pages=$(curl -s "$G/me/accounts?fields=id,name,access_token,instagram_business_account%7Bid,username%7D&limit=50" -H "Authorization: Bearer $META_ACCESS_TOKEN")
+          n=$(echo "$pages" | jq -r '.data | length // 0' 2>/dev/null)
+          out="$out | pages: ${n:-0} $(echo "$pages" | jq -r '[.data[]? | "\(.name) (...\(.id[-4:]), page token: \(if .access_token then "yes" else "NO" end), instagram: \(.instagram_business_account.username // "not linked"))"] | join("; ")')"
+          [ -z "$n" ] || [ "$n" = 0 ] && out="$out $(echo "$pages" | jq -r '.error.message // ""' | head -c 150)"
+          [ -n "$META_PAGE_ID" ] && out="$out | META_PAGE_ID ...${META_PAGE_ID: -4} $(echo "$pages" | jq -r --arg p "$META_PAGE_ID" 'if ([.data[]?.id] | index($p)) then "found" else "NOT among the token pages" end')"
+          echo "::notice title=social::$out"
+
       - name: Show address
         if: steps.token.outputs.skip != 'true'
         run: |
