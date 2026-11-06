@@ -5,6 +5,8 @@ import { IconBolt } from "@/components/Icons";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
+  const [accessCode, setAccessCode] = useState("");
+  const [needAccess, setNeedAccess] = useState(false);
   const [step, setStep] = useState<"email" | "code">("email");
   const [demoCode, setDemoCode] = useState<string | null>(null);
   const [err, setErr] = useState("");
@@ -13,9 +15,10 @@ export default function Login() {
   async function send(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true); setErr("");
-    const r = await fetch("/api/auth/send-otp", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
+    const r = await fetch("/api/auth/send-otp", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, accessCode }) });
     const j = await r.json();
     setBusy(false);
+    if (j.needAccessCode) setNeedAccess(true);
     if (!r.ok) return setErr(j.error);
     setDemoCode(j.demoCode ?? null);
     setStep("code");
@@ -39,11 +42,14 @@ export default function Login() {
         {step === "email" ? (
           <form onSubmit={send} className="mt-6 space-y-3">
             <input className="input" type="email" dir="ltr" placeholder="you@business.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+            {needAccess && (
+              <input className="input" type="password" dir="ltr" autoComplete="current-password" placeholder="קוד גישה אישי" value={accessCode} onChange={(e) => setAccessCode(e.target.value)} required autoFocus />
+            )}
             <button className="btn w-full" disabled={busy}>{busy ? "שולח…" : "שלחו לי קוד"}</button>
           </form>
         ) : (
           <form onSubmit={verify} className="mt-6 space-y-3">
-            {demoCode && <p className="rounded-xl bg-amber-100 p-3 text-sm text-amber-900">מצב הדגמה (אין שירות מייל מחובר) – הקוד שלך: <b dir="ltr">{demoCode}</b></p>}
+            {demoCode && <p className="rounded-xl bg-amber-100 p-3 text-sm text-amber-900">קוד הכניסה שלך (אין שירות מייל מחובר): <b dir="ltr">{demoCode}</b></p>}
             <input className="input text-center text-2xl tracking-[.5em]" dir="ltr" inputMode="numeric" maxLength={6} value={code} onChange={(e) => setCode(e.target.value)} required autoFocus />
             <button className="btn w-full" disabled={busy}>{busy ? "בודק…" : "כניסה"}</button>
             <button type="button" className="muted w-full text-sm" onClick={() => setStep("email")}>החלפת אימייל</button>

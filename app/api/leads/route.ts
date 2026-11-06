@@ -3,12 +3,14 @@ import { get, id, insert } from "@/lib/db";
 import { authed, json } from "@/lib/http";
 import { all } from "@/lib/db";
 import { notifyUser } from "@/lib/notify";
+import { clientIp, rateLimit } from "@/lib/security";
 
 const cors = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type" };
 export const OPTIONS = () => new NextResponse(null, { headers: cors });
 
 /** Public endpoint used by published landing pages. */
 export async function POST(req: Request) {
+  if (!rateLimit(`lead-ip:${clientIp(req)}`, 10, 60 * 60_000)) return NextResponse.json({ error: "too many" }, { status: 429, headers: cors });
   const b = (await req.json().catch(() => ({}))) as Record<string, string>;
   const page = get<{ id: string; user_id: string; title: string }>("SELECT id, user_id, title FROM landing_pages WHERE id = ?", String(b.page || ""));
   if (!page) return NextResponse.json({ error: "unknown page" }, { status: 404, headers: cors });

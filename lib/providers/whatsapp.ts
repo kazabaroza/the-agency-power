@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { creds } from "../connections";
 import { absoluteUrl } from "../storage";
+import { isPublicDeploy } from "../security";
 
 const GRAPH = `https://graph.facebook.com/${process.env.META_GRAPH_VERSION || "v23.0"}`;
 
@@ -15,7 +16,8 @@ export const verifyToken = () => wa().verify;
 
 export function validSignature(raw: string, header: string | null) {
   const secret = wa().secret;
-  if (!secret) return true; // signature check is enabled once the app secret is set
+  // On a public deployment an unsigned webhook is refused; locally it is allowed for testing.
+  if (!secret) return !isPublicDeploy();
   if (!header?.startsWith("sha256=")) return false;
   const expected = "sha256=" + crypto.createHmac("sha256", secret).update(raw).digest("hex");
   return expected.length === header.length && crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(header));

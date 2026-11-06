@@ -9,6 +9,7 @@ import { renderLanding, demoLanding, type LandingContent } from "../landing";
 import { PLATFORMS, type Platform } from "../providers/social";
 import { launchMeta, launchGoogle, type CampaignSpec } from "../providers/ads";
 import { publishScheduled } from "../scheduler";
+import { safeFetchText } from "../security";
 
 export type SkillCtx = {
   userId: string;
@@ -73,8 +74,8 @@ const analyzeBusiness: Skill = {
     const website = S(input.website);
     if (website) {
       try {
-        const r = await fetch(website.startsWith("http") ? website : `https://${website}`, { headers: { "User-Agent": "Mozilla/5.0 TheAgencyPower" }, signal: AbortSignal.timeout(12000) });
-        const html = await r.text();
+        // Only public addresses: user-supplied URLs must never reach internal services.
+        const html = await safeFetchText(website.startsWith("http") ? website : `https://${website}`, { timeoutMs: 12000, maxBytes: 1_500_000 });
         siteColors = [...new Set(html.match(/#[0-9a-fA-F]{6}\b/g) ?? [])].slice(0, 3);
         siteText = html.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, " ").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").slice(0, 6000);
       } catch {

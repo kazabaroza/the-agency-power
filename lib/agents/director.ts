@@ -5,6 +5,7 @@ import { anthropicFor, createMessage, textOf } from "../providers/llm";
 import { SKILLS, skill, toolDefs, type SkillCtx } from "../skills";
 import { brandBrief } from "./specialist";
 import { CORE_TEAM, rosterText } from "./registry";
+import { useQuota, withLock } from "../security";
 
 const STABLE_SYSTEM = `You are the Account Director of "The Agency Power" – an AI marketing agency that small businesses talk to in one chat (web or WhatsApp).
 You run a team of specialist agents from The Agency and a set of production skills (tools). The owner briefs you like a new hire; you research, plan, produce and publish.
@@ -32,12 +33,26 @@ export type TurnResult = { reply: string; approvals: string[] };
 
 /** Handles one user message end to end. Display messages are written to the conversation as the work happens. */
 export async function handleUserMessage(userId: string, conversationId: string, text: string, appUrl: string): Promise<TurnResult> {
-  addMessage(conversationId, { role: "user", text });
-  const conv = get<{ brand_id: string | null }>("SELECT brand_id FROM conversations WHERE id = ?", conversationId);
-  const ctx: SkillCtx = { userId, conversationId, brand: brandFor(userId, conv?.brand_id), client: anthropicFor(userId), appUrl };
-  const result = ctx.client ? await claudeTurn(ctx, text) : await demoTurn(ctx, text);
-  if (result.reply) addMessage(conversationId, { role: "assistant", text: result.reply });
-  return result;
+  // One turn at a time per conversation: concurrent turns would interleave the history.
+  return withLock(`conv:${conversationId}`, async () => {
+    addMessage(conversationId, { role: "user", text });
+    if (!useQuota(userId, "turn")) {
+      const reply = "הגעת למכסת ההודעות היומית. אפשר להמשיך מחר, או להעלות את המכסה בהגדרות השרת (DAILY_TURN_LIMIT).";
+      addMessage(conversationId, { role: "assistant", kind: "status", text: reply });
+      return { reply: "", approvals: [] };
+    }
+    const conv = get<{ brand_id: string | null }>("SELECT brand_id FROM conversations WHERE id = ?", conversationId);
+    const ctx: SkillCtx = { userId, conversationId, brand: brandFor(userId, conv?.brand_id), client: anthropicFor(userId), appUrl };
+    try {
+      const result = ctx.client ? await claudeTurn(ctx, text) : await demoTurn(ctx, text);
+      if (result.reply) addMessage(conversationId, { role: "assistant", text: result.reply });
+      return result;
+    } catch (e) {
+      console.error("[director] turn failed", e);
+      addMessage(conversationId, { role: "assistant", kind: "status", text: "⚠️ משהו השתבש אצלי ולא הצלחתי לסיים את הבקשה. אפשר לנסות שוב בעוד דקה." });
+      return { reply: "", approvals: [] };
+    }
+  });
 }
 
 async function claudeTurn(ctx: SkillCtx, text: string): Promise<TurnResult> {
@@ -107,6 +122,12 @@ function createApproval(ctx: SkillCtx, skillName: string, input: Record<string, 
 
 /** Called from the approval card (web) or the WhatsApp reply button. */
 export async function resolveApproval(userId: string, approvalId: string, approve: boolean, appUrl: string) {
+  const conv = get<{ conversation_id: string }>("SELECT conversation_id FROM approvals WHERE id = ? AND user_id = ?", approvalId, userId);
+  if (!conv) return { ok: false, error: "not found" };
+  return withLock(`conv:${conv.conversation_id}`, () => resolveApprovalLocked(userId, approvalId, approve, appUrl));
+}
+
+async function resolveApprovalLocked(userId: string, approvalId: string, approve: boolean, appUrl: string) {
   const ap = get<{ id: string; conversation_id: string; skill: string; input: string; summary: string; status: string }>(
     "SELECT * FROM approvals WHERE id = ? AND user_id = ?", approvalId, userId,
   );
@@ -117,6 +138,10 @@ export async function resolveApproval(userId: string, approvalId: string, approv
     addMessage(ap.conversation_id, { role: "assistant", kind: "status", text: `בוטל: ${ap.summary}` });
     appendNote(ap.conversation_id, `I declined: ${ap.summary}`, "Got it, cancelled. Nothing was spent or published.");
     return { ok: true, status: "rejected" };
+  }
+  if (!useQuota(userId, "paid")) {
+    addMessage(ap.conversation_id, { role: "assistant", kind: "status", text: "הגעת למכסה היומית של פעולות בתשלום. הכרטיס נשאר פתוח, ואפשר לאשר אותו מחר." });
+    return { ok: false, error: "daily limit" };
   }
   update("approvals", ap.id, { status: "approved" });
   const conv = get<{ brand_id: string | null }>("SELECT brand_id FROM conversations WHERE id = ?", ap.conversation_id);

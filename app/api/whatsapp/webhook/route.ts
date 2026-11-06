@@ -4,6 +4,7 @@ import { getOrCreateConversation, listMessages } from "@/lib/conversation";
 import { handleUserMessage, resolveApproval } from "@/lib/agents/director";
 import { markRead, sendApproval, sendMedia, sendText, validSignature, verifyToken } from "@/lib/providers/whatsapp";
 import { get, parse } from "@/lib/db";
+import { rateLimit, whatsappAllowed } from "@/lib/security";
 
 export const maxDuration = 300;
 
@@ -42,6 +43,14 @@ export async function POST(req: Request) {
 
 async function handle(m: WaMessage, name: string | undefined, base: string) {
   const phone = m.from;
+  // Only approved numbers get the agent (and spend the account's keys).
+  if (!whatsappAllowed(phone)) {
+    if (rateLimit(`wa-deny:${phone}`, 1, 24 * 60 * 60_000)) {
+      await sendText(phone, "שלום! המספר הזה עדיין לא רשום לשירות. לפרטים אפשר לפנות לבעל העסק.").catch(() => {});
+    }
+    return;
+  }
+  if (!rateLimit(`wa:${phone}`, 15, 60_000)) return;
   const user = findOrCreateUser({ phone, name });
   const conv = getOrCreateConversation(user.id, "whatsapp");
   await markRead(m.id).catch(() => {});

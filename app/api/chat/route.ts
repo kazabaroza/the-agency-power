@@ -1,12 +1,14 @@
 import { authed, appUrl, json } from "@/lib/http";
 import { getOrCreateConversation } from "@/lib/conversation";
 import { handleUserMessage } from "@/lib/agents/director";
+import { rateLimit, tooMany } from "@/lib/security";
 
 export const maxDuration = 300;
 
 export const POST = authed(async (req, user) => {
   const { text } = (await req.json()) as { text?: string };
   if (!text?.trim()) return json({ error: "empty" }, 400);
+  if (!rateLimit(`chat:${user.id}`, 20, 60_000)) return tooMany();
   const conv = getOrCreateConversation(user.id, "web");
   const r = await handleUserMessage(user.id, conv.id, text.trim().slice(0, 8000), appUrl(req));
   return json({ ok: true, ...r });
