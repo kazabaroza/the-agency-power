@@ -277,6 +277,22 @@ jobs:
           # Candidate business account ids: the secret, then every account the token can manage.
           dbg=$(curl -s "$G/debug_token?input_token=$WHATSAPP_TOKEN&access_token=$WHATSAPP_TOKEN")
           cands="$WHATSAPP_BUSINESS_ACCOUNT_ID $(echo "$dbg" | jq -r '[.data.granular_scopes[]? | select(.scope|test("whatsapp")) | .target_ids[]?] | unique | .[]' | tr '\n' ' ')"
+          # What kind of object is the configured id? And which accounts can the token reach through its businesses?
+          for c in $WHATSAPP_BUSINESS_ACCOUNT_ID; do
+            k=$(curl -s "$G/$c?metadata=1&fields=id,name" -H "Authorization: Bearer $WHATSAPP_TOKEN" | jq -r '"\(.metadata.type // .error.message // "?" | .[0:80]) name=\(.name // "-")"')
+            same=$([ "$c" = "$WHATSAPP_PHONE_NUMBER_ID" ] && echo " (same as phone number id!)")
+            echo "::notice title=whatsapp-id-kind::configured id ...${c: -4} is: $k$same"
+          done
+          bizs=$(curl -s "$G/me/businesses?fields=id,name" -H "Authorization: Bearer $WHATSAPP_TOKEN" | jq -r '.data[]?.id')
+          [ -z "$bizs" ] && bizs=$(curl -s "$G/me?fields=business" -H "Authorization: Bearer $WHATSAPP_TOKEN" | jq -r '.business.id // empty')
+          found=""
+          for b in $bizs; do
+            for edge in owned_whatsapp_business_accounts client_whatsapp_business_accounts; do
+              found="$found $(curl -s "$G/$b/$edge?fields=id,name" -H "Authorization: Bearer $WHATSAPP_TOKEN" | jq -r '.data[]?.id' | tr '\n' ' ')"
+            done
+          done
+          echo "::notice title=whatsapp-accounts::businesses: $(for b in $bizs; do printf '...%s ' "${b: -4}"; done) | accounts found: $(for f in $found; do printf '...%s ' "${f: -4}"; done)"
+          cands="$cands $found"
           WABA=""; tried=""
           for c in $cands; do
             r=$(curl -s "$G/$c/message_templates?fields=name,status,category,language&limit=200" -H "Authorization: Bearer $WHATSAPP_TOKEN")
