@@ -1,6 +1,7 @@
 import { get } from "./db";
 import { addMessage, getOrCreateConversation } from "./conversation";
-import { sendMedia, sendText, whatsappEnabled } from "./providers/whatsapp";
+import { whatsappEnabled } from "./providers/whatsapp";
+import { deliverUpdate } from "./whatsapp-window";
 
 /** Sends an update to the user in the web chat and, when they use WhatsApp, on WhatsApp too. */
 export async function notifyUser(userId: string, text: string, opts: { assetId?: string; mediaUrl?: string; caption?: string } = {}) {
@@ -10,7 +11,6 @@ export async function notifyUser(userId: string, text: string, opts: { assetId?:
   const phone = get<{ phone: string | null }>("SELECT phone FROM users WHERE id = ?", userId)?.phone;
   if (wa && phone && whatsappEnabled()) {
     addMessage(wa.id, { role: "assistant", kind: "status", text });
-    if (opts.mediaUrl) await sendMedia(phone, opts.mediaUrl, opts.caption ? `${text}\n\n${opts.caption}` : text);
-    else await sendText(phone, text);
+    await deliverUpdate(phone, text, opts.mediaUrl ? { url: opts.mediaUrl, caption: opts.caption } : undefined);
   }
 }

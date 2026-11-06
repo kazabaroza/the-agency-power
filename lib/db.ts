@@ -65,6 +65,14 @@ CREATE TABLE IF NOT EXISTS agent_runs (
   id TEXT PRIMARY KEY, conversation_id TEXT, agent_slug TEXT, task TEXT, output TEXT,
   created_at TEXT DEFAULT (datetime('now'))
 );
+CREATE TABLE IF NOT EXISTS wa_state (
+  phone TEXT PRIMARY KEY, last_inbound INTEGER, last_template INTEGER
+);
+CREATE TABLE IF NOT EXISTS wa_pending (
+  id TEXT PRIMARY KEY, phone TEXT, text TEXT, media_url TEXT, caption TEXT,
+  created_at INTEGER, delivered INTEGER DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_wa_pending ON wa_pending(phone, delivered, created_at);
 CREATE INDEX IF NOT EXISTS idx_messages_conv ON messages(conversation_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_assets_user ON assets(user_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_sched_due ON scheduled_posts(status, run_at);

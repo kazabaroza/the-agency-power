@@ -23,15 +23,39 @@ export function validSignature(raw: string, header: string | null) {
   return expected.length === header.length && crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(header));
 }
 
-async function send(payload: Record<string, unknown>) {
+async function send(payload: Record<string, unknown>): Promise<boolean> {
   const { token, phoneId } = wa();
-  if (!token || !phoneId) return;
+  if (!token || !phoneId) return false;
   const r = await fetch(`${GRAPH}/${phoneId}/messages`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
     body: JSON.stringify({ messaging_product: "whatsapp", recipient_type: "individual", ...payload }),
   });
-  if (!r.ok) console.error("[whatsapp] send failed", r.status, await r.text());
+  if (!r.ok) console.error("[whatsapp] send failed", r.status, (await r.text()).slice(0, 500));
+  return r.ok;
+}
+
+export const UPDATE_TEMPLATE = process.env.WHATSAPP_UPDATE_TEMPLATE || "agency_update";
+export const TEMPLATE_LANG = process.env.WHATSAPP_TEMPLATE_LANG || "he";
+
+/**
+ * Sends the pre-approved update template. WhatsApp only allows templates outside the
+ * 24-hour window after the user's last message. Template text can't hold newlines or tabs.
+ */
+export function sendUpdateTemplate(to: string, summary: string) {
+  const param = summary.replace(/[\n\t]+/g, " · ").replace(/ {4,}/g, " ").trim().slice(0, 200) || "עדכון חדש";
+  return send({
+    to,
+    type: "template",
+    template: {
+      name: UPDATE_TEMPLATE,
+      language: { code: TEMPLATE_LANG },
+      components: [
+        { type: "body", parameters: [{ type: "text", text: param }] },
+        { type: "button", sub_type: "quick_reply", index: "0", parameters: [{ type: "payload", payload: "show_updates" }] },
+      ],
+    },
+  });
 }
 
 export const sendText = (to: string, body: string) => send({ to, type: "text", text: { body: body.slice(0, 4096), preview_url: true } });

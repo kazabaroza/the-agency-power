@@ -4,6 +4,7 @@ import { getOrCreateConversation, listMessages } from "@/lib/conversation";
 import { handleUserMessage, resolveApproval } from "@/lib/agents/director";
 import { markRead, sendApproval, sendMedia, sendText, validSignature, verifyToken } from "@/lib/providers/whatsapp";
 import { get, parse } from "@/lib/db";
+import { flushPending, markInbound } from "@/lib/whatsapp-window";
 import { maskPhone, rateLimit, whatsappAllowed, whatsappAllowlist } from "@/lib/security";
 
 export const maxDuration = 300;
@@ -55,6 +56,13 @@ async function handle(m: WaMessage, name: string | undefined, base: string) {
   const user = findOrCreateUser({ phone, name });
   const conv = getOrCreateConversation(user.id, "whatsapp");
   await markRead(m.id).catch(() => {});
+  // Any message from the user reopens the 24-hour window: send what waited first.
+  markInbound(phone);
+  const waited = await flushPending(phone);
+  if (m.type === "button" && m.button?.payload === "show_updates") {
+    if (!waited) await sendText(phone, "אין עדכונים חדשים כרגע. אפשר לכתוב לי מה תרצו שנכין 🙂");
+    return;
+  }
 
   const buttonId = m.interactive?.button_reply?.id || m.button?.payload;
   if (buttonId && /^(approve|reject):/.test(buttonId)) {

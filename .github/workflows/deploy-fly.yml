@@ -263,6 +263,42 @@ jobs:
           fi
           echo "::notice title=whatsapp-webhook::$out"
 
+      - name: WhatsApp update template
+        if: steps.token.outputs.skip != 'true'
+        env:
+          WHATSAPP_TOKEN: ${{ secrets.WHATSAPP_TOKEN }}
+          WHATSAPP_PHONE_NUMBER_ID: ${{ secrets.WHATSAPP_PHONE_NUMBER_ID }}
+          WHATSAPP_BUSINESS_ACCOUNT_ID: ${{ secrets.WHATSAPP_BUSINESS_ACCOUNT_ID }}
+        run: |
+          set +e
+          if [ -z "$WHATSAPP_TOKEN" ]; then echo "no WhatsApp token - skipping"; exit 0; fi
+          G=https://graph.facebook.com/v23.0
+          NAME=agency_update
+          # Candidate business account ids: the secret, then every account the token can manage.
+          dbg=$(curl -s "$G/debug_token?input_token=$WHATSAPP_TOKEN&access_token=$WHATSAPP_TOKEN")
+          cands="$WHATSAPP_BUSINESS_ACCOUNT_ID $(echo "$dbg" | jq -r '[.data.granular_scopes[]? | select(.scope|test("whatsapp")) | .target_ids[]?] | unique | .[]' | tr '\n' ' ')"
+          WABA=""; tried=""
+          for c in $cands; do
+            r=$(curl -s "$G/$c/message_templates?fields=name,status,category,language&limit=200" -H "Authorization: Bearer $WHATSAPP_TOKEN")
+            if echo "$r" | jq -e '.data' >/dev/null 2>&1; then
+              # The phone number must belong to this account.
+              p=$(curl -s "$G/$c/phone_numbers?fields=id" -H "Authorization: Bearer $WHATSAPP_TOKEN" | jq -r '.data[]?.id')
+              if [ -z "$WHATSAPP_PHONE_NUMBER_ID" ] || echo "$p" | grep -qx "$WHATSAPP_PHONE_NUMBER_ID"; then WABA=$c; LIST=$r; break; fi
+              tried="$tried ${c: -4}:no-phone"
+            else tried="$tried ${c: -4}:$(echo "$r" | jq -r '.error.code // "?"')"; fi
+          done
+          if [ -z "$WABA" ]; then echo "::warning title=whatsapp-template::no usable business account (tried:${tried:- none}). Add WHATSAPP_BUSINESS_ACCOUNT_ID from Meta > WhatsApp > API Setup."; exit 0; fi
+          cur=$(echo "$LIST" | jq -r --arg n "$NAME" '[.data[] | select(.name==$n)][0] | if . then "\(.status) (\(.category), \(.language))" else empty end')
+          if [ -z "$cur" ]; then
+            body=$(jq -nc --arg n "$NAME" '{name:$n, language:"he", category:"UTILITY", components:[
+              {type:"BODY", text:"יש לך עדכון חדש מ-The Agency Power: {{1}}\n\nלחצו על הכפתור כדי לקבל את כל הפרטים.", example:{body_text:[["הסרטון שביקשת מוכן"]]}},
+              {type:"BUTTONS", buttons:[{type:"QUICK_REPLY", text:"הצג את העדכון"}]}]}')
+            r=$(curl -s -X POST "$G/$WABA/message_templates" -H "Authorization: Bearer $WHATSAPP_TOKEN" -H "Content-Type: application/json" -d "$body")
+            if echo "$r" | jq -e '.id' >/dev/null 2>&1; then cur="created, $(echo "$r" | jq -r '.status // "PENDING"') ($(echo "$r" | jq -r '.category // "UTILITY"'))"
+            else cur="create FAILED ($(echo "$r" | jq -r '.error.error_user_msg // .error.message // .' | head -c 250))"; fi
+          fi
+          echo "::notice title=whatsapp-template::account ...${WABA: -4} | $NAME: $cur"
+
       - name: Show address
         if: steps.token.outputs.skip != 'true'
         run: |
