@@ -1,7 +1,9 @@
 // רינדור פריים-אחרי-פריים ב-Chromium ללא מסך, וקידוד ל-MP4 (H.264) עם ffmpeg.
 // אחר כך מסנתז את פס הסאונד (sound.js) ומחבר אותו לקובץ הסופי.
-// שימוש: node render.js          רינדור מלא + סאונד
-//        node render.js --mux    רק סאונד וחיבור מחדש (משתמש ב-p100-agency-silent.mp4 הקיים)
+// הסאונד כבוי כברירת מחדל. שימוש:
+//   node render.js            רינדור מלא, בלי סאונד
+//   node render.js --sound    רינדור מלא + סינתוז הסאונד (sound.js) וחיבור שלו
+//   node render.js --mux      רק סאונד וחיבור מחדש (משתמש ב-p100-agency-silent.mp4 הקיים)
 const { chromium } = require('playwright');
 const { spawn, execFileSync } = require('child_process');
 const path = require('path');
@@ -39,5 +41,6 @@ const path = require('path');
   await done;
   await browser.close();
   console.log('wrote', out);
-  mux();
+  if (process.argv.includes('--sound')) mux();
+  else { require('fs').copyFileSync(out, final); console.log('wrote', final, '(no sound)'); }
 })();
