@@ -1,11 +1,21 @@
 // רינדור פריים-אחרי-פריים ב-Chromium ללא מסך, וקידוד ל-MP4 (H.264) עם ffmpeg.
-// שימוש: node render.js [out.mp4]
+// אחר כך מסנתז את פס הסאונד (sound.js) ומחבר אותו לקובץ הסופי.
+// שימוש: node render.js          רינדור מלא + סאונד
+//        node render.js --mux    רק סאונד וחיבור מחדש (משתמש ב-p100-agency-silent.mp4 הקיים)
 const { chromium } = require('playwright');
-const { spawn } = require('child_process');
+const { spawn, execFileSync } = require('child_process');
 const path = require('path');
 
 (async () => {
-  const out = process.argv[2] || path.join(__dirname, 'p100-agency.mp4');
+  const final = path.join(__dirname, 'p100-agency.mp4');
+  const out = path.join(__dirname, 'p100-agency-silent.mp4');
+  const wav = path.join(__dirname, 'p100-agency-soundtrack.wav');
+  const mux = () => {
+    execFileSync('node', [path.join(__dirname, 'sound.js'), wav], { stdio: 'inherit' });
+    execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', out, '-i', wav, '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', final]);
+    console.log('wrote', final);
+  };
+  if (process.argv.includes('--mux')) return mux();
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
   await page.goto('file://' + path.join(__dirname, 'index.html') + '?render');
@@ -29,4 +39,5 @@ const path = require('path');
   await done;
   await browser.close();
   console.log('wrote', out);
+  mux();
 })();

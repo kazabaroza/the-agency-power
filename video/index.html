@@ -172,34 +172,52 @@ function scene1(lt,d,t){
   ctx.save();ctx.translate(540,510);ctx.scale(pu,pu);ctx.translate(-540,-510);
   kinetic('בצ\'אט אחד.',540,510,168,lt,-2,{color:C.gold,glow:GLOW_GOLD,mark:C.orange,markT:.4});ctx.restore();
   const cx=540,cy=930;
+  // פתיחה: חלונות קופצים בזה אחר זה, התראות מצטברות, רעידה שמתגברת — ואז שאיבה חדה לבועה אחת עם הבזק.
+  // (הזמנים כאן משוכפלים ב-sound.js; אם משנים אותם, לעדכן גם שם)
+  const tens=eIn(prog(lt,1.3,2.7))*(1-prog(lt,2.75,2.95));
+  const shx=(Math.sin(t*61)*13+Math.sin(t*37)*7)*tens,shy=Math.cos(t*53)*11*tens;
+  if(tens>0){const tg=ctx.createRadialGradient(cx,cy,200,cx,cy,950);tg.addColorStop(0,'rgba(255,122,69,0)');tg.addColorStop(.6,`rgba(255,122,69,${.16*tens})`);tg.addColorStop(1,'rgba(255,122,69,0)');
+    ctx.globalAlpha=GA;ctx.fillStyle=tg;ctx.fillRect(-100,-100,W+200,H+200);}
   for(let i=0;i<9;i++){
-    const p=eIn(prog(lt,2.6+i*.09,3.7+i*.09)); if(p>=1)continue;
+    const tin=i<2?-1:.15+(i-2)*.16,pin=prog(lt,tin,tin+.3);if(pin<=0)continue;
+    const p=eIn(prog(lt,2.75+i*.02,3.2+i*.008));if(p>=1)continue;
     const w=250+rnd(i)*130,h=170+rnd(i+20)*90;
-    const bx=cx+(rnd(i+40)-.5)*600+Math.sin(t*1.3+i)*8, by=cy+40+(rnd(i+60)-.5)*430+Math.cos(t*1.1+i*2)*8;
-    const rot=(rnd(i+80)-.5)*.6+Math.sin(t*2.2+i*1.7)*.035;
-    const ang=p*2.4, dx=bx-cx, dy=by-cy, k=1-p;
-    const x=cx+(dx*Math.cos(ang)-dy*Math.sin(ang))*k, y=cy+(dx*Math.sin(ang)+dy*Math.cos(ang))*k;
+    const bx=cx+(rnd(i+40)-.5)*600+Math.sin(t*1.3+i)*8+shx*(.5+rnd(i+90)),by=cy+40+(rnd(i+60)-.5)*430+Math.cos(t*1.1+i*2)*8+shy*(.5+rnd(i+91));
+    const rot=(rnd(i+80)-.5)*.6+Math.sin(t*2.2+i*1.7)*.035+Math.sin(t*47+i*3)*.06*tens;
+    const ang=p*2.4,dx=bx-cx,dy=by-cy,k=(1-p)*eBack(pin),k1=1-p,al=clamp(pin*3);
+    const x=cx+(dx*Math.cos(ang)-dy*Math.sin(ang))*k1,y=cy+(dx*Math.sin(ang)+dy*Math.cos(ang))*k1;
     ctx.save();ctx.translate(x,y);ctx.rotate(rot+ang);ctx.scale(k,k);
-    setA(.96);ctx.fillStyle=C.panel;rr(-w/2,-h/2,w,h,18);sh(26,12);ctx.fill();noSh();
-    ctx.strokeStyle=i%4===1?C.gold:C.cream;ctx.lineWidth=3;setA(.6);ctx.stroke();
-    setA(.5);ctx.fillStyle=C.cream;
+    setA(.96*al);ctx.fillStyle=C.panel;rr(-w/2,-h/2,w,h,18);sh(26,12);ctx.fill();noSh();
+    ctx.strokeStyle=i%4===1?C.gold:C.cream;ctx.lineWidth=3;setA(.6*al);ctx.stroke();
+    setA(.5*al);ctx.fillStyle=C.cream;
     for(let k2=0;k2<3;k2++){ctx.beginPath();ctx.arc(-w/2+24+k2*20,-h/2+22,5.5,0,7);ctx.fill();}
     ctx.fillRect(-w/2,-h/2+42,w,2.5);
-    const kind=i%3,top=-h/2+62;setA(.38);
+    const kind=i%3,top=-h/2+62;setA(.38*al);
     if(kind===0){for(let r2=0;r2<3;r2++)for(let c2=0;c2<4;c2++){rr(-w/2+20+c2*(w-40)/4,top+r2*32,(w-40)/4-8,22,4);ctx.fill();}}
-    else if(kind===1){for(let b=0;b<5;b++){const bh=20+rnd(i*7+b)*(h-110);ctx.fillRect(-w/2+26+b*(w-52)/5,h/2-18-bh,(w-52)/5-12,bh);}}
+    else if(kind===1){for(let b2=0;b2<5;b2++){const bh=20+rnd(i*7+b2)*(h-110);ctx.fillRect(-w/2+26+b2*(w-52)/5,h/2-18-bh,(w-52)/5-12,bh);}}
     else{for(let l=0;l<4;l++){rr(-w/2+20,top+l*26,(w-40)*(.5+rnd(i*5+l)*.5),12,6);ctx.fill();}}
-    if(i%2===0){setA(1);ctx.fillStyle=C.orange;ctx.beginPath();ctx.arc(w/2-6,-h/2+6,17+Math.sin(t*6+i)*2.5,0,7);ctx.fill();}
+    // התראה: מופיעה, והמספר שבה מטפס
+    const tb=.9+rnd(i+95)*1.5,pb=prog(lt,tb,tb+.25);
+    if(pb>0){const n=Math.min(99,1+Math.floor((lt-tb)*(2+rnd(i+96)*7))),br=(23+6*tens+Math.sin(t*9+i)*2)*eBack(pb);
+      setA(1);ctx.fillStyle=C.orange;ctx.beginPath();ctx.arc(w/2-6,-h/2+6,br,0,7);ctx.shadowColor=GLOW_ORANGE;ctx.shadowBlur=18;ctx.fill();noSh();
+      ctx.direction='ltr';ctx.textAlign='center';ctx.textBaseline='middle';setFont(27,900);ctx.fillStyle=C.ink;ctx.fillText(String(n),w/2-6,-h/2+8);}
     ctx.restore();
   }
-  const bp=prog(lt,3.9,4.5);
+  const bp=prog(lt,3.25,3.75);
+  if(bp>0){ // קרני הבזק + טבעת
+    const rp=prog(lt,3.25,4.4),ry=eOut(prog(lt,3.22,3.8));
+    if(ry<1)for(let k=0;k<16;k++){const a=k*Math.PI/8+.2,r1=150+ry*260,r2=r1+(60+rnd(k+130)*120)*(1-ry);
+      setA((1-ry)*.8);ctx.strokeStyle=k%2?C.gold:C.cream;ctx.lineWidth=7;ctx.lineCap='round';ctx.beginPath();
+      ctx.moveTo(cx+Math.cos(a)*r1,cy+Math.sin(a)*r1*.8);ctx.lineTo(cx+Math.cos(a)*r2,cy+Math.sin(a)*r2*.8);ctx.stroke();}
+    setA((1-rp)*.7);ctx.strokeStyle=C.gold;ctx.lineWidth=5;ctx.beginPath();ctx.arc(cx,cy,120+rp*300,0,7);ctx.stroke();
+  }
   if(bp>0&&!HOUT){
-    const rp=prog(lt,3.9,5.1);setA((1-rp)*.7);ctx.strokeStyle=C.gold;ctx.lineWidth=5;
-    ctx.beginPath();ctx.arc(cx,cy,120+rp*300,0,7);ctx.stroke();
     const s=eBack(bp);ctx.save();ctx.translate(cx,cy);ctx.scale(s,s);
     bubble(-210,-120,420,240,C.cream,{r:80,alpha:clamp(bp*3)});
     setA(1);typingDots(0,6,t,C.ink,74,21);ctx.restore();
   }
+  const fl=prog(lt,3.17,3.25)*(1-eOut(prog(lt,3.25,3.7)));
+  if(fl>0){setA(fl*.55);ctx.fillStyle=C.cream;ctx.fillRect(-100,-100,W+200,H+200);}
 }
 
 // ── סצנה 2: הלוגו ושלושת התחומים ──
